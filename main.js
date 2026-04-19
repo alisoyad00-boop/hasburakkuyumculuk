@@ -18,23 +18,21 @@ const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         hamburger.dataset.bound = '1';
 
         function toggle(e) {
-            if (e) { e.preventDefault(); e.stopPropagation(); }
+            if (e) e.preventDefault();
             const isOpen = mobileMenu.classList.toggle('open');
             hamburger.classList.toggle('active', isOpen);
             document.body.style.overflow = isOpen ? 'hidden' : '';
         }
-        function close() {
-            mobileMenu.classList.remove('open');
-            hamburger.classList.remove('active');
-            document.body.style.overflow = '';
-        }
 
-        hamburger.addEventListener('click', toggle, { passive: false });
-        hamburger.addEventListener('touchend', toggle, { passive: false });
+        // Hamburger: click only (works on all touch devices for buttons)
+        hamburger.addEventListener('click', toggle);
 
+        // Menu links: native navigation. Just reset body scroll on click —
+        // page change will tear the menu down anyway. NEVER preventDefault.
         mobileMenu.querySelectorAll('a').forEach(a => {
-            a.addEventListener('click', close);
-            a.addEventListener('touchend', close);
+            a.addEventListener('click', () => {
+                document.body.style.overflow = '';
+            });
         });
     }
 
