@@ -1,0 +1,26 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="markGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F0DFA3"/>
+            <stop offset="50%" stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#B8941F"/>
+        </linearGradient>
+    </defs>
+    <!-- Diamond -->
+    <path d="M60 18 L70 36 L60 50 L50 36 Z" fill="url(#markGold)"/>
+    <circle cx="60" cy="14" r="3" fill="url(#markGold)"/>
+    <!-- Side flourishes -->
+    <path d="M60 50 Q42 56 32 46 Q44 50 56 48 Q58 49 60 50 Z" fill="url(#markGold)"/>
+    <path d="M60 50 Q78 56 88 46 Q76 50 64 48 Q62 49 60 50 Z" fill="url(#markGold)"/>
+    <!-- H letter -->
+    <text x="60" y="92"
+          font-family="'Cormorant Garamond', serif"
+          font-size="44"
+          font-weight="600"
+          fill="#FFFCF7"
+          text-anchor="middle"
+          letter-spacing="2">H</text>
+    <!-- Bottom dots -->
+    <circle cx="38" cy="100" r="1.6" fill="url(#markGold)"/>
+    <circle cx="82" cy="100" r="1.6" fill="url(#markGold)"/>
+</svg>

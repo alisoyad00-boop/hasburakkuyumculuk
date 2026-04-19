@@ -1,0 +1,71 @@
+<svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+    <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#F0DFA3"/>
+            <stop offset="40%" stop-color="#D4AF37"/>
+            <stop offset="60%" stop-color="#E5C674"/>
+            <stop offset="100%" stop-color="#B8941F"/>
+        </linearGradient>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#B8941F"/>
+            <stop offset="50%" stop-color="#F0DFA3"/>
+            <stop offset="100%" stop-color="#B8941F"/>
+        </linearGradient>
+    </defs>
+
+    <!-- Top ornament: stylized crown / fleur -->
+    <g fill="url(#goldGrad)" transform="translate(300, 90)">
+        <!-- Center diamond shape -->
+        <path d="M0 -32 L8 -14 L0 4 L-8 -14 Z" opacity="0.95"/>
+        <!-- Center pin -->
+        <circle cx="0" cy="-32" r="3"/>
+        <!-- Center flourish -->
+        <path d="M0 4 Q-12 12 -18 4 Q-22 -2 -18 -8 Q-10 -4 0 4 Z"/>
+        <path d="M0 4 Q12 12 18 4 Q22 -2 18 -8 Q10 -4 0 4 Z"/>
+        <!-- Side curls left -->
+        <path d="M-22 0 Q-40 6 -50 -8 Q-44 -2 -32 -2 Q-26 -6 -22 0 Z"/>
+        <path d="M-50 -8 Q-66 -10 -74 4 Q-66 -2 -56 -2 Q-52 -6 -50 -8 Z"/>
+        <!-- Side curls right -->
+        <path d="M22 0 Q40 6 50 -8 Q44 -2 32 -2 Q26 -6 22 0 Z"/>
+        <path d="M50 -8 Q66 -10 74 4 Q66 -2 56 -2 Q52 -6 50 -8 Z"/>
+        <!-- Outer dots -->
+        <circle cx="-86" cy="2" r="2.5"/>
+        <circle cx="86" cy="2" r="2.5"/>
+        <!-- Top filigree -->
+        <path d="M-12 -22 Q-6 -28 0 -32 Q6 -28 12 -22 Q6 -24 0 -22 Q-6 -24 -12 -22 Z" opacity="0.85"/>
+    </g>
+
+    <!-- Ring icon top right (subtle nod to the original) -->
+    <g transform="translate(370, 60) rotate(20)" opacity="0.9">
+        <ellipse cx="0" cy="0" rx="28" ry="9" fill="none" stroke="url(#ringGrad)" stroke-width="3"/>
+        <ellipse cx="0" cy="0" rx="22" ry="6" fill="none" stroke="url(#ringGrad)" stroke-width="0.8" opacity="0.5"/>
+    </g>
+
+    <!-- HASBURAK -->
+    <text x="300" y="240"
+          font-family="'Cormorant Garamond', 'Times New Roman', serif"
+          font-size="78"
+          font-weight="500"
+          fill="#FFFCF7"
+          text-anchor="middle"
+          letter-spacing="8">HASBURAK</text>
+
+    <!-- Decorative line with dots -->
+    <g transform="translate(300, 268)">
+        <line x1="-130" y1="0" x2="-12" y2="0" stroke="#FFFCF7" stroke-width="0.7" opacity="0.85"/>
+        <line x1="12" y1="0" x2="130" y2="0" stroke="#FFFCF7" stroke-width="0.7" opacity="0.85"/>
+        <circle cx="-138" cy="0" r="2.5" fill="url(#goldGrad)"/>
+        <circle cx="138" cy="0" r="2.5" fill="url(#goldGrad)"/>
+        <!-- Center diamond between lines -->
+        <path d="M0 -5 L5 0 L0 5 L-5 0 Z" fill="url(#goldGrad)"/>
+    </g>
+
+    <!-- KUYUMCULUK -->
+    <text x="300" y="305"
+          font-family="'Inter', 'Helvetica Neue', sans-serif"
+          font-size="22"
+          font-weight="500"
+          fill="#FFFCF7"
+          text-anchor="middle"
+          letter-spacing="14">KUYUMCULUK</text>
+</svg>
