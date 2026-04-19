@@ -5,6 +5,46 @@
 const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
 const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ─── PAGE ENTRY ───
+if (!prefersReduced) document.body.classList.add('page-enter');
+
+// ─── SPLIT WORDS for premium heading reveal ───
+function splitWords() {
+    document.querySelectorAll('.split-words').forEach(el => {
+        if (el.dataset.split === 'done') return;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = el.innerHTML;
+        const wrap = (token, tag) => {
+            const w = document.createElement('span');
+            w.className = 'word';
+            const inner = document.createElement(tag || 'span');
+            inner.textContent = token;
+            w.appendChild(inner);
+            return w;
+        };
+        const out = [];
+        tmp.childNodes.forEach(child => {
+            if (child.nodeType === 3) {
+                child.textContent.split(/(\s+)/).forEach(t => {
+                    if (t.trim() === '') { if (t.length) out.push(document.createTextNode(' ')); }
+                    else out.push(wrap(t, 'span'));
+                });
+            } else if (child.nodeType === 1) {
+                if (child.tagName === 'BR') { out.push(child.cloneNode()); return; }
+                const tag = (child.tagName === 'EM') ? 'em' : (child.tagName === 'STRONG') ? 'strong' : 'span';
+                child.textContent.split(/(\s+)/).forEach(t => {
+                    if (t.trim() === '') { if (t.length) out.push(document.createTextNode(' ')); }
+                    else out.push(wrap(t, tag));
+                });
+            }
+        });
+        el.innerHTML = '';
+        out.forEach(n => el.appendChild(n));
+        el.dataset.split = 'done';
+    });
+}
+splitWords();
+
 // ─── NAVBAR SCROLL + SCROLL PROGRESS ───
 const nav = document.getElementById('nav');
 function onScroll() {
@@ -38,7 +78,7 @@ if (hamburger && mobileMenu) {
 }
 
 // ─── REVEAL ANIMATIONS (staggered) ───
-const reveals = document.querySelectorAll('.reveal, .text-reveal');
+const reveals = document.querySelectorAll('.reveal, .text-reveal, .split-words, .section-head');
 if (reveals.length && !prefersReduced) {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, i) => {
