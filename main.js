@@ -8,6 +8,183 @@ const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 // ─── PAGE ENTRY ───
 if (!prefersReduced) document.body.classList.add('page-enter');
 
+// ════════════════════════════════════════════
+//   HERO BEAMS — gold/amber animated light beams (canvas)
+//   Adapted to Hasburak's navy + gold theme
+// ════════════════════════════════════════════
+function initHeroBeams() {
+    const canvas = document.getElementById('heroBeams');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let beams = [];
+    const MIN_BEAMS = 20;
+    const intensity = 1; // strong
+
+    function createBeam(w, h) {
+        return {
+            x: Math.random() * w * 1.5 - w * 0.25,
+            y: Math.random() * h * 1.5 - h * 0.25,
+            width: 30 + Math.random() * 60,
+            length: h * 2.5,
+            angle: -35 + Math.random() * 10,
+            speed: 0.5 + Math.random() * 1.0,
+            opacity: 0.10 + Math.random() * 0.16,
+            // GOLD/AMBER hue range (35-55 = warm gold)
+            hue: 35 + Math.random() * 22,
+            sat: 75 + Math.random() * 15,
+            light: 55 + Math.random() * 15,
+            pulse: Math.random() * Math.PI * 2,
+            pulseSpeed: 0.018 + Math.random() * 0.025,
+        };
+    }
+
+    function updateSize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const parent = canvas.parentElement;
+        const w = parent.clientWidth;
+        const h = parent.clientHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+
+        const total = Math.floor(MIN_BEAMS * 1.5);
+        beams = Array.from({ length: total }, () => createBeam(canvas.width, canvas.height));
+    }
+
+    function resetBeam(beam, index, total) {
+        const column = index % 3;
+        const spacing = canvas.width / 3;
+        beam.y = canvas.height + 100;
+        beam.x = column * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
+        beam.width = 90 + Math.random() * 100;
+        beam.speed = 0.5 + Math.random() * 0.4;
+        beam.hue = 35 + (index * 22) / total;
+        beam.opacity = 0.18 + Math.random() * 0.10;
+    }
+
+    function drawBeam(beam) {
+        ctx.save();
+        ctx.translate(beam.x, beam.y);
+        ctx.rotate((beam.angle * Math.PI) / 180);
+
+        const pulsing = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2) * intensity;
+        const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
+        const colorBase = `${beam.hue}, ${beam.sat}%, ${beam.light}%`;
+
+        grad.addColorStop(0,    `hsla(${colorBase}, 0)`);
+        grad.addColorStop(0.10, `hsla(${colorBase}, ${pulsing * 0.5})`);
+        grad.addColorStop(0.40, `hsla(${colorBase}, ${pulsing})`);
+        grad.addColorStop(0.60, `hsla(${colorBase}, ${pulsing})`);
+        grad.addColorStop(0.90, `hsla(${colorBase}, ${pulsing * 0.5})`);
+        grad.addColorStop(1,    `hsla(${colorBase}, 0)`);
+
+        ctx.fillStyle = grad;
+        ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
+        ctx.restore();
+    }
+
+    let running = true;
+    function animate() {
+        if (!running) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.filter = 'blur(35px)';
+
+        const total = beams.length;
+        beams.forEach((beam, i) => {
+            beam.y -= beam.speed;
+            beam.pulse += beam.pulseSpeed;
+            if (beam.y + beam.length < -100) resetBeam(beam, i, total);
+            drawBeam(beam);
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    updateSize();
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateSize, 150);
+    });
+    animate();
+
+    // Pause when hero scrolled out of view (perf)
+    const visObs = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && !running) { running = true; animate(); }
+        else if (!entry.isIntersecting) running = false;
+    }, { threshold: 0 });
+    visObs.observe(canvas.parentElement);
+}
+
+if (!prefersReduced) initHeroBeams();
+
+// ════════════════════════════════════════════
+//   PRODUCT INLINE SVG ILLUSTRATIONS
+//   (no external network dependency — works on every device)
+// ════════════════════════════════════════════
+
+const HB_GOLD = `<defs>
+    <linearGradient id="g_gold_${Math.random().toString(36).slice(2,8)}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F8E9B6"/>
+        <stop offset="50%" stop-color="#D4AF37"/>
+        <stop offset="100%" stop-color="#9A7A14"/>
+    </linearGradient>
+</defs>`;
+
+const ICONS = {
+    ring: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><ellipse cx="100" cy="135" rx="58" ry="55" fill="none" stroke="url(#rg)" stroke-width="6"/><ellipse cx="100" cy="135" rx="46" ry="44" fill="none" stroke="url(#rg)" stroke-width="1.5" opacity="0.5"/><path d="M70 78 L78 60 L122 60 L130 78 L116 92 L84 92 Z" fill="url(#rg)"/><path d="M100 50 L108 68 L100 82 L92 68 Z" fill="#FFF7D6" opacity="0.95"/><circle cx="100" cy="68" r="2.5" fill="#FFF" opacity="0.7"/></svg>`,
+
+    diamond: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient><linearGradient id="ds" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="50%" stop-color="#E0F0FF" stop-opacity="0.85"/><stop offset="100%" stop-color="#A0C0E0" stop-opacity="0.6"/></linearGradient></defs><ellipse cx="100" cy="155" rx="56" ry="52" fill="none" stroke="url(#dg)" stroke-width="6"/><path d="M70 70 L100 35 L130 70 L100 130 Z" fill="url(#ds)"/><path d="M70 70 L130 70 L100 90 Z" fill="url(#ds)" opacity="0.7"/><path d="M70 70 L100 90 L100 130 Z" fill="#000" opacity="0.18"/><path d="M70 70 L100 35 L100 90 Z" fill="#FFF" opacity="0.25"/></svg>`,
+
+    necklace: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ng" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><path d="M30 50 Q100 130 170 50" fill="none" stroke="url(#ng)" stroke-width="2.5"/><path d="M30 50 Q100 135 170 50" fill="none" stroke="url(#ng)" stroke-width="1" opacity="0.4" stroke-dasharray="2 3"/><circle cx="100" cy="155" r="22" fill="url(#ng)"/><path d="M100 142 L108 155 L100 168 L92 155 Z" fill="#FFF7D6" opacity="0.9"/><circle cx="30" cy="50" r="3" fill="url(#ng)"/><circle cx="170" cy="50" r="3" fill="url(#ng)"/></svg>`,
+
+    earring: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="eg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><g transform="translate(70 0)"><circle cx="0" cy="60" r="22" fill="none" stroke="url(#eg)" stroke-width="5"/><line x1="0" y1="38" x2="0" y2="22" stroke="url(#eg)" stroke-width="2"/><circle cx="0" cy="20" r="3" fill="url(#eg)"/><path d="M-8 78 L8 78 L0 138 Z" fill="url(#eg)"/></g><g transform="translate(130 0)"><circle cx="0" cy="60" r="22" fill="none" stroke="url(#eg)" stroke-width="5"/><line x1="0" y1="38" x2="0" y2="22" stroke="url(#eg)" stroke-width="2"/><circle cx="0" cy="20" r="3" fill="url(#eg)"/><path d="M-8 78 L8 78 L0 138 Z" fill="url(#eg)"/></g></svg>`,
+
+    bracelet: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><ellipse cx="100" cy="110" rx="78" ry="48" fill="none" stroke="url(#bg)" stroke-width="9"/><ellipse cx="100" cy="110" rx="66" ry="38" fill="none" stroke="url(#bg)" stroke-width="2" opacity="0.55"/><circle cx="100" cy="62" r="9" fill="url(#bg)"/><path d="M100 53 L106 62 L100 71 L94 62 Z" fill="#FFF7D6" opacity="0.9"/><circle cx="22" cy="110" r="4" fill="url(#bg)"/><circle cx="178" cy="110" r="4" fill="url(#bg)"/></svg>`,
+
+    bangle: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bag" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><ellipse cx="100" cy="100" rx="72" ry="68" fill="none" stroke="url(#bag)" stroke-width="14"/><ellipse cx="100" cy="100" rx="58" ry="54" fill="none" stroke="url(#bag)" stroke-width="2" opacity="0.5"/><ellipse cx="100" cy="100" rx="86" ry="80" fill="none" stroke="url(#bag)" stroke-width="1" opacity="0.3"/></svg>`,
+
+    goldbar: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bbg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><path d="M40 70 L160 70 L172 88 L172 142 L160 160 L40 160 L28 142 L28 88 Z" fill="url(#bbg)"/><path d="M40 70 L160 70 L172 88 L28 88 Z" fill="#FFF" opacity="0.18"/><path d="M40 160 L160 160 L172 142 L28 142 Z" fill="#000" opacity="0.18"/><text x="100" y="120" text-anchor="middle" font-family="serif" font-size="22" fill="#5C4910" font-weight="700">999.9</text></svg>`,
+
+    watch: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><circle cx="100" cy="110" r="56" fill="url(#wg)"/><circle cx="100" cy="110" r="48" fill="#0A1442"/><circle cx="100" cy="110" r="48" fill="none" stroke="url(#wg)" stroke-width="1.5" opacity="0.6"/><line x1="100" y1="110" x2="100" y2="78" stroke="url(#wg)" stroke-width="3" stroke-linecap="round"/><line x1="100" y1="110" x2="124" y2="110" stroke="url(#wg)" stroke-width="2" stroke-linecap="round"/><circle cx="100" cy="110" r="3" fill="url(#wg)"/><path d="M82 56 L88 30 L112 30 L118 56 Z" fill="url(#wg)"/><path d="M82 164 L118 164 L112 190 L88 190 Z" fill="url(#wg)"/></svg>`,
+
+    crown: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="cg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><path d="M40 150 L36 80 L72 110 L100 60 L128 110 L164 80 L160 150 Z" fill="url(#cg)"/><path d="M40 150 L160 150 L156 168 L44 168 Z" fill="url(#cg)"/><circle cx="36" cy="76" r="6" fill="url(#cg)"/><circle cx="100" cy="56" r="7" fill="url(#cg)"/><circle cx="164" cy="76" r="6" fill="url(#cg)"/><circle cx="100" cy="130" r="6" fill="#FFF7D6" opacity="0.9"/></svg>`,
+
+    ornament: `<svg viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="og" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#F8E9B6"/><stop offset="50%" stop-color="#D4AF37"/><stop offset="100%" stop-color="#9A7A14"/></linearGradient></defs><g transform="translate(100 110)"><circle cx="0" cy="-50" r="4" fill="url(#og)"/><path d="M0 -46 L6 -32 L0 -22 L-6 -32 Z" fill="url(#og)"/><path d="M0 -22 C 5 -10, 8 8, 0 24 C -8 8, -5 -10, 0 -22 Z" fill="url(#og)"/><path d="M-8 0 C -22 4, -34 4, -42 -2 C -32 -4, -18 -4, -8 0 Z" fill="url(#og)"/><path d="M8 0 C 22 4, 34 4, 42 -2 C 32 -4, 18 -4, 8 0 Z" fill="url(#og)"/><circle cx="-58" cy="-2" r="3" fill="url(#og)"/><circle cx="58" cy="-2" r="3" fill="url(#og)"/></g></svg>`,
+};
+
+function tagToIcon(tag, name) {
+    const t = (tag + ' ' + name).toLocaleLowerCase('tr');
+    if (t.includes('saat')) return 'watch';
+    if (t.includes('yatırım') || t.includes('ziynet') || t.includes('çeyrek')) return 'goldbar';
+    if (t.includes('pırlanta') || t.includes('tek taş') || t.includes('akik')) return 'diamond';
+    if (t.includes('küpe')) return 'earring';
+    if (t.includes('kolye') || t.includes('set') || t.includes('zincir') || t.includes('su yolu') || t.includes('akıtma') || t.includes('singapur') || t.includes('karzai')) return 'necklace';
+    if (t.includes('bilezik') || t.includes('trabzon')) return 'bangle';
+    if (t.includes('bileklik') || t.includes('kelepçe')) return 'bracelet';
+    if (t.includes('taç') || t.includes('kemer') || t.includes('hızma') || t.includes('ayakkabı') || t.includes('aksesuar') || t.includes('künye')) return 'crown';
+    if (t.includes('yöresel') || t.includes('şahmeran') || t.includes('özel')) return 'ornament';
+    return 'ring';
+}
+
+function injectProductIcons() {
+    document.querySelectorAll('.product-card').forEach(card => {
+        const wrap = card.querySelector('.product-img-wrap');
+        if (!wrap || wrap.dataset.iconified === 'true') return;
+        const tag = card.querySelector('.product-tag')?.textContent?.trim() || '';
+        const name = card.querySelector('.product-name')?.textContent?.trim() || '';
+        const iconKey = tagToIcon(tag, name);
+        wrap.innerHTML = `<div class="product-illustration product-illustration--${iconKey}">${ICONS[iconKey]}</div>`;
+        wrap.dataset.iconified = 'true';
+    });
+}
+injectProductIcons();
+
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
     document.querySelectorAll('.split-words').forEach(el => {
@@ -219,44 +396,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     });
 });
 
-// ─── IMAGE FADE-IN + BROKEN-IMG FALLBACK ───
-const PLACEHOLDER_SVG = (label) => {
-    const safe = (label || 'Hasburak').replace(/[<>&"]/g, '');
-    const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 750'>
-        <defs>
-            <linearGradient id='bg' x1='0%' y1='0%' x2='100%' y2='100%'>
-                <stop offset='0%' stop-color='%23131F5C'/>
-                <stop offset='100%' stop-color='%23060E2C'/>
-            </linearGradient>
-            <linearGradient id='gold' x1='0%' y1='0%' x2='100%' y2='100%'>
-                <stop offset='0%' stop-color='%23F0DFA3'/>
-                <stop offset='50%' stop-color='%23D4AF37'/>
-                <stop offset='100%' stop-color='%23B8941F'/>
-            </linearGradient>
-        </defs>
-        <rect width='600' height='750' fill='url(%23bg)'/>
-        <g transform='translate(300 320)' fill='none' stroke='url(%23gold)' stroke-width='3'>
-            <circle cx='0' cy='0' r='90' opacity='0.85'/>
-            <circle cx='0' cy='0' r='70' opacity='0.45'/>
-            <path d='M-30 -110 L-15 -85 L15 -85 L30 -110' opacity='0.85'/>
-        </g>
-        <text x='300' y='500' font-family='Cormorant Garamond, serif' font-size='34' font-weight='500' fill='%23F0DFA3' text-anchor='middle' letter-spacing='2'>${safe}</text>
-        <text x='300' y='540' font-family='Inter, sans-serif' font-size='12' fill='%23F0DFA3' opacity='0.55' text-anchor='middle' letter-spacing='6'>HASBURAK</text>
-    </svg>`;
-    return `data:image/svg+xml;charset=utf-8,${svg.replace(/\n\s*/g, '').replace(/#/g, '%23')}`;
-};
-
+// ─── IMAGE FADE-IN ───
 document.querySelectorAll('img').forEach(img => {
+    if (img.closest('.product-img-wrap')) return; // handled by SVG icons
     img.style.transition = 'opacity 0.7s ease';
     if (!img.complete) img.style.opacity = '0';
     const show = () => { img.style.opacity = '1'; };
-    const fail = () => {
-        const card = img.closest('.product-card');
-        const label = card?.querySelector('.product-name')?.textContent || img.alt || '';
-        img.src = PLACEHOLDER_SVG(label);
-        img.style.opacity = '1';
-    };
     img.addEventListener('load', show, { once: true });
-    img.addEventListener('error', fail, { once: true });
-    if (img.complete && img.naturalWidth === 0) fail();
+    img.addEventListener('error', show, { once: true });
 });
