@@ -5,6 +5,46 @@
 const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
 const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// ════════════════════════════════════════════
+//   CRITICAL: Mobile menu init FIRST
+//   (must work even if any other script later throws on iOS Safari)
+// ════════════════════════════════════════════
+(function initMobileMenu() {
+    function bind() {
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (!hamburger || !mobileMenu) return;
+        if (hamburger.dataset.bound === '1') return;
+        hamburger.dataset.bound = '1';
+
+        function toggle(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            const isOpen = mobileMenu.classList.toggle('open');
+            hamburger.classList.toggle('active', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+        function close() {
+            mobileMenu.classList.remove('open');
+            hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        hamburger.addEventListener('click', toggle, { passive: false });
+        hamburger.addEventListener('touchend', toggle, { passive: false });
+
+        mobileMenu.querySelectorAll('a').forEach(a => {
+            a.addEventListener('click', close);
+            a.addEventListener('touchend', close);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bind);
+    } else {
+        bind();
+    }
+})();
+
 // ─── PAGE ENTRY ───
 if (!prefersReduced) document.body.classList.add('page-enter');
 
@@ -121,7 +161,7 @@ function initHeroBeams() {
     visObs.observe(canvas.parentElement);
 }
 
-if (!prefersReduced) initHeroBeams();
+try { if (!prefersReduced) initHeroBeams(); } catch (e) { console.warn('beams skipped', e); }
 
 // ════════════════════════════════════════════
 //   PRODUCT INLINE SVG ILLUSTRATIONS
@@ -183,7 +223,7 @@ function injectProductIcons() {
         wrap.dataset.iconified = 'true';
     });
 }
-injectProductIcons();
+try { injectProductIcons(); } catch (e) { console.warn('icons skipped', e); }
 
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
@@ -220,7 +260,7 @@ function splitWords() {
         el.dataset.split = 'done';
     });
 }
-splitWords();
+try { splitWords(); } catch (e) { console.warn('split skipped', e); }
 
 // ─── NAVBAR SCROLL + SCROLL PROGRESS ───
 const nav = document.getElementById('nav');
@@ -236,23 +276,7 @@ function onScroll() {
 window.addEventListener('scroll', onScroll, { passive: true });
 onScroll();
 
-// ─── MOBILE MENU ───
-const hamburger = document.getElementById('hamburger');
-const mobileMenu = document.getElementById('mobileMenu');
-if (hamburger && mobileMenu) {
-    hamburger.addEventListener('click', () => {
-        hamburger.classList.toggle('active');
-        mobileMenu.classList.toggle('open');
-        document.body.style.overflow = mobileMenu.classList.contains('open') ? 'hidden' : '';
-    });
-    mobileMenu.querySelectorAll('a').forEach(a => {
-        a.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            mobileMenu.classList.remove('open');
-            document.body.style.overflow = '';
-        });
-    });
-}
+// (Mobile menu init moved to top — guaranteed to run even if other scripts fail.)
 
 // ─── REVEAL ANIMATIONS (staggered) ───
 const reveals = document.querySelectorAll('.reveal, .text-reveal, .split-words, .section-head');
