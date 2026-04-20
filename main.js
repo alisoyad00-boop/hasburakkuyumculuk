@@ -159,7 +159,8 @@ function initHeroBeams() {
     visObs.observe(canvas.parentElement);
 }
 
-try { if (!prefersReduced) initHeroBeams(); } catch (e) { console.warn('beams skipped', e); }
+// Skip heavy canvas beams on mobile (battery + perf)
+try { if (!prefersReduced && !isCoarsePointer && window.innerWidth >= 769) initHeroBeams(); } catch (e) { console.warn('beams skipped', e); }
 
 // ════════════════════════════════════════════
 //   PRODUCT INLINE SVG ILLUSTRATIONS
