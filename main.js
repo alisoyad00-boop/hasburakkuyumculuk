@@ -270,15 +270,21 @@ function swapToIcon(card) {
     wrap.dataset.iconified = 'true';
 }
 
-// Iconify ALL product cards immediately — Unsplash photos are unreliable
-// (some URLs 404, others point at unrelated content like phones/toys).
-// The branded SVG illustrations are consistent, fast, and always correct.
-// Note: only targets .product-card (urunler.html); .featured-card on home
-// keeps its working Unsplash hero photos.
-function iconifyAllProductCards() {
-    document.querySelectorAll('.product-card').forEach(card => swapToIcon(card));
+// Attach broken-image fallback to ALL product images — if Pexels URL
+// fails to load, swap to the branded gold SVG illustration. Photos first,
+// SVG as safety net.
+function bindProductImgFallback() {
+    document.querySelectorAll('.product-card .product-img-wrap img').forEach(img => {
+        if (img.dataset.fallbackBound === '1') return;
+        img.dataset.fallbackBound = '1';
+        const card = img.closest('.product-card');
+        const handler = () => swapToIcon(card);
+        img.addEventListener('error', handler, { once: true });
+        // Image already errored or broken (0×0 natural)
+        if (img.complete && img.naturalWidth === 0) handler();
+    });
 }
-try { iconifyAllProductCards(); } catch (e) { console.warn('iconify skipped', e); }
+try { bindProductImgFallback(); } catch (e) { console.warn('img fallback skipped', e); }
 
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
