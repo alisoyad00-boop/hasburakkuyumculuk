@@ -1601,6 +1601,18 @@ a.contact-item:hover {
     .nav.scrolled { padding: 8px 16px; }
     .nav-inner { gap: 12px; }
 
+    /* Tight spacing on mobile */
+    .section { padding: 44px 18px !important; }
+    .page-header { padding: 110px 20px 36px; }
+    .hero { padding: 90px 18px 50px; }
+    .cat-section { margin-bottom: 36px; }
+    .section-head { margin-bottom: 28px; }
+    .cta-band { padding: 50px 18px; }
+    .cta-inner { padding: 32px 20px; }
+    .ornament-divider { padding: 4px 18px 2px; }
+    .stats { margin-top: 24px; }
+    .filter-bar { margin-bottom: 22px; }
+
     .brand { gap: 10px; }
     .brand-name { font-size: 1rem; letter-spacing: 0.05em; }
     .brand-sub { font-size: 0.52rem; letter-spacing: 0.3em; }
@@ -2219,22 +2231,19 @@ a.contact-item:hover {
     .product-grid { grid-template-columns: 1fr; }
 }
 
-/* ─── REVEAL ANIMATIONS ─── */
+/* ─── REVEAL ANIMATIONS — light & fast ─── */
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(20px);
     transition:
-        opacity 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 1.05s cubic-bezier(0.22, 1, 0.36, 1),
-        filter 1.05s ease-out;
-    filter: blur(6px);
-    will-change: opacity, transform, filter;
+        opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
 }
 
 .reveal.visible {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0);
 }
 
 /* ─── PREMIUM SPLIT-WORD HEADINGS ─── */
@@ -2357,7 +2366,7 @@ a.contact-item:hover {
     to { opacity: 1; }
 }
 body.page-enter {
-    animation: page-enter 0.8s ease both;
+    animation: page-enter 0.4s ease both;
 }
 
 /* ─── EYEBROW WIPE-IN ─── */
