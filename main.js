@@ -49,16 +49,21 @@ if (!prefersReduced) document.body.classList.add('page-enter');
 // ════════════════════════════════════════════
 //   HERO BEAMS — gold/amber animated light beams (canvas)
 //   Adapted to Hasburak's navy + gold theme
+//   Mobile profile: fewer beams, lower DPR, cheaper blur, throttled FPS
 // ════════════════════════════════════════════
 function initHeroBeams() {
     const canvas = document.getElementById('heroBeams');
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
 
+    const isMobile = window.innerWidth <= 768 || isCoarsePointer;
+    const BEAM_COUNT = isMobile ? 9 : 20;
+    const CANVAS_BLUR = isMobile ? 18 : 35;
+    const DPR_CAP = isMobile ? 1 : 2;
+    const FRAME_MS = isMobile ? 33 : 0; // ~30fps on mobile, uncapped on desktop
+
     let beams = [];
-    const MIN_BEAMS = 20;
-    const intensity = 1; // strong
 
     function createBeam(w, h) {
         return {
@@ -79,7 +84,7 @@ function initHeroBeams() {
     }
 
     function updateSize() {
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
         const parent = canvas.parentElement;
         const w = parent.clientWidth;
         const h = parent.clientHeight;
@@ -90,14 +95,15 @@ function initHeroBeams() {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(dpr, dpr);
 
-        const total = Math.floor(MIN_BEAMS * 1.5);
-        beams = Array.from({ length: total }, () => createBeam(canvas.width, canvas.height));
+        beams = Array.from({ length: BEAM_COUNT }, () => createBeam(w, h));
     }
 
     function resetBeam(beam, index, total) {
+        const w = canvas.clientWidth || canvas.width;
+        const h = canvas.clientHeight || canvas.height;
         const column = index % 3;
-        const spacing = canvas.width / 3;
-        beam.y = canvas.height + 100;
+        const spacing = w / 3;
+        beam.y = h + 100;
         beam.x = column * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
         beam.width = 90 + Math.random() * 100;
         beam.speed = 0.5 + Math.random() * 0.4;
@@ -110,7 +116,7 @@ function initHeroBeams() {
         ctx.translate(beam.x, beam.y);
         ctx.rotate((beam.angle * Math.PI) / 180);
 
-        const pulsing = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2) * intensity;
+        const pulsing = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2);
         const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
         const colorBase = `${beam.hue}, ${beam.sat}%, ${beam.light}%`;
 
@@ -127,19 +133,23 @@ function initHeroBeams() {
     }
 
     let running = true;
-    function animate() {
+    let lastT = 0;
+    function animate(t) {
         if (!running) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.filter = 'blur(35px)';
+        if (FRAME_MS === 0 || t - lastT >= FRAME_MS) {
+            lastT = t;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.filter = `blur(${CANVAS_BLUR}px)`;
 
-        const total = beams.length;
-        beams.forEach((beam, i) => {
-            beam.y -= beam.speed;
-            beam.pulse += beam.pulseSpeed;
-            if (beam.y + beam.length < -100) resetBeam(beam, i, total);
-            drawBeam(beam);
-        });
-
+            const total = beams.length;
+            for (let i = 0; i < total; i++) {
+                const beam = beams[i];
+                beam.y -= beam.speed;
+                beam.pulse += beam.pulseSpeed;
+                if (beam.y + beam.length < -100) resetBeam(beam, i, total);
+                drawBeam(beam);
+            }
+        }
         requestAnimationFrame(animate);
     }
 
@@ -147,19 +157,42 @@ function initHeroBeams() {
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateSize, 150);
-    });
-    animate();
+        resizeTimer = setTimeout(updateSize, 200);
+    }, { passive: true });
+    requestAnimationFrame(animate);
 
     // Pause when hero scrolled out of view (perf)
     const visObs = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting && !running) { running = true; animate(); }
-        else if (!entry.isIntersecting) running = false;
+        if (entry.isIntersecting && !running) {
+            running = true;
+            lastT = 0;
+            requestAnimationFrame(animate);
+        } else if (!entry.isIntersecting) {
+            running = false;
+        }
     }, { threshold: 0 });
     visObs.observe(canvas.parentElement);
+
+    // Also pause when tab hidden
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            running = false;
+        } else if (!running) {
+            running = true;
+            lastT = 0;
+            requestAnimationFrame(animate);
+        }
+    });
 }
 
-// Hero beams removed — caused jank on mobile and scroll. Kept function for compat.
+// Hero beams — reduced-motion users get nothing, everyone else gets the show
+if (!prefersReduced) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHeroBeams);
+    } else {
+        initHeroBeams();
+    }
+}
 
 // ════════════════════════════════════════════
 //   PRODUCT INLINE SVG ILLUSTRATIONS

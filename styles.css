@@ -633,9 +633,9 @@ img { max-width: 100%; display: block; }
     opacity: 0.85;
 }
 
-/* Hero beams: hide entirely on mobile (perf — heavy blur + canvas animation) */
+/* Mobile: slightly softer blur & opacity — canvas itself runs a lighter profile */
 @media (max-width: 768px) {
-    .hero-beams { display: none; }
+    .hero-beams { filter: blur(10px); opacity: 0.75; }
 }
 
 .hero-beams + .hero-rings,
