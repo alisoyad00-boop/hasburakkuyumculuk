@@ -617,9 +617,31 @@ img { max-width: 100%; display: block; }
     min-height: 100vh;
     display: grid;
     place-items: center;
-    padding: 140px 28px 80px;
+    padding: 140px 28px 120px;
     position: relative;
     overflow: hidden;
+}
+
+/* Decorative fade strip at the hero bottom edge — separates the
+   animated beams from the next section with a soft, gold-dusted gradient */
+.hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 140px;
+    pointer-events: none;
+    z-index: 3;
+    background:
+        linear-gradient(to bottom,
+            rgba(6, 14, 44, 0) 0%,
+            rgba(6, 14, 44, 0.55) 55%,
+            rgba(6, 14, 44, 0.95) 100%),
+        radial-gradient(120% 90% at 50% 100%,
+            rgba(212, 175, 55, 0.18) 0%,
+            rgba(212, 175, 55, 0.06) 35%,
+            transparent 70%);
 }
 
 .hero-beams {
@@ -629,13 +651,16 @@ img { max-width: 100%; display: block; }
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    filter: blur(14px);
-    opacity: 0.85;
+    filter: blur(22px);
+    opacity: 0.9;
+    will-change: transform;
+    transform: translateZ(0);
 }
 
-/* Mobile: slightly softer blur & opacity — canvas itself runs a lighter profile */
+/* Mobile: softer blur so animation reads better on small screens */
 @media (max-width: 768px) {
-    .hero-beams { filter: blur(10px); opacity: 0.75; }
+    .hero-beams { filter: blur(14px); opacity: 0.8; }
+    .hero::after { height: 90px; }
 }
 
 .hero-beams + .hero-rings,

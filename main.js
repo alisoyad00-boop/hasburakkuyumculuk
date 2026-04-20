@@ -48,8 +48,11 @@ if (!prefersReduced) document.body.classList.add('page-enter');
 
 // ════════════════════════════════════════════
 //   HERO BEAMS — gold/amber animated light beams (canvas)
-//   Adapted to Hasburak's navy + gold theme
-//   Mobile profile: fewer beams, lower DPR, cheaper blur, throttled FPS
+//   Fixes:
+//   - Dropped ctx.filter (double-blur with CSS killed perf, froze animation)
+//   - Faster, higher-opacity beams so motion is actually visible
+//   - Width-only resize detection: iOS URL bar height changes no longer
+//     reset beams while scrolling
 // ════════════════════════════════════════════
 function initHeroBeams() {
     const canvas = document.getElementById('heroBeams');
@@ -58,129 +61,139 @@ function initHeroBeams() {
     if (!ctx) return;
 
     const isMobile = window.innerWidth <= 768 || isCoarsePointer;
-    const BEAM_COUNT = isMobile ? 9 : 20;
-    const CANVAS_BLUR = isMobile ? 18 : 35;
-    const DPR_CAP = isMobile ? 1 : 2;
-    const FRAME_MS = isMobile ? 33 : 0; // ~30fps on mobile, uncapped on desktop
+    const BEAM_COUNT = isMobile ? 8 : 16;
+    const DPR_CAP   = isMobile ? 1 : 2;
 
     let beams = [];
+    let W = 0, H = 0, dpr = 1;
+    let lastStableWidth = 0;
 
-    function createBeam(w, h) {
+    function createBeam() {
         return {
-            x: Math.random() * w * 1.5 - w * 0.25,
-            y: Math.random() * h * 1.5 - h * 0.25,
-            width: 30 + Math.random() * 60,
-            length: h * 2.5,
-            angle: -35 + Math.random() * 10,
-            speed: 0.5 + Math.random() * 1.0,
-            opacity: 0.10 + Math.random() * 0.16,
-            // GOLD/AMBER hue range (35-55 = warm gold)
-            hue: 35 + Math.random() * 22,
-            sat: 75 + Math.random() * 15,
-            light: 55 + Math.random() * 15,
+            x: Math.random() * W,
+            y: Math.random() * H * 1.2,
+            width: 80 + Math.random() * 140,
+            length: H * 1.8 + 200,
+            angle: -32 + Math.random() * 14,
+            speed: 1.4 + Math.random() * 1.6,
+            opacity: 0.28 + Math.random() * 0.22,
+            // warm gold hue range
+            hue: 38 + Math.random() * 18,
+            sat: 85 + Math.random() * 10,
+            light: 58 + Math.random() * 10,
             pulse: Math.random() * Math.PI * 2,
-            pulseSpeed: 0.018 + Math.random() * 0.025,
+            pulseSpeed: 0.015 + Math.random() * 0.02,
         };
     }
 
-    function updateSize() {
-        const dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
+    function resetBeam(b) {
+        b.y = H + 100;
+        b.x = Math.random() * W;
+        b.width = 80 + Math.random() * 140;
+        b.speed = 1.4 + Math.random() * 1.6;
+        b.hue = 38 + Math.random() * 18;
+        b.opacity = 0.28 + Math.random() * 0.22;
+    }
+
+    // Full size + beam rebuild (called on first layout, width change, orientation change)
+    function rebuild() {
         const parent = canvas.parentElement;
-        const w = parent.clientWidth;
-        const h = parent.clientHeight;
-        canvas.width = w * dpr;
-        canvas.height = h * dpr;
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(dpr, dpr);
-
-        beams = Array.from({ length: BEAM_COUNT }, () => createBeam(w, h));
+        W = parent.clientWidth;
+        H = parent.clientHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, DPR_CAP);
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        lastStableWidth = W;
+        beams = Array.from({ length: BEAM_COUNT }, createBeam);
     }
 
-    function resetBeam(beam, index, total) {
-        const w = canvas.clientWidth || canvas.width;
-        const h = canvas.clientHeight || canvas.height;
-        const column = index % 3;
-        const spacing = w / 3;
-        beam.y = h + 100;
-        beam.x = column * spacing + spacing / 2 + (Math.random() - 0.5) * spacing * 0.5;
-        beam.width = 90 + Math.random() * 100;
-        beam.speed = 0.5 + Math.random() * 0.4;
-        beam.hue = 35 + (index * 22) / total;
-        beam.opacity = 0.18 + Math.random() * 0.10;
+    // Height-only update: stretches canvas without destroying beam state
+    // (iOS URL bar show/hide fires resize; full rebuild there causes visible reset)
+    function adjustHeight() {
+        const parent = canvas.parentElement;
+        const newH = parent.clientHeight;
+        if (newH === H) return;
+        H = newH;
+        canvas.height = H * dpr;
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function drawBeam(beam) {
+    function drawBeam(b) {
         ctx.save();
-        ctx.translate(beam.x, beam.y);
-        ctx.rotate((beam.angle * Math.PI) / 180);
+        ctx.translate(b.x, b.y);
+        ctx.rotate((b.angle * Math.PI) / 180);
 
-        const pulsing = beam.opacity * (0.8 + Math.sin(beam.pulse) * 0.2);
-        const grad = ctx.createLinearGradient(0, 0, 0, beam.length);
-        const colorBase = `${beam.hue}, ${beam.sat}%, ${beam.light}%`;
+        const pulsing = b.opacity * (0.75 + Math.sin(b.pulse) * 0.25);
+        const grad = ctx.createLinearGradient(0, 0, 0, b.length);
+        const col = `${b.hue}, ${b.sat}%, ${b.light}%`;
 
-        grad.addColorStop(0,    `hsla(${colorBase}, 0)`);
-        grad.addColorStop(0.10, `hsla(${colorBase}, ${pulsing * 0.5})`);
-        grad.addColorStop(0.40, `hsla(${colorBase}, ${pulsing})`);
-        grad.addColorStop(0.60, `hsla(${colorBase}, ${pulsing})`);
-        grad.addColorStop(0.90, `hsla(${colorBase}, ${pulsing * 0.5})`);
-        grad.addColorStop(1,    `hsla(${colorBase}, 0)`);
+        grad.addColorStop(0,    `hsla(${col}, 0)`);
+        grad.addColorStop(0.15, `hsla(${col}, ${pulsing * 0.55})`);
+        grad.addColorStop(0.50, `hsla(${col}, ${pulsing})`);
+        grad.addColorStop(0.85, `hsla(${col}, ${pulsing * 0.55})`);
+        grad.addColorStop(1,    `hsla(${col}, 0)`);
 
         ctx.fillStyle = grad;
-        ctx.fillRect(-beam.width / 2, 0, beam.width, beam.length);
+        ctx.fillRect(-b.width / 2, 0, b.width, b.length);
         ctx.restore();
     }
 
     let running = true;
-    let lastT = 0;
-    function animate(t) {
+    function frame() {
         if (!running) return;
-        if (FRAME_MS === 0 || t - lastT >= FRAME_MS) {
-            lastT = t;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.filter = `blur(${CANVAS_BLUR}px)`;
-
-            const total = beams.length;
-            for (let i = 0; i < total; i++) {
-                const beam = beams[i];
-                beam.y -= beam.speed;
-                beam.pulse += beam.pulseSpeed;
-                if (beam.y + beam.length < -100) resetBeam(beam, i, total);
-                drawBeam(beam);
-            }
+        ctx.clearRect(0, 0, W, H);
+        for (let i = 0; i < beams.length; i++) {
+            const b = beams[i];
+            b.y -= b.speed;
+            b.pulse += b.pulseSpeed;
+            if (b.y + b.length < 0) resetBeam(b);
+            drawBeam(b);
         }
-        requestAnimationFrame(animate);
+        requestAnimationFrame(frame);
     }
 
-    updateSize();
+    rebuild();
+    requestAnimationFrame(frame);
+
+    // Only rebuild on actual width change — height-only changes (iOS URL bar)
+    // just adjust the canvas without resetting beams
     let resizeTimer;
     window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateSize, 200);
+        const newW = canvas.parentElement.clientWidth;
+        if (newW !== lastStableWidth) {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(rebuild, 200);
+        } else {
+            adjustHeight();
+        }
     }, { passive: true });
-    requestAnimationFrame(animate);
 
-    // Pause when hero scrolled out of view (perf)
+    window.addEventListener('orientationchange', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(rebuild, 250);
+    });
+
+    // Pause when hero off-screen
     const visObs = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting && !running) {
-            running = true;
-            lastT = 0;
-            requestAnimationFrame(animate);
-        } else if (!entry.isIntersecting) {
+        if (entry.isIntersecting) {
+            if (!running) { running = true; requestAnimationFrame(frame); }
+        } else {
             running = false;
         }
     }, { threshold: 0 });
     visObs.observe(canvas.parentElement);
 
-    // Also pause when tab hidden
+    // Pause when tab hidden
     document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
             running = false;
         } else if (!running) {
             running = true;
-            lastT = 0;
-            requestAnimationFrame(animate);
+            requestAnimationFrame(frame);
         }
     });
 }
