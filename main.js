@@ -248,11 +248,15 @@ function tagToIcon(tag, name) {
     if (t.includes('yatırım') || t.includes('ziynet') || t.includes('çeyrek')) return 'goldbar';
     if (t.includes('pırlanta') || t.includes('tek taş') || t.includes('akik')) return 'diamond';
     if (t.includes('küpe')) return 'earring';
+    // Künye (baby nameplate) is worn as a pendant → necklace, not crown
+    if (t.includes('künye')) return 'necklace';
     if (t.includes('kolye') || t.includes('set') || t.includes('zincir') || t.includes('su yolu') || t.includes('akıtma') || t.includes('singapur') || t.includes('karzai')) return 'necklace';
     if (t.includes('bilezik') || t.includes('trabzon')) return 'bangle';
     if (t.includes('bileklik') || t.includes('kelepçe')) return 'bracelet';
-    if (t.includes('taç') || t.includes('kemer') || t.includes('hızma') || t.includes('ayakkabı') || t.includes('aksesuar') || t.includes('künye')) return 'crown';
+    if (t.includes('taç') || t.includes('kemer') || t.includes('hızma') || t.includes('ayakkabı') || t.includes('aksesuar')) return 'crown';
     if (t.includes('yöresel') || t.includes('şahmeran') || t.includes('özel')) return 'ornament';
+    // Yüzük / alyans / erkek yüzük → ring
+    if (t.includes('yüzük') || t.includes('alyans') || t.includes('erkek')) return 'ring';
     return 'ring';
 }
 
@@ -266,19 +270,15 @@ function swapToIcon(card) {
     wrap.dataset.iconified = 'true';
 }
 
-// Attach broken-image fallback to ALL product images
-function bindProductImgFallback() {
-    document.querySelectorAll('.product-card .product-img-wrap img').forEach(img => {
-        if (img.dataset.fallbackBound === '1') return;
-        img.dataset.fallbackBound = '1';
-        const card = img.closest('.product-card');
-        const handler = () => swapToIcon(card);
-        img.addEventListener('error', handler, { once: true });
-        // If already errored or has 0 natural size after a brief delay
-        if (img.complete && img.naturalWidth === 0) handler();
-    });
+// Iconify ALL product cards immediately — Unsplash photos are unreliable
+// (some URLs 404, others point at unrelated content like phones/toys).
+// The branded SVG illustrations are consistent, fast, and always correct.
+// Note: only targets .product-card (urunler.html); .featured-card on home
+// keeps its working Unsplash hero photos.
+function iconifyAllProductCards() {
+    document.querySelectorAll('.product-card').forEach(card => swapToIcon(card));
 }
-try { bindProductImgFallback(); } catch (e) { console.warn('img fallback skipped', e); }
+try { iconifyAllProductCards(); } catch (e) { console.warn('iconify skipped', e); }
 
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
