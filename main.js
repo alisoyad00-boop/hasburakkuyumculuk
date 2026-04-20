@@ -210,18 +210,29 @@ function tagToIcon(tag, name) {
     return 'ring';
 }
 
-function injectProductIcons() {
-    document.querySelectorAll('.product-card').forEach(card => {
-        const wrap = card.querySelector('.product-img-wrap');
-        if (!wrap || wrap.dataset.iconified === 'true') return;
-        const tag = card.querySelector('.product-tag')?.textContent?.trim() || '';
-        const name = card.querySelector('.product-name')?.textContent?.trim() || '';
-        const iconKey = tagToIcon(tag, name);
-        wrap.innerHTML = `<div class="product-illustration product-illustration--${iconKey}">${ICONS[iconKey]}</div>`;
-        wrap.dataset.iconified = 'true';
+function swapToIcon(card) {
+    const wrap = card.querySelector('.product-img-wrap');
+    if (!wrap || wrap.dataset.iconified === 'true') return;
+    const tag = card.querySelector('.product-tag')?.textContent?.trim() || '';
+    const name = card.querySelector('.product-name')?.textContent?.trim() || '';
+    const iconKey = tagToIcon(tag, name);
+    wrap.innerHTML = `<div class="product-illustration product-illustration--${iconKey}">${ICONS[iconKey]}</div>`;
+    wrap.dataset.iconified = 'true';
+}
+
+// Attach broken-image fallback to ALL product images
+function bindProductImgFallback() {
+    document.querySelectorAll('.product-card .product-img-wrap img').forEach(img => {
+        if (img.dataset.fallbackBound === '1') return;
+        img.dataset.fallbackBound = '1';
+        const card = img.closest('.product-card');
+        const handler = () => swapToIcon(card);
+        img.addEventListener('error', handler, { once: true });
+        // If already errored or has 0 natural size after a brief delay
+        if (img.complete && img.naturalWidth === 0) handler();
     });
 }
-try { injectProductIcons(); } catch (e) { console.warn('icons skipped', e); }
+try { bindProductImgFallback(); } catch (e) { console.warn('img fallback skipped', e); }
 
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
