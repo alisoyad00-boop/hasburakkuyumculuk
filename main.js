@@ -159,8 +159,7 @@ function initHeroBeams() {
     visObs.observe(canvas.parentElement);
 }
 
-// Skip heavy canvas beams on mobile (battery + perf)
-try { if (!prefersReduced && !isCoarsePointer && window.innerWidth >= 769) initHeroBeams(); } catch (e) { console.warn('beams skipped', e); }
+// Hero beams removed — caused jank on mobile and scroll. Kept function for compat.
 
 // ════════════════════════════════════════════
 //   PRODUCT INLINE SVG ILLUSTRATIONS
