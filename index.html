@@ -75,6 +75,43 @@
         </div>
     </section>
 
+    <!-- ORNAMENT DIVIDER -->
+    <div class="ornament-divider" aria-hidden="true">
+        <svg viewBox="0 0 600 60" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="od-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#D4AF37" stop-opacity="0"/>
+                    <stop offset="35%" stop-color="#D4AF37" stop-opacity="0.8"/>
+                    <stop offset="50%" stop-color="#F5E1A4" stop-opacity="1"/>
+                    <stop offset="65%" stop-color="#D4AF37" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#D4AF37" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="od-dot" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#F8E9B6"/>
+                    <stop offset="100%" stop-color="#B8941F"/>
+                </linearGradient>
+            </defs>
+            <!-- side lines -->
+            <line x1="40" y1="30" x2="250" y2="30" stroke="url(#od-gold)" stroke-width="1"/>
+            <line x1="350" y1="30" x2="560" y2="30" stroke="url(#od-gold)" stroke-width="1"/>
+            <!-- side dots -->
+            <circle cx="30" cy="30" r="2" fill="#D4AF37" opacity="0.6"/>
+            <circle cx="570" cy="30" r="2" fill="#D4AF37" opacity="0.6"/>
+            <!-- Center ornament: diamond + curls -->
+            <g transform="translate(300 30)">
+                <!-- Central diamond -->
+                <path d="M0 -14 L8 0 L0 14 L-8 0 Z" fill="url(#od-dot)"/>
+                <!-- Left curl -->
+                <path d="M-10 0 C -22 4, -34 -2, -40 2 C -32 -2, -22 -2, -12 -1 Z" fill="url(#od-dot)"/>
+                <!-- Right curl -->
+                <path d="M10 0 C 22 4, 34 -2, 40 2 C 32 -2, 22 -2, 12 -1 Z" fill="url(#od-dot)"/>
+                <!-- Top + bottom small dots -->
+                <circle cx="0" cy="-20" r="1.8" fill="url(#od-dot)"/>
+                <circle cx="0" cy="20" r="1.8" fill="url(#od-dot)"/>
+            </g>
+        </svg>
+    </div>
+
     <!-- DEĞERLER / KISA TANITIM -->
     <section class="section">
         <div class="container">

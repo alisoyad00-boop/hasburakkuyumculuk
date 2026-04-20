@@ -1722,6 +1722,50 @@ a.contact-item:hover {
     .reveal { opacity: 1; transform: none; }
 }
 
+/* ─── ORNAMENT DIVIDER (between hero and next section) ─── */
+.ornament-divider {
+    position: relative;
+    margin: 0 auto;
+    padding: 20px 28px 12px;
+    max-width: 900px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.ornament-divider svg {
+    width: 100%;
+    max-width: 720px;
+    height: auto;
+    filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.35));
+    animation: ornament-breathe 6s ease-in-out infinite;
+}
+
+@keyframes ornament-breathe {
+    0%, 100% {
+        filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.3));
+        transform: scale(1);
+    }
+    50% {
+        filter: drop-shadow(0 0 22px rgba(212, 175, 55, 0.55));
+        transform: scale(1.02);
+    }
+}
+
+@media (max-width: 768px) {
+    .ornament-divider {
+        padding: 12px 18px 8px;
+    }
+    .ornament-divider svg {
+        max-width: 360px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ornament-divider svg { animation: none; }
+}
+
 /* ─── FEATURED CATEGORY GRID (homepage) ─── */
 .featured-grid {
     display: grid;
