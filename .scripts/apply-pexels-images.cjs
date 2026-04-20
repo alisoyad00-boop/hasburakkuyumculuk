@@ -15,7 +15,7 @@ const V = {
     gundelik_yuzuk:  'https://images.pexels.com/photos/1395306/pexels-photo-1395306.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
     tek_tas:         'https://images.pexels.com/photos/14058109/pexels-photo-14058109.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
     pirlanta:        'https://images.pexels.com/photos/6098251/pexels-photo-6098251.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
-    erkek_yuzuk:     'https://images.pexels.com/photos/29918365/pexels-photo-29918365.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
+    erkek_yuzuk:     'https://images.pexels.com/photos/32792082/pexels-photo-32792082.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
     sahmeran:        'https://images.pexels.com/photos/265906/pexels-photo-265906.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
     alyans_14ayar:   'https://images.pexels.com/photos/230290/pexels-photo-230290.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
     gundelik_14ayar: 'https://images.pexels.com/photos/56926/pexels-photo-56926.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop',
