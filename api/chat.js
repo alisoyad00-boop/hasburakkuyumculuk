@@ -1,0 +1,179 @@
+// ════════════════════════════════════════════
+//   Hasburak Chatbot — Vercel serverless endpoint
+//   POST /api/chat  { message, history? }
+//   Uses Google Gemini 1.5 Flash (free tier) + truncgil gold prices.
+//   Requires env var: GEMINI_API_KEY
+// ════════════════════════════════════════════
+
+// Tiny in-memory price cache so each Gemini call doesn't refetch truncgil
+// (Vercel may reuse a warm instance for ~10-15 mins; cold starts re-fetch)
+let cachedPrices = null;
+let cachedAt = 0;
+const PRICE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+async function getGoldPrices() {
+    const now = Date.now();
+    if (cachedPrices && (now - cachedAt) < PRICE_TTL_MS) {
+        return cachedPrices;
+    }
+    try {
+        const res = await fetch('https://finans.truncgil.com/today.json', {
+            headers: { 'User-Agent': 'Mozilla/5.0 Hasburak-Chatbot' },
+            // 4 second timeout to avoid serverless hang
+            signal: AbortSignal.timeout(4000),
+        });
+        if (!res.ok) throw new Error(`truncgil ${res.status}`);
+        const data = await res.json();
+        cachedPrices = data;
+        cachedAt = now;
+        return data;
+    } catch (e) {
+        console.warn('gold price fetch failed:', e.message);
+        return cachedPrices || null; // return stale if we have it
+    }
+}
+
+function formatPrice(prices, key, label) {
+    const p = prices?.[key];
+    if (!p) return `${label}: mevcut değil`;
+    const alis = p['Alış'] || p.alis || p.Alis || '?';
+    const satis = p['Satış'] || p.satis || p.Satis || '?';
+    return `${label}: Alış ${alis} TL · Satış ${satis} TL`;
+}
+
+function buildPriceBlock(prices) {
+    if (!prices) return 'Güncel altın fiyatı şu anda alınamıyor.';
+    const lines = [
+        `Güncel altın fiyatları (${prices.Update_Date || prices.update_date || 'bugün'}):`,
+        formatPrice(prices, 'gram-altin', '- Gram altın'),
+        formatPrice(prices, 'ceyrek-altin', '- Çeyrek altın'),
+        formatPrice(prices, 'yarim-altin', '- Yarım altın'),
+        formatPrice(prices, 'tam-altin', '- Tam altın'),
+        formatPrice(prices, '22-ayar-bilezik', '- 22 ayar bilezik (gram)'),
+        formatPrice(prices, '18-ayar-altin', '- 18 ayar altın (gram)'),
+        formatPrice(prices, '14-ayar-altin', '- 14 ayar altın (gram)'),
+        formatPrice(prices, 'cumhuriyet-altini', '- Cumhuriyet altını'),
+        formatPrice(prices, 'ata-altin', '- Ata altın'),
+        formatPrice(prices, 'gumus', '- Gümüş (gram)'),
+    ];
+    return lines.join('\n');
+}
+
+function buildSystemPrompt(prices) {
+    return `Sen Hasburak Kuyumculuk'un resmi web sitesi için çalışan Türkçe AI asistanısın. Samimi, nazik, profesyonel bir kuyumcu esnafı tonunda yanıt ver. Kısa tut (genelde 2-4 cümle yeter). Emoji kullanma (altın/pırlanta gibi 💍 hariç, o da nadir).
+
+════════ MAĞAZA BİLGİLERİ ════════
+• İsim: Hasburak Kuyumculuk (Has Burak Sarrafiye)
+• Adres: Güneşli Mah., Cumhuriyet Cd., 46357 Elbistan / Kahramanmaraş
+• Telefon: +90 344 415 27 65  (0344 415 27 65)
+• WhatsApp: wa.me/903444152765
+• Çalışma saatleri: Pazartesi — Cumartesi · 09:00 — 20:00
+• Pazar: Kapalı
+
+════════ CANLI FİYATLAR ════════
+${buildPriceBlock(prices)}
+
+════════ ÜRÜN KATEGORİLERİMİZ ════════
+1. YÜZÜKLER & ALYANS: Alyans, Gündelik Yüzük, Tek Taş, Akik & Doğal Taş, Pırlanta, Erkek Yüzük, Minila Eklem Yüzükleri, Şahmeran, 14 Ayar Alyans, 14 Ayar Gündelik, 14 Ayar Tek Taş
+2. KOLYELER: Kolye Uçları, Gündelik Kolyeler, Set Kolyeler, Karzai, Akıtma, Su Yolu, Singapur
+3. KÜPELER: Halka Küpe, Yapıştırma Küpe, Sallama Küpe
+4. BİLEZİK & BİLEKLİK: Bileklik, Bilezik, Trabzon Hasırı, Kelepçe
+5. ÇOCUK TAKILARI: Çocuk Künyesi, Çocuk Küpesi, Çocuk Bilezikleri
+6. ÖZEL AKSESUAR: Hızma, Kemer, Altın Ayakkabı, Taç
+7. YATIRIMLIK ALTIN: Yatırımlık Bilezik, Ziynet Altın (Çeyrek / Yarım / Tam / Cumhuriyet / Ata / Reşat / Hamit)
+8. ERKEK TAKILARI: Erkek Yüzük, Erkek Bileklik, Erkek Zincir, Saat (Bayan & Erkek)
+9. YÖRESEL & ÖZEL TASARIM: Yöresel Ürünler, Size Özel Tasarım
+
+AYAR SEÇENEKLERİMİZ: 14, 18, 22 ayar ve yatırımlık 24 ayar (has altın) — çoğu üründe tüm ayarlar mevcut.
+
+════════ KURALLAR ════════
+• Altın fiyatı sorularında: yukarıdaki güncel fiyat listesinden net rakamı söyle. Fiyatlar dakikalık değişebileceğini kısaca hatırlat.
+• Spesifik bir ürün fiyatı (örn. "bu bileklik ne kadar"): gram, ayar, işçilik ve günlük altın fiyatına göre değiştiğini, mağazadan veya WhatsApp'tan net fiyat alabileceklerini söyle.
+• Stok sorusu: Sitedeki spesifik modelin stoğunu bilmezsin — mağazayı aramaya/WhatsApp'a yönlendir.
+• Emin olmadığın hiçbir bilgiyi uydurma. "Bu konuda size en doğru bilgiyi mağazamız verebilir: 0344 415 27 65" de.
+• Konu dışı (siyaset, başka sektör, kişisel sohbet): Kibarca "Ben sadece Hasburak Kuyumculuk asistanıyım, takı ve altın konularında yardımcı olabilirim" de.
+• Fiyatları TL olarak söyle, rakamları okunabilir yaz (örn. "2.450,50 TL").`;
+}
+
+export default async function handler(req, res) {
+    // CORS (same-origin on Vercel, ama yine de güvenli)
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') return res.status(200).end();
+    if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return res.status(500).json({
+            reply: 'Asistan şu anda kurulum aşamasında. Lütfen (0344) 415 27 65 numaradan bize ulaşın.',
+            error: 'GEMINI_API_KEY missing'
+        });
+    }
+
+    try {
+        const body = req.body || {};
+        const message = typeof body.message === 'string' ? body.message.trim() : '';
+        const history = Array.isArray(body.history) ? body.history : [];
+
+        if (!message) return res.status(400).json({ error: 'message required' });
+        if (message.length > 2000) return res.status(400).json({ error: 'message too long' });
+
+        // Fetch gold prices (cached, non-blocking failure)
+        const prices = await getGoldPrices();
+        const systemPrompt = buildSystemPrompt(prices);
+
+        // Gemini contents array (last 6 messages for context, trim if longer)
+        const contents = [];
+        for (const h of history.slice(-6)) {
+            if (!h || typeof h.content !== 'string') continue;
+            contents.push({
+                role: h.role === 'assistant' ? 'model' : 'user',
+                parts: [{ text: h.content.slice(0, 1000) }]
+            });
+        }
+        contents.push({ role: 'user', parts: [{ text: message }] });
+
+        const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+
+        const geminiRes = await fetch(geminiURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                system_instruction: { parts: [{ text: systemPrompt }] },
+                contents,
+                generationConfig: {
+                    temperature: 0.6,
+                    maxOutputTokens: 400,
+                    topP: 0.95,
+                },
+                safetySettings: [
+                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+                ],
+            }),
+            signal: AbortSignal.timeout(18000),
+        });
+
+        if (!geminiRes.ok) {
+            const errText = await geminiRes.text().catch(() => '');
+            console.error('Gemini error', geminiRes.status, errText.slice(0, 400));
+            return res.status(200).json({
+                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 344 415 27 65) üzerinden yazabilirsiniz.'
+            });
+        }
+
+        const data = await geminiRes.json();
+        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+            || 'Üzgünüm, sorunuzu anlayamadım. Daha net bir şekilde tekrar sorabilir misiniz?';
+
+        return res.status(200).json({ reply });
+    } catch (e) {
+        console.error('chat handler error:', e);
+        return res.status(200).json({
+            reply: 'Teknik bir sorun oluştu. Bize (0344) 415 27 65 numaradan ulaşabilirsiniz.'
+        });
+    }
+}

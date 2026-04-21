@@ -490,3 +490,258 @@ document.querySelectorAll('img').forEach(img => {
     img.addEventListener('load', show, { once: true });
     img.addEventListener('error', show, { once: true });
 });
+
+// ════════════════════════════════════════════
+//   AI CHATBOT — Hasburak asistan
+//   Floating widget, sits above WhatsApp FAB, talks to /api/chat (Gemini)
+// ════════════════════════════════════════════
+function initChatbot() {
+    if (document.getElementById('hbChatToggle')) return; // don't double-inject
+
+    const WELCOME = 'Merhaba, Hasburak Kuyumculuk\'a hoş geldiniz. Size nasıl yardımcı olabilirim? Güncel altın fiyatları, ürünlerimiz veya mağazamız hakkında sorularınızı yanıtlayabilirim.';
+
+    const SUGGESTIONS = [
+        'Gram altın kaç TL?',
+        'Çeyrek altın fiyatı',
+        'Bileziklerde hangi ayarlar var?',
+        'Çalışma saatleri'
+    ];
+
+    const widgetHTML = `
+<button id="hbChatToggle" class="chat-toggle" type="button" aria-label="Asistanı aç" aria-expanded="false">
+    <span class="chat-badge">AI</span>
+    <svg class="chat-icon-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <circle cx="8.5" cy="10" r="0.8" fill="currentColor"/>
+        <circle cx="12" cy="10" r="0.8" fill="currentColor"/>
+        <circle cx="15.5" cy="10" r="0.8" fill="currentColor"/>
+    </svg>
+    <svg class="chat-icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+</button>
+<aside id="hbChatPanel" class="chat-panel" role="dialog" aria-label="Hasburak Asistan" aria-hidden="true">
+    <header class="chat-header">
+        <div class="chat-header-inner">
+            <div class="chat-header-avatar" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L14.5 8.5 21 9.5l-5 4.5 1.5 7L12 17.5 6.5 21 8 14l-5-4.5 6.5-1z"/>
+                </svg>
+            </div>
+            <div class="chat-header-text">
+                <div class="chat-header-name">Hasburak Asistan</div>
+                <div class="chat-header-status">
+                    <span class="chat-status-dot"></span>
+                    <span>Canlı · genellikle birkaç saniyede yanıtlar</span>
+                </div>
+            </div>
+        </div>
+        <button id="hbChatClose" class="chat-close" type="button" aria-label="Asistanı kapat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+    </header>
+    <div id="hbChatMessages" class="chat-messages" aria-live="polite"></div>
+    <form id="hbChatForm" class="chat-input-row" autocomplete="off">
+        <input id="hbChatInput" class="chat-input" type="text" placeholder="Mesajınızı yazın…" maxlength="2000" autocomplete="off" aria-label="Mesaj" required>
+        <button id="hbChatSend" class="chat-send" type="submit" aria-label="Gönder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2" fill="currentColor" stroke="none"/>
+            </svg>
+        </button>
+    </form>
+    <div class="chat-footer">
+        Yapay zekâ ile güçlendirilmiştir · Detaylı bilgi için <a href="tel:+903444152765">0344 415 27 65</a>
+    </div>
+</aside>
+`;
+
+    document.body.insertAdjacentHTML('beforeend', widgetHTML);
+
+    const toggleBtn = document.getElementById('hbChatToggle');
+    const panel     = document.getElementById('hbChatPanel');
+    const closeBtn  = document.getElementById('hbChatClose');
+    const messages  = document.getElementById('hbChatMessages');
+    const form      = document.getElementById('hbChatForm');
+    const input     = document.getElementById('hbChatInput');
+    const sendBtn   = document.getElementById('hbChatSend');
+
+    // multi-turn context (sent to API, trimmed server-side to last 6)
+    const history = [];
+    let isSending = false;
+
+    function escapeHTML(s) {
+        return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // Make phone/whatsapp/urls clickable inside bot replies
+    function linkify(text) {
+        let html = escapeHTML(text);
+        // phone: 0344 415 27 65 or +90 344 415 27 65
+        html = html.replace(
+            /(\+?90\s?)?(?:0\s?)?344\s?415\s?27\s?65/g,
+            '<a href="tel:+903444152765">$&</a>'
+        );
+        // wa.me links
+        html = html.replace(
+            /wa\.me\/\d+/g,
+            m => `<a href="https://${m}" target="_blank" rel="noopener">${m}</a>`
+        );
+        // preserve line breaks
+        html = html.replace(/\n/g, '<br>');
+        return html;
+    }
+
+    function scrollBottom() {
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addMessage(role, text) {
+        const msg = document.createElement('div');
+        msg.className = `chat-msg chat-msg--${role}`;
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-msg-bubble';
+        bubble.innerHTML = role === 'bot' ? linkify(text) : escapeHTML(text);
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        scrollBottom();
+        return msg;
+    }
+
+    function addTyping() {
+        const msg = document.createElement('div');
+        msg.className = 'chat-msg chat-msg--bot chat-msg--typing';
+        msg.id = 'hbChatTyping';
+        const bubble = document.createElement('div');
+        bubble.className = 'chat-msg-bubble';
+        bubble.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        scrollBottom();
+        return msg;
+    }
+
+    function removeTyping() {
+        const t = document.getElementById('hbChatTyping');
+        if (t) t.remove();
+    }
+
+    function renderSuggestions() {
+        // Remove existing pills (if any) so they only show once
+        const existing = messages.querySelector('.chat-suggestions');
+        if (existing) existing.remove();
+
+        const wrap = document.createElement('div');
+        wrap.className = 'chat-suggestions';
+        SUGGESTIONS.forEach(text => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'chat-suggestion';
+            btn.textContent = text;
+            btn.addEventListener('click', () => {
+                wrap.remove();
+                sendMessage(text);
+            });
+            wrap.appendChild(btn);
+        });
+        messages.appendChild(wrap);
+        scrollBottom();
+    }
+
+    async function sendMessage(text) {
+        if (isSending) return;
+        const trimmed = (text || '').trim();
+        if (!trimmed) return;
+
+        // Remove suggestion chips once user engages
+        const sugg = messages.querySelector('.chat-suggestions');
+        if (sugg) sugg.remove();
+
+        addMessage('user', trimmed);
+        history.push({ role: 'user', content: trimmed });
+        input.value = '';
+        isSending = true;
+        sendBtn.disabled = true;
+        input.disabled = true;
+
+        addTyping();
+
+        let reply = '';
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: trimmed, history: history.slice(0, -1) }),
+            });
+            const data = await res.json().catch(() => ({}));
+            reply = (data && data.reply) || 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen birazdan tekrar deneyin veya bizi (0344) 415 27 65 numaradan arayın.';
+        } catch (e) {
+            reply = 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin veya (0344) 415 27 65 numaradan bize ulaşın.';
+        }
+
+        removeTyping();
+        addMessage('bot', reply);
+        history.push({ role: 'assistant', content: reply });
+
+        // Keep only last 12 turns in memory (server trims to 6 anyway)
+        if (history.length > 24) history.splice(0, history.length - 24);
+
+        isSending = false;
+        sendBtn.disabled = false;
+        input.disabled = false;
+        input.focus();
+    }
+
+    function openPanel() {
+        panel.classList.add('open');
+        toggleBtn.classList.add('open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        panel.setAttribute('aria-hidden', 'false');
+        // Seed on first open
+        if (!messages.dataset.seeded) {
+            addMessage('bot', WELCOME);
+            history.push({ role: 'assistant', content: WELCOME });
+            renderSuggestions();
+            messages.dataset.seeded = '1';
+        }
+        setTimeout(() => { try { input.focus(); } catch (_) {} }, 280);
+    }
+
+    function closePanel() {
+        panel.classList.remove('open');
+        toggleBtn.classList.remove('open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        panel.setAttribute('aria-hidden', 'true');
+    }
+
+    toggleBtn.addEventListener('click', () => {
+        if (panel.classList.contains('open')) closePanel();
+        else openPanel();
+    });
+    closeBtn.addEventListener('click', closePanel);
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendMessage(input.value);
+    });
+
+    // ESC to close
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && panel.classList.contains('open')) closePanel();
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initChatbot);
+} else {
+    initChatbot();
+}
