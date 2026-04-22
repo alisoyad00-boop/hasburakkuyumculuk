@@ -286,6 +286,33 @@ function bindProductImgFallback() {
 }
 try { bindProductImgFallback(); } catch (e) { console.warn('img fallback skipped', e); }
 
+// ─── STORE GALLERY image placeholder ───
+// If a photo in assets/store/ is missing, replace with a gold gradient
+// + camera SVG so the gallery still looks intentional.
+const STORE_PLACEHOLDER = `<div class="store-gallery-placeholder" aria-hidden="true">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18h10l3-5h20l3 5h10v32H9z"/>
+        <circle cx="32" cy="34" r="10"/>
+        <circle cx="32" cy="34" r="4"/>
+    </svg>
+    <span>Hasburak Kuyumculuk</span>
+</div>`;
+function bindStoreGalleryFallback() {
+    document.querySelectorAll('.store-gallery-item img').forEach(img => {
+        if (img.dataset.fallbackBound === '1') return;
+        img.dataset.fallbackBound = '1';
+        const item = img.closest('.store-gallery-item');
+        const handler = () => {
+            if (!item || item.dataset.placeheld === '1') return;
+            item.dataset.placeheld = '1';
+            item.innerHTML = STORE_PLACEHOLDER;
+        };
+        img.addEventListener('error', handler, { once: true });
+        if (img.complete && img.naturalWidth === 0) handler();
+    });
+}
+try { bindStoreGalleryFallback(); } catch (e) { console.warn('store fallback skipped', e); }
+
 // ─── SPLIT WORDS for premium heading reveal ───
 function splitWords() {
     document.querySelectorAll('.split-words').forEach(el => {
@@ -492,6 +519,117 @@ document.querySelectorAll('img').forEach(img => {
 });
 
 // ════════════════════════════════════════════
+//   PRODUCT LIVE SEARCH (urunler.html)
+//   Filters .product-card elements by name + tag in real time.
+//   Hides .cat-section heads when none of their cards match.
+// ════════════════════════════════════════════
+function initProductSearch() {
+    const input = document.getElementById('productSearch');
+    if (!input) return; // not on urunler.html
+    const clearBtn = document.getElementById('productSearchClear');
+    const result = document.getElementById('productSearchResult');
+    const sections = Array.from(document.querySelectorAll('.cat-section'));
+    if (!sections.length) return;
+
+    // Turkish-aware lowercasing + diacritic-folding so "kupe" matches "küpe"
+    function fold(str) {
+        return (str || '')
+            .toLocaleLowerCase('tr')
+            .replace(/ı/g, 'i')
+            .replace(/ş/g, 's')
+            .replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u')
+            .replace(/ö/g, 'o')
+            .replace(/ç/g, 'c')
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .trim();
+    }
+
+    // Pre-index every card with its searchable text
+    const cards = [];
+    sections.forEach(section => {
+        section.querySelectorAll('.product-card').forEach(card => {
+            const name = card.querySelector('.product-name')?.textContent || '';
+            const tag  = card.querySelector('.product-tag')?.textContent || '';
+            const sectionTitle = section.querySelector('h3')?.textContent || '';
+            cards.push({
+                el: card,
+                section,
+                haystack: fold(`${name} ${tag} ${sectionTitle}`),
+            });
+        });
+    });
+
+    function applyFilter(rawQuery) {
+        const q = fold(rawQuery);
+        if (!q) {
+            cards.forEach(c => c.el.classList.remove('is-hidden-search'));
+            sections.forEach(s => s.classList.remove('is-hidden-search'));
+            if (result) { result.hidden = true; result.textContent = ''; }
+            if (clearBtn) clearBtn.hidden = true;
+            return;
+        }
+
+        if (clearBtn) clearBtn.hidden = false;
+        const tokens = q.split(/\s+/).filter(Boolean);
+        let matchCount = 0;
+        const sectionMatches = new Map();
+
+        cards.forEach(c => {
+            const hit = tokens.every(t => c.haystack.includes(t));
+            c.el.classList.toggle('is-hidden-search', !hit);
+            if (hit) {
+                matchCount++;
+                sectionMatches.set(c.section, (sectionMatches.get(c.section) || 0) + 1);
+            }
+        });
+
+        sections.forEach(s => {
+            s.classList.toggle('is-hidden-search', !sectionMatches.get(s));
+        });
+
+        if (result) {
+            if (matchCount === 0) {
+                result.textContent = `"${rawQuery.trim()}" için sonuç bulunamadı. Aradığınızı bulamadıysanız bize ulaşın.`;
+                result.classList.add('is-empty');
+            } else {
+                result.textContent = `${matchCount} ürün bulundu.`;
+                result.classList.remove('is-empty');
+            }
+            result.hidden = false;
+        }
+    }
+
+    let debounceId;
+    input.addEventListener('input', () => {
+        clearTimeout(debounceId);
+        debounceId = setTimeout(() => applyFilter(input.value), 80);
+    });
+
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            input.value = '';
+            applyFilter('');
+            input.focus();
+        });
+    }
+
+    // ESC clears the field
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && input.value) {
+            input.value = '';
+            applyFilter('');
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProductSearch);
+} else {
+    initProductSearch();
+}
+
+// ════════════════════════════════════════════
 //   AI CHATBOT — Hasburak asistan
 //   Floating widget, sits above WhatsApp FAB, talks to /api/chat (Gemini)
 // ════════════════════════════════════════════
@@ -555,7 +693,7 @@ function initChatbot() {
         </button>
     </form>
     <div class="chat-footer">
-        Yapay zekâ ile güçlendirilmiştir · Detaylı bilgi için <a href="tel:+903444152765">0344 415 27 65</a>
+        Yapay zekâ ile güçlendirilmiştir · Detaylı bilgi için <a href="tel:+905326791201">0532 679 12 01</a>
     </div>
 </aside>
 `;
@@ -586,10 +724,10 @@ function initChatbot() {
     // Make phone/whatsapp/urls clickable inside bot replies
     function linkify(text) {
         let html = escapeHTML(text);
-        // phone: 0344 415 27 65 or +90 344 415 27 65
+        // phone: 0532 679 12 01 or +90 344 415 27 65
         html = html.replace(
-            /(\+?90\s?)?(?:0\s?)?344\s?415\s?27\s?65/g,
-            '<a href="tel:+903444152765">$&</a>'
+            /(\+?90\s?)?(?:0\s?)?532\s?679\s?12\s?01/g,
+            '<a href="tel:+905326791201">$&</a>'
         );
         // wa.me links
         html = html.replace(
@@ -683,9 +821,9 @@ function initChatbot() {
                 body: JSON.stringify({ message: trimmed, history: history.slice(0, -1) }),
             });
             const data = await res.json().catch(() => ({}));
-            reply = (data && data.reply) || 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen birazdan tekrar deneyin veya bizi (0344) 415 27 65 numaradan arayın.';
+            reply = (data && data.reply) || 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen birazdan tekrar deneyin veya bizi (0532) 679 12 01 numaradan arayın.';
         } catch (e) {
-            reply = 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin veya (0344) 415 27 65 numaradan bize ulaşın.';
+            reply = 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin veya (0532) 679 12 01 numaradan bize ulaşın.';
         }
 
         removeTyping();

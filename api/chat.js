@@ -65,8 +65,8 @@ function buildSystemPrompt(prices) {
 ════════ MAĞAZA BİLGİLERİ ════════
 • İsim: Hasburak Kuyumculuk (Has Burak Sarrafiye)
 • Adres: Güneşli Mah., Cumhuriyet Cd., 46357 Elbistan / Kahramanmaraş
-• Telefon: +90 344 415 27 65  (0344 415 27 65)
-• WhatsApp: wa.me/903444152765
+• Telefon: +90 532 679 12 01  (0532 679 12 01)
+• WhatsApp: wa.me/905326791201
 • Çalışma saatleri: Pazartesi — Cumartesi · 09:00 — 20:00
 • Pazar: Kapalı
 
@@ -90,7 +90,7 @@ AYAR SEÇENEKLERİMİZ: 14, 18, 22 ayar ve yatırımlık 24 ayar (has altın) �
 • Altın fiyatı sorularında: yukarıdaki güncel fiyat listesinden net rakamı söyle. Fiyatlar dakikalık değişebileceğini kısaca hatırlat.
 • Spesifik bir ürün fiyatı (örn. "bu bileklik ne kadar"): gram, ayar, işçilik ve günlük altın fiyatına göre değiştiğini, mağazadan veya WhatsApp'tan net fiyat alabileceklerini söyle.
 • Stok sorusu: Sitedeki spesifik modelin stoğunu bilmezsin — mağazayı aramaya/WhatsApp'a yönlendir.
-• Emin olmadığın hiçbir bilgiyi uydurma. "Bu konuda size en doğru bilgiyi mağazamız verebilir: 0344 415 27 65" de.
+• Emin olmadığın hiçbir bilgiyi uydurma. "Bu konuda size en doğru bilgiyi mağazamız verebilir: 0532 679 12 01" de.
 • Konu dışı (siyaset, başka sektör, kişisel sohbet): Kibarca "Ben sadece Hasburak Kuyumculuk asistanıyım, takı ve altın konularında yardımcı olabilirim" de.
 • Fiyatları TL olarak söyle, rakamları okunabilir yaz (örn. "2.450,50 TL").`;
 }
@@ -106,7 +106,7 @@ export default async function handler(req, res) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         return res.status(500).json({
-            reply: 'Asistan şu anda kurulum aşamasında. Lütfen (0344) 415 27 65 numaradan bize ulaşın.',
+            reply: 'Asistan şu anda kurulum aşamasında. Lütfen (0532) 679 12 01 numaradan bize ulaşın.',
             error: 'GEMINI_API_KEY missing'
         });
     }
@@ -161,7 +161,7 @@ export default async function handler(req, res) {
             const errText = await geminiRes.text().catch(() => '');
             console.error('Gemini error', geminiRes.status, errText.slice(0, 400));
             return res.status(200).json({
-                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 344 415 27 65) üzerinden yazabilirsiniz.'
+                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 532 679 12 01) üzerinden yazabilirsiniz.'
             });
         }
 
@@ -173,7 +173,7 @@ export default async function handler(req, res) {
     } catch (e) {
         console.error('chat handler error:', e);
         return res.status(200).json({
-            reply: 'Teknik bir sorun oluştu. Bize (0344) 415 27 65 numaradan ulaşabilirsiniz.'
+            reply: 'Teknik bir sorun oluştu. Bize (0532) 679 12 01 numaradan ulaşabilirsiniz.'
         });
     }
 }

@@ -34,6 +34,7 @@
                 <li><a href="index.html">Ana Sayfa</a></li>
                 <li><a href="biz-kimiz.html">Biz Kimiz</a></li>
                 <li><a href="urunler.html" class="active">Ürünlerimiz</a></li>
+                <li><a href="neden-biz.html">Neden Biz?</a></li>
                 <li><a href="iletisim.html">İletişim</a></li>
                 <li><a href="iletisim.html" class="nav-cta">Bize Ulaşın</a></li>
             </ul>
@@ -47,6 +48,7 @@
         <a href="index.html">Ana Sayfa</a>
         <a href="biz-kimiz.html">Biz Kimiz</a>
         <a href="urunler.html">Ürünlerimiz</a>
+        <a href="neden-biz.html">Neden Biz?</a>
         <a href="iletisim.html">İletişim</a>
     </div>
 
@@ -58,111 +60,52 @@
         <p>Yüzükten kolyeye, bilezikten yatırımlık altına kadar geniş ürün yelpazemizi sizinle paylaşıyoruz. Her parça özenle seçildi, her parça bir hatıraya kapı aralıyor.</p>
     </section>
 
-    <section class="section" style="padding-top: 80px;">
+    <section class="section" style="padding-top: 60px;">
         <div class="container">
 
-            <div class="note-banner reveal">
-                <strong>Not:</strong> Burada gösterilen tüm görseller temsilidir. Detaylı bilgi, model ve sipariş için lütfen mağazamızı ziyaret edin veya WhatsApp üzerinden iletişime geçin.
+            <!-- ARAMA -->
+            <div class="product-search-wrap reveal">
+                <div class="product-search">
+                    <svg class="product-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="search" id="productSearch" class="product-search-input" placeholder="Ürün ara — alyans, kolye, bilezik, çeyrek altın..." aria-label="Ürün ara" autocomplete="off" spellcheck="false">
+                    <button type="button" class="product-search-clear" id="productSearchClear" aria-label="Aramayı temizle" hidden>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <p class="product-search-result" id="productSearchResult" hidden></p>
             </div>
 
             <div class="filter-bar reveal">
-                <a href="#yuzukler" class="filter-pill">Yüzükler</a>
-                <a href="#kolyeler" class="filter-pill">Kolyeler</a>
-                <a href="#kupeler" class="filter-pill">Küpeler</a>
-                <a href="#bilezikler" class="filter-pill">Bilezikler</a>
-                <a href="#cocuk" class="filter-pill">Çocuk Takıları</a>
-                <a href="#aksesuar" class="filter-pill">Özel Aksesuar</a>
-                <a href="#yatirim" class="filter-pill">Yatırımlık Altın</a>
-                <a href="#erkek" class="filter-pill">Erkek Takıları</a>
-                <a href="#ozel" class="filter-pill">Yöresel & Özel</a>
+                <a href="#yuzukler" class="filter-pill">Yüzük & Alyans</a>
+                <a href="#kolyeler" class="filter-pill">Kolye</a>
+                <a href="#kupeler" class="filter-pill">Küpe</a>
+                <a href="#bilezikler" class="filter-pill">Bilezik & Bileklik</a>
+                <a href="#yatirim" class="filter-pill">Yatırım Altını</a>
+                <a href="#ozel" class="filter-pill">Özel Koleksiyon</a>
             </div>
 
-            <!-- ─── YÜZÜKLER ─── -->
+            <!-- ─── YÜZÜK & ALYANS ─── -->
             <div class="cat-section" id="yuzukler">
                 <div class="cat-section-head reveal">
                     <div>
                         <span class="eyebrow">01 — Koleksiyon</span>
-                        <h3>Yüzük & Alyans Modelleri</h3>
+                        <h3>Yüzük & Alyans Koleksiyonu</h3>
                     </div>
                     <div class="cat-section-line"></div>
                 </div>
                 <div class="product-grid">
                     <a href="iletisim.html" class="product-card reveal">
                         <div class="product-img-wrap"><img src="https://images.pexels.com/photos/2219195/pexels-photo-2219195.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Alyans" loading="lazy"></div>
-                        <div class="product-tag">Yüzük</div>
+                        <div class="product-tag">Alyans</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Alyans</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1395306/pexels-photo-1395306.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Gündelik Yüzük" loading="lazy"></div>
-                        <div class="product-tag">Yüzük</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Gündelik Yüzük</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/14058109/pexels-photo-14058109.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Tek Taş Yüzük" loading="lazy"></div>
-                        <div class="product-tag">Yüzük</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Tek Taş</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1395306/pexels-photo-1395306.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Akik ve Doğal Taş" loading="lazy"></div>
-                        <div class="product-tag">Yüzük</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Akik & Doğal Taş</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/6098251/pexels-photo-6098251.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Pırlanta Yüzük" loading="lazy"></div>
-                        <div class="product-tag">Pırlanta</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Pırlanta</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/32792082/pexels-photo-32792082.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Yüzük" loading="lazy"></div>
-                        <div class="product-tag">Erkek</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Erkek Yüzük</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1616096/pexels-photo-1616096.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Minila Eklem Yüzükleri" loading="lazy"></div>
-                        <div class="product-tag">Yüzük</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Minila Eklem Yüzükleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/265906/pexels-photo-265906.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Şahmeran" loading="lazy"></div>
-                        <div class="product-tag">Özel</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Şahmeran</div>
+                            <div class="product-name">Klasik Alyans</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
@@ -178,11 +121,81 @@
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/14058109/pexels-photo-14058109.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Tek Taş Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Tek Taş</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Tek Taş Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/6098251/pexels-photo-6098251.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Pırlanta Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Pırlanta</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Pırlanta Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1395306/pexels-photo-1395306.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Gündelik Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Yüzük</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Gündelik Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
                         <div class="product-img-wrap"><img src="https://images.pexels.com/photos/56926/pexels-photo-56926.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="14 Ayar Gündelik Yüzük" loading="lazy"></div>
                         <div class="product-tag">14 Ayar</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">14 Ayar Gündelik</div>
+                            <div class="product-name">14 Ayar Gündelik Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/32792082/pexels-photo-32792082.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Erkek</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Erkek Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1395306/pexels-photo-1395306.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Doğal Taş Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Doğal Taş</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Doğal Taş & Akik Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/265906/pexels-photo-265906.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Şahmeran Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Özel</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Şahmeran Yüzük</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1616096/pexels-photo-1616096.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Minila Eklem Yüzük" loading="lazy"></div>
+                        <div class="product-tag">Eklem</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Minila Eklem Yüzük</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
@@ -199,52 +212,42 @@
                 </div>
             </div>
 
-            <!-- ─── KOLYELER ─── -->
+            <!-- ─── KOLYE ─── -->
             <div class="cat-section" id="kolyeler">
                 <div class="cat-section-head reveal">
                     <div>
                         <span class="eyebrow">02 — Koleksiyon</span>
-                        <h3>Kolye Modelleri</h3>
+                        <h3>Kolye Koleksiyonu</h3>
                     </div>
                     <div class="cat-section-line"></div>
                 </div>
                 <div class="product-grid">
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/39239/pendulum-cone-chain-gold-39239.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kolye Uçları" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/13292666/pexels-photo-13292666.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Gündelik Kolye" loading="lazy"></div>
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Kolye Uçları</div>
+                            <div class="product-name">Gündelik Kolye</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/13292666/pexels-photo-13292666.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Gündelik Kolyeler" loading="lazy"></div>
-                        <div class="product-tag">Kolye</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Gündelik Kolyeler</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3641059/pexels-photo-3641059.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Set Kolyeler" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3641059/pexels-photo-3641059.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Set Kolye" loading="lazy"></div>
                         <div class="product-tag">Set</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Set Kolyeler</div>
+                            <div class="product-name">Set Kolye</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/19869445/pexels-photo-19869445.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Karzai Kolye" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/39239/pendulum-cone-chain-gold-39239.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kolye Ucu" loading="lazy"></div>
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Karzai</div>
+                            <div class="product-name">Kolye Ucu</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
@@ -254,7 +257,7 @@
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Akıtma</div>
+                            <div class="product-name">Akıtma Kolye</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
@@ -264,59 +267,59 @@
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Su Yolu</div>
+                            <div class="product-name">Su Yolu Kolye</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/14111396/pexels-photo-14111396.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Singapur Kolye" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/14111396/pexels-photo-14111396.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Singapur Zincir" loading="lazy"></div>
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Singapur</div>
+                            <div class="product-name">Singapur Zincir</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/19869445/pexels-photo-19869445.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kolye Modelleri" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/19869445/pexels-photo-19869445.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Karzai Kolye" loading="lazy"></div>
                         <div class="product-tag">Kolye</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Kolye Modelleri</div>
+                            <div class="product-name">Karzai Kolye</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/6404217/pexels-photo-6404217.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Zincir Kolye" loading="lazy"></div>
+                        <div class="product-tag">Erkek</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Erkek Zincir Kolye</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
                 </div>
             </div>
 
-            <!-- ─── KÜPELER ─── -->
+            <!-- ─── KÜPE ─── -->
             <div class="cat-section" id="kupeler">
                 <div class="cat-section-head reveal">
                     <div>
                         <span class="eyebrow">03 — Koleksiyon</span>
-                        <h3>Küpe Modelleri</h3>
+                        <h3>Küpe Koleksiyonu</h3>
                     </div>
                     <div class="cat-section-line"></div>
                 </div>
                 <div class="product-grid">
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Küpe" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12144990/pexels-photo-12144990.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Halka Küpe" loading="lazy"></div>
                         <div class="product-tag">Küpe</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Küpe</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12144990/pexels-photo-12144990.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Halka Küpeler" loading="lazy"></div>
-                        <div class="product-tag">Küpe</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Halka Küpeler</div>
+                            <div class="product-name">Halka Küpe</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
@@ -340,67 +343,189 @@
                             <div class="product-line"></div>
                         </div>
                     </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Çocuk Küpesi" loading="lazy"></div>
+                        <div class="product-tag">Çocuk</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Çocuk Küpesi</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
 
-            <!-- ─── BİLEZİKLER ─── -->
+            <!-- ─── BİLEZİK & BİLEKLİK ─── -->
             <div class="cat-section" id="bilezikler">
                 <div class="cat-section-head reveal">
                     <div>
                         <span class="eyebrow">04 — Koleksiyon</span>
-                        <h3>Bilezik & Bileklik Modelleri</h3>
+                        <h3>Bilezik & Bileklik Koleksiyonu</h3>
                     </div>
                     <div class="cat-section-line"></div>
                 </div>
                 <div class="product-grid">
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12194316/pexels-photo-12194316.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Bileklik" loading="lazy"></div>
-                        <div class="product-tag">Bileklik</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Bileklik Modelleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
                         <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1444441/pexels-photo-1444441.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Bilezik" loading="lazy"></div>
                         <div class="product-tag">Bilezik</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Bilezik Modelleri</div>
+                            <div class="product-name">Klasik Bilezik</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8183950/pexels-photo-8183950.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Trabzon Hasırı" loading="lazy"></div>
-                        <div class="product-tag">Yöresel</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Trabzon Hasırı</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/5370647/pexels-photo-5370647.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kelepçe" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12194316/pexels-photo-12194316.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Bileklik" loading="lazy"></div>
                         <div class="product-tag">Bileklik</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Kelepçe Modelleri</div>
+                            <div class="product-name">Bileklik</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8183950/pexels-photo-8183950.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Trabzon Hasırı Bilezik" loading="lazy"></div>
+                        <div class="product-tag">Yöresel</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Trabzon Hasırı Bilezik</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/5370647/pexels-photo-5370647.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kelepçe Bilezik" loading="lazy"></div>
+                        <div class="product-tag">Bilezik</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Kelepçe Bilezik</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/36129405/pexels-photo-36129405.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Bileklik" loading="lazy"></div>
+                        <div class="product-tag">Erkek</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Erkek Bileklik</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12194316/pexels-photo-12194316.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Çocuk Bileziği" loading="lazy"></div>
+                        <div class="product-tag">Çocuk</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Çocuk Bileziği</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
                 </div>
             </div>
 
-            <!-- ─── ÇOCUK ─── -->
-            <div class="cat-section" id="cocuk">
+            <!-- ─── YATIRIM ALTINI ─── -->
+            <div class="cat-section" id="yatirim">
                 <div class="cat-section-head reveal">
                     <div>
                         <span class="eyebrow">05 — Koleksiyon</span>
-                        <h3>Çocuk Takıları</h3>
+                        <h3>Yatırım Altını</h3>
+                    </div>
+                    <div class="cat-section-line"></div>
+                </div>
+                <div class="product-grid">
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Çeyrek Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Çeyrek Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Yarım Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Yarım Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Tam Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Tam Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Cumhuriyet Altını" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Cumhuriyet Altını</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Ata Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Ata Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Reşat Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Reşat Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Hamit Altın" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Hamit Altın</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+
+                    <a href="iletisim.html" class="product-card reveal">
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442325/pexels-photo-8442325.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Yatırımlık Bilezik" loading="lazy"></div>
+                        <div class="product-tag">Yatırım</div>
+                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+                        <div class="product-info">
+                            <div class="product-name">Yatırımlık Bilezik</div>
+                            <div class="product-line"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- ─── ÖZEL KOLEKSİYON ─── -->
+            <div class="cat-section" id="ozel">
+                <div class="cat-section-head reveal">
+                    <div>
+                        <span class="eyebrow">06 — Koleksiyon</span>
+                        <h3>Özel Koleksiyon & Aksesuar</h3>
                     </div>
                     <div class="cat-section-line"></div>
                 </div>
@@ -416,60 +541,38 @@
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Çocuk Küpesi" loading="lazy"></div>
-                        <div class="product-tag">Çocuk</div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1034065/pexels-photo-1034065.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Bayan ve Erkek Saat" loading="lazy"></div>
+                        <div class="product-tag">Saat</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Çocuk Küpesi</div>
+                            <div class="product-name">Bayan & Erkek Saat</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/12194316/pexels-photo-12194316.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Çocuk Bilezikleri" loading="lazy"></div>
-                        <div class="product-tag">Çocuk</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Çocuk Bilezikleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- ─── AKSESUAR / ÖZEL ─── -->
-            <div class="cat-section" id="aksesuar">
-                <div class="cat-section-head reveal">
-                    <div>
-                        <span class="eyebrow">06 — Koleksiyon</span>
-                        <h3>Özel Aksesuar Modelleri</h3>
-                    </div>
-                    <div class="cat-section-line"></div>
-                </div>
-                <div class="product-grid">
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Hızma" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/3266700/pexels-photo-3266700.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Burun Hızması" loading="lazy"></div>
                         <div class="product-tag">Aksesuar</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Hızma</div>
+                            <div class="product-name">Burun Hızması</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/248077/pexels-photo-248077.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Kemer Modelleri" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/248077/pexels-photo-248077.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Altın Bel Kemeri" loading="lazy"></div>
                         <div class="product-tag">Aksesuar</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Kemer Modelleri</div>
+                            <div class="product-name">Altın Bel Kemeri</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
                         <div class="product-img-wrap"><img src="https://images.pexels.com/photos/20858959/pexels-photo-20858959.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Altın Ayakkabı" loading="lazy"></div>
-                        <div class="product-tag">Aksesuar</div>
+                        <div class="product-tag">Tören</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
                             <div class="product-name">Altın Ayakkabı</div>
@@ -478,123 +581,27 @@
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/248077/pexels-photo-248077.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Taç Modelleri" loading="lazy"></div>
-                        <div class="product-tag">Özel</div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/248077/pexels-photo-248077.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Düğün Tacı" loading="lazy"></div>
+                        <div class="product-tag">Tören</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Taç Modelleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- ─── YATIRIMLIK ALTIN ─── -->
-            <div class="cat-section" id="yatirim">
-                <div class="cat-section-head reveal">
-                    <div>
-                        <span class="eyebrow">07 — Koleksiyon</span>
-                        <h3>Yatırımlık Altın</h3>
-                    </div>
-                    <div class="cat-section-line"></div>
-                </div>
-                <div class="product-grid">
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442325/pexels-photo-8442325.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Yatırımlık Bilezik" loading="lazy"></div>
-                        <div class="product-tag">Yatırım</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Yatırımlık Bilezik</div>
+                            <div class="product-name">Düğün Tacı</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/8442322/pexels-photo-8442322.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Ziynet Altın" loading="lazy"></div>
-                        <div class="product-tag">Yatırım</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Ziynet Altın (Çeyrek, Yarım…)</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- ─── ERKEK ─── -->
-            <div class="cat-section" id="erkek">
-                <div class="cat-section-head reveal">
-                    <div>
-                        <span class="eyebrow">08 — Koleksiyon</span>
-                        <h3>Erkek Takıları</h3>
-                    </div>
-                    <div class="cat-section-line"></div>
-                </div>
-                <div class="product-grid">
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/32792082/pexels-photo-32792082.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Yüzük" loading="lazy"></div>
-                        <div class="product-tag">Erkek</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Erkek Yüzük Modelleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/36129405/pexels-photo-36129405.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Bileklik" loading="lazy"></div>
-                        <div class="product-tag">Erkek</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Erkek Bileklik Modelleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/6404217/pexels-photo-6404217.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Erkek Zincir" loading="lazy"></div>
-                        <div class="product-tag">Erkek</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Erkek Zincir Modelleri</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/1034065/pexels-photo-1034065.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Saat Modelleri" loading="lazy"></div>
-                        <div class="product-tag">Saat</div>
-                        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
-                        <div class="product-info">
-                            <div class="product-name">Saat (Bayan & Erkek)</div>
-                            <div class="product-line"></div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- ─── YÖRESEL ─── -->
-            <div class="cat-section" id="ozel">
-                <div class="cat-section-head reveal">
-                    <div>
-                        <span class="eyebrow">09 — Koleksiyon</span>
-                        <h3>Yöresel & Özel Ürünler</h3>
-                    </div>
-                    <div class="cat-section-line"></div>
-                </div>
-                <div class="product-grid">
-                    <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/16918130/pexels-photo-16918130.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Yöresel Ürünler" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/16918130/pexels-photo-16918130.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Yöresel Tasarım" loading="lazy"></div>
                         <div class="product-tag">Yöresel</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
-                            <div class="product-name">Yöresel Ürünler</div>
+                            <div class="product-name">Yöresel Tasarım</div>
                             <div class="product-line"></div>
                         </div>
                     </a>
 
                     <a href="iletisim.html" class="product-card reveal">
-                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/20858959/pexels-photo-20858959.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Özel Tasarım" loading="lazy"></div>
+                        <div class="product-img-wrap"><img src="https://images.pexels.com/photos/20858959/pexels-photo-20858959.jpeg?auto=compress&cs=tinysrgb&w=600&h=750&fit=crop" width="600" height="750" decoding="async" alt="Size Özel Tasarım" loading="lazy"></div>
                         <div class="product-tag">Özel Tasarım</div>
                         <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
                         <div class="product-info">
@@ -615,7 +622,7 @@
             <h2>Beğendiğiniz model için <em>bize ulaşın</em>.</h2>
             <p>Modeller hakkında detaylı bilgi, stok durumu ve özel sipariş için iletişime geçin.</p>
             <div class="hero-actions" style="justify-content:center;">
-                <a href="https://wa.me/903444152765" target="_blank" rel="noopener" class="btn btn-gold">
+                <a href="https://wa.me/905326791201" target="_blank" rel="noopener" class="btn btn-gold">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     WhatsApp ile İletişim
                 </a>
@@ -640,23 +647,24 @@
                     <li><a href="index.html">Ana Sayfa</a></li>
                     <li><a href="biz-kimiz.html">Biz Kimiz</a></li>
                     <li><a href="urunler.html">Ürünlerimiz</a></li>
+                    <li><a href="neden-biz.html">Neden Biz?</a></li>
                     <li><a href="iletisim.html">İletişim</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Koleksiyon</h4>
                 <ul>
-                    <li><a href="urunler.html#yuzukler">Yüzükler & Alyans</a></li>
-                    <li><a href="urunler.html#kolyeler">Kolyeler</a></li>
-                    <li><a href="urunler.html#kupeler">Küpeler</a></li>
+                    <li><a href="urunler.html#yuzukler">Yüzük & Alyans</a></li>
+                    <li><a href="urunler.html#kolyeler">Kolye</a></li>
+                    <li><a href="urunler.html#kupeler">Küpe</a></li>
                     <li><a href="urunler.html#bilezikler">Bilezik & Bileklik</a></li>
-                    <li><a href="urunler.html#yatirim">Yatırımlık Altın</a></li>
+                    <li><a href="urunler.html#yatirim">Yatırım Altını</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>İletişim</h4>
                 <ul>
-                    <li><a href="tel:+903444152765">+90 344 415 27 65</a></li>
+                    <li><a href="tel:+905326791201">+90 532 679 12 01</a></li>
                     <li>WhatsApp ile sipariş</li>
                     <li>Pzt — Cmt: 09:00 — 20:00</li>
                 </ul>
@@ -665,17 +673,17 @@
         <div class="footer-bottom">
             <p>© 2026 Hasburak Kuyumculuk · Tüm hakları saklıdır.</p>
             <div class="socials">
-                <a href="https://wa.me/903444152765" target="_blank" rel="noopener" aria-label="WhatsApp">
+                <a href="https://wa.me/905326791201" target="_blank" rel="noopener" aria-label="WhatsApp">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                 </a>
-                <a href="#" aria-label="Instagram">
+                <a href="https://www.instagram.com/hasburakkuyumculuk/" target="_blank" rel="noopener" aria-label="Instagram">
                     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                 </a>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/903444152765" class="fab" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <a href="https://wa.me/905326791201" class="fab" target="_blank" rel="noopener" aria-label="WhatsApp">
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
