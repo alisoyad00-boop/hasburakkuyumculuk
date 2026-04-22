@@ -1,5 +1,5 @@
 // ════════════════════════════════════════════
-//   HASBURAK KUYUMCULUK — Interactions
+//   HASBURAK SARRAFİYE — Interactions
 // ════════════════════════════════════════════
 
 const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
@@ -295,7 +295,7 @@ const STORE_PLACEHOLDER = `<div class="store-gallery-placeholder" aria-hidden="t
         <circle cx="32" cy="34" r="10"/>
         <circle cx="32" cy="34" r="4"/>
     </svg>
-    <span>Hasburak Kuyumculuk</span>
+    <span>Hasburak Sarrafiye</span>
 </div>`;
 function bindStoreGalleryFallback() {
     document.querySelectorAll('.store-gallery-item img').forEach(img => {
@@ -735,7 +735,7 @@ if (document.readyState === 'loading') {
 function initChatbot() {
     if (document.getElementById('hbChatToggle')) return; // don't double-inject
 
-    const WELCOME = 'Merhaba, Hasburak Kuyumculuk\'a hoş geldiniz. Size nasıl yardımcı olabilirim? Güncel altın fiyatları, ürünlerimiz veya mağazamız hakkında sorularınızı yanıtlayabilirim.';
+    const WELCOME = 'Merhaba, Hasburak Sarrafiye\'ye hoş geldiniz. Size nasıl yardımcı olabilirim? Güncel altın fiyatları, ürünlerimiz veya mağazamız hakkında sorularınızı yanıtlayabilirim.';
 
     const SUGGESTIONS = [
         'Gram altın kaç TL?',

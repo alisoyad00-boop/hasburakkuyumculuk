@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Hasburak Kuyumculuk — Vercel-hosted serverless functions",
+  "description": "Hasburak Sarrafiye — Vercel-hosted serverless functions",
   "dependencies": {
     "@vercel/blob": "^0.27.0"
   }

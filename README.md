@@ -1,6 +1,6 @@
-# Hasburak Kuyumculuk
+# Hasburak Sarrafiye
 
-Premium kuyumculuk web sitesi. Lacivert + altın tema, animasyonlu logo ve neon altın parıltı efektleri ile çok sayfalı tanıtım sitesi.
+Premium sarrafiye web sitesi. Lacivert + altın tema, animasyonlu logo ve neon altın parıltı efektleri ile çok sayfalı tanıtım sitesi.
 
 ## Sayfalar
 
