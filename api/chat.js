@@ -138,35 +138,55 @@ export default async function handler(req, res) {
         }
         contents.push({ role: 'user', parts: [{ text: message }] });
 
-        const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-        const geminiRes = await fetch(geminiURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                system_instruction: { parts: [{ text: systemPrompt }] },
-                contents,
-                generationConfig: {
-                    temperature: 0.6,
-                    maxOutputTokens: 400,
-                    topP: 0.95,
-                },
-                safetySettings: [
-                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
-                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
-                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
-                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
-                ],
-            }),
-            signal: AbortSignal.timeout(18000),
+        // Primary + fallback Gemini models. The 2.5 family is preferred but
+        // occasionally returns 503 ("high demand") — falling back to the 2.0
+        // Flash family keeps the chatbot responsive during spikes.
+        const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+        const geminiBody = JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents,
+            generationConfig: {
+                temperature: 0.6,
+                maxOutputTokens: 400,
+                topP: 0.95,
+            },
+            safetySettings: [
+                { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_ONLY_HIGH' },
+                { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_ONLY_HIGH' },
+            ],
         });
 
-        if (!geminiRes.ok) {
-            const errText = await geminiRes.text().catch(() => '');
-            console.error('Gemini error', geminiRes.status, errText.slice(0, 400));
+        let geminiRes = null;
+        let lastErr = '';
+        for (const model of MODELS) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            try {
+                const r = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: geminiBody,
+                    signal: AbortSignal.timeout(15000),
+                });
+                if (r.ok) {
+                    geminiRes = r;
+                    break;
+                }
+                lastErr = `${model}: HTTP ${r.status}`;
+                console.warn('Gemini model failed, trying fallback:', lastErr);
+                // Only fall through on overload/rate-limit. 4xx auth/quota = stop.
+                if (r.status !== 503 && r.status !== 429 && r.status !== 500) break;
+            } catch (e) {
+                lastErr = `${model}: ${e.message}`;
+                console.warn('Gemini fetch failed, trying fallback:', lastErr);
+            }
+        }
+
+        if (!geminiRes) {
+            console.error('All Gemini models failed:', lastErr);
             return res.status(200).json({
-                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 532 679 12 01) üzerinden yazabilirsiniz.',
-                _debug: { status: geminiRes.status, err: errText.slice(0, 400) }
+                reply: 'Asistan şu anda yoğunluk nedeniyle yanıt veremiyor. Lütfen birazdan tekrar deneyin veya bize WhatsApp (+90 532 679 12 01) üzerinden yazın.'
             });
         }
 
@@ -178,8 +198,7 @@ export default async function handler(req, res) {
     } catch (e) {
         console.error('chat handler error:', e);
         return res.status(200).json({
-            reply: 'Teknik bir sorun oluştu. Bize (0532) 679 12 01 numaradan ulaşabilirsiniz.',
-            _debug: { caught: String(e && e.message || e).slice(0, 400) }
+            reply: 'Teknik bir sorun oluştu. Bize (0532) 679 12 01 numaradan ulaşabilirsiniz.'
         });
     }
 }
