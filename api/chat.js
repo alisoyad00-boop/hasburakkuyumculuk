@@ -74,17 +74,21 @@ function buildSystemPrompt(prices) {
 ${buildPriceBlock(prices)}
 
 ════════ ÜRÜN KATEGORİLERİMİZ ════════
-1. YÜZÜKLER & ALYANS: Alyans, Gündelik Yüzük, Tek Taş, Akik & Doğal Taş, Pırlanta, Erkek Yüzük, Minila Eklem Yüzükleri, Şahmeran, 14 Ayar Alyans, 14 Ayar Gündelik, 14 Ayar Tek Taş
-2. KOLYELER: Kolye Uçları, Gündelik Kolyeler, Set Kolyeler, Karzai, Akıtma, Su Yolu, Singapur
-3. KÜPELER: Halka Küpe, Yapıştırma Küpe, Sallama Küpe
-4. BİLEZİK & BİLEKLİK: Bileklik, Bilezik, Trabzon Hasırı, Kelepçe
-5. ÇOCUK TAKILARI: Çocuk Künyesi, Çocuk Küpesi, Çocuk Bilezikleri
-6. ÖZEL AKSESUAR: Hızma, Kemer, Altın Ayakkabı, Taç
-7. YATIRIMLIK ALTIN: Yatırımlık Bilezik, Ziynet Altın (Çeyrek / Yarım / Tam / Cumhuriyet / Ata / Reşat / Hamit)
-8. ERKEK TAKILARI: Erkek Yüzük, Erkek Bileklik, Erkek Zincir, Saat (Bayan & Erkek)
-9. YÖRESEL & ÖZEL TASARIM: Yöresel Ürünler, Size Özel Tasarım
+1. YÜZÜK & ALYANS: Klasik Alyans, 14/18/22 Ayar Alyans, Gündelik Yüzük, Pırlanta Tek Taş, Akik & Doğal Taş Yüzük, Erkek Yüzük, Minila Eklem Yüzük, Şahmeran Yüzük
+2. KOLYE: Klasik Kolye, Set Kolye, Akıtma Kolye, Su Yolu Kolye, Singapur Zincir, Karzai Kolye, Kolye Uçları
+3. KÜPE: Halka Küpe, Yapıştırma Küpe, Sallama Küpe, Pırlanta Küpe, Çocuk Küpesi
+4. BİLEZİK & BİLEKLİK: Trabzon Hasırı Bilezik, Klasik Bilezik, Bileklik, Kelepçe Bileklik, Erkek Bileklik, Çocuk Bileziği
+5. YATIRIM ALTINI: Çeyrek, Yarım, Tam, Cumhuriyet, Ata, Reşat, Hamit altını ve Yatırımlık (22 ayar) Bilezik
+6. ÖZEL KOLEKSİYON: Çocuk Künye, Burun Hızması, Altın Kemer, Altın Ayakkabı, Taç, Bayan & Erkek Saat, Erkek Zincir, Yöresel Tasarımlar
 
 AYAR SEÇENEKLERİMİZ: 14, 18, 22 ayar ve yatırımlık 24 ayar (has altın) — çoğu üründe tüm ayarlar mevcut.
+
+NEDEN BİZİ TERCİH ETMELİSİNİZ:
+- Değişim Politikası: Her parça için ömür boyu değişim hakkı, fark sadece günlük altın kuruyla.
+- Garanti: İşçilik kaynaklı kusurlarda ücretsiz onarım ve bakım.
+- Yatırım Altınında Güven: Çeyrek/Cumhuriyet/Ata altınlarda net günlük fiyat, ek komisyon yok.
+- Fiyat Şeffaflığı: Etiketlerde gram + işçilik açık, sürpriz yok.
+- Mağaza Tecrübesi: Pazartesi—Cumartesi 09:00—20:00 sıcak mağaza ortamı.
 
 ════════ KURALLAR ════════
 • Altın fiyatı sorularında: yukarıdaki güncel fiyat listesinden net rakamı söyle. Fiyatlar dakikalık değişebileceğini kısaca hatırlat.
@@ -134,7 +138,7 @@ export default async function handler(req, res) {
         }
         contents.push({ role: 'user', parts: [{ text: message }] });
 
-        const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+        const geminiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
         const geminiRes = await fetch(geminiURL, {
             method: 'POST',
