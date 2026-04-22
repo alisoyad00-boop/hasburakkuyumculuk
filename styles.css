@@ -3413,10 +3413,14 @@ h2 em, h3 em {
 .store-gallery-item:hover img {
     transform: scale(1.06);
 }
-/* First photo spans wide on the gallery grid */
+/* First photo spans wide on the gallery grid (2x2) */
 .store-gallery-item--big {
     grid-column: span 2;
     grid-row: span 2;
+}
+/* Wide variant: spans 2 columns, 1 row — used for the bottom row pair */
+.store-gallery-item--wide {
+    grid-column: span 2;
 }
 
 @media (max-width: 900px) {
@@ -3429,13 +3433,17 @@ h2 em, h3 em {
         grid-row: span 1;
         grid-auto-rows: 260px;
     }
+    .store-gallery-item--wide {
+        grid-column: span 2;
+    }
 }
 @media (max-width: 520px) {
     .store-gallery {
         grid-template-columns: 1fr;
         grid-auto-rows: 240px;
     }
-    .store-gallery-item--big {
+    .store-gallery-item--big,
+    .store-gallery-item--wide {
         grid-column: span 1;
     }
 }
