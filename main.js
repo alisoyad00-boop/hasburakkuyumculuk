@@ -523,6 +523,98 @@ document.querySelectorAll('img').forEach(img => {
 //   Filters .product-card elements by name + tag in real time.
 //   Hides .cat-section heads when none of their cards match.
 // ════════════════════════════════════════════
+// ════════════════════════════════════════════
+//   DYNAMIC PRODUCT LOADER
+//   Fetches /api/products and fills [data-cat-grid="X"] divs.
+//   Hides cat-sections that end up with zero products.
+//   Runs only on pages that include <div data-products-root>.
+// ════════════════════════════════════════════
+function escapeAttr(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function renderProductCard(p) {
+    const tagHtml = p.tag ? `<div class="product-tag">${escapeAttr(p.tag)}</div>` : '';
+    return `<a href="iletisim.html" class="product-card reveal" data-product-id="${escapeAttr(p.id)}">
+        <div class="product-img-wrap"><img src="${escapeAttr(p.image)}" width="600" height="750" decoding="async" alt="${escapeAttr(p.alt || p.name)}" loading="lazy"></div>
+        ${tagHtml}
+        <div class="product-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg></div>
+        <div class="product-info">
+            <div class="product-name">${escapeAttr(p.name)}</div>
+            <div class="product-line"></div>
+        </div>
+    </a>`;
+}
+
+async function initDynamicProducts() {
+    const root = document.querySelector('[data-products-root]');
+    if (!root) return false; // not on urunler.html
+
+    const loading = document.getElementById('productsLoading');
+    let products = [];
+    try {
+        const r = await fetch('/api/products', { headers: { 'Cache-Control': 'no-cache' } });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        products = Array.isArray(data.products) ? data.products : [];
+    } catch (e) {
+        console.warn('product fetch failed:', e.message);
+        if (loading) loading.textContent = 'Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.';
+        return false;
+    }
+
+    // Group by category
+    const byCat = {};
+    products.forEach(p => {
+        if (!p || !p.category) return;
+        (byCat[p.category] = byCat[p.category] || []).push(p);
+    });
+
+    // Fill grids
+    const grids = root.querySelectorAll('[data-cat-grid]');
+    grids.forEach(grid => {
+        const cat = grid.getAttribute('data-cat-grid');
+        const list = byCat[cat] || [];
+        if (!list.length) {
+            // Hide this category section entirely
+            const section = grid.closest('.cat-section');
+            if (section) section.style.display = 'none';
+            return;
+        }
+        grid.innerHTML = list.map(renderProductCard).join('');
+    });
+
+    if (loading) loading.remove();
+
+    // Bind reveal animation to freshly added cards.
+    // The page-level reveal observer already ran, so we attach a fresh one
+    // for the new .reveal elements (just the new ones).
+    const newReveals = root.querySelectorAll('.reveal:not(.visible)');
+    if (newReveals.length) {
+        const prefersReduced = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced || !window.IntersectionObserver) {
+            newReveals.forEach(el => el.classList.add('visible'));
+        } else {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+            newReveals.forEach(el => obs.observe(el));
+        }
+    }
+    return true;
+}
+
 function initProductSearch() {
     const input = document.getElementById('productSearch');
     if (!input) return; // not on urunler.html
@@ -623,10 +715,17 @@ function initProductSearch() {
     });
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProductSearch);
-} else {
+async function bootProductsPage() {
+    // On urunler.html: load dynamic products first, then index search.
+    // On other pages: initDynamicProducts is a no-op, search is also a no-op.
+    await initDynamicProducts();
     initProductSearch();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootProductsPage);
+} else {
+    bootProductsPage();
 }
 
 // ════════════════════════════════════════════
