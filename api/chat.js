@@ -165,7 +165,8 @@ export default async function handler(req, res) {
             const errText = await geminiRes.text().catch(() => '');
             console.error('Gemini error', geminiRes.status, errText.slice(0, 400));
             return res.status(200).json({
-                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 532 679 12 01) üzerinden yazabilirsiniz.'
+                reply: 'Asistan şu anda yanıt veremiyor. Lütfen WhatsApp (+90 532 679 12 01) üzerinden yazabilirsiniz.',
+                _debug: { status: geminiRes.status, err: errText.slice(0, 400) }
             });
         }
 
@@ -177,7 +178,8 @@ export default async function handler(req, res) {
     } catch (e) {
         console.error('chat handler error:', e);
         return res.status(200).json({
-            reply: 'Teknik bir sorun oluştu. Bize (0532) 679 12 01 numaradan ulaşabilirsiniz.'
+            reply: 'Teknik bir sorun oluştu. Bize (0532) 679 12 01 numaradan ulaşabilirsiniz.',
+            _debug: { caught: String(e && e.message || e).slice(0, 400) }
         });
     }
 }
