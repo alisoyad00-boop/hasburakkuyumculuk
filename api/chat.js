@@ -138,10 +138,11 @@ export default async function handler(req, res) {
         }
         contents.push({ role: 'user', parts: [{ text: message }] });
 
-        // Primary + fallback Gemini models. The 2.5 family is preferred but
-        // occasionally returns 503 ("high demand") — falling back to the 2.0
-        // Flash family keeps the chatbot responsive during spikes.
-        const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+        // Primary + fallback Gemini models. The 2.5 Flash is preferred but
+        // occasionally returns 503 ("high demand") during traffic spikes.
+        // gemini-2.5-flash-lite is the only free-tier compatible fallback that
+        // keeps quota=available — the 2.0 family has limit=0 on free tier.
+        const MODELS = ['gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest'];
         const geminiBody = JSON.stringify({
             system_instruction: { parts: [{ text: systemPrompt }] },
             contents,
