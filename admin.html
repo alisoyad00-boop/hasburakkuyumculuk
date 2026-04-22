@@ -300,7 +300,7 @@
         margin-top: 22px;
     }
     .img-preview {
-        margin-top: 8px;
+        margin-top: 12px;
         aspect-ratio: 4 / 5;
         max-width: 160px;
         background: var(--surface-2);
@@ -311,6 +311,61 @@
     }
     .img-preview.show { display: block; }
     .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ─── Upload zone ─── */
+    .upload-zone {
+        position: relative;
+        border: 1.5px dashed var(--border);
+        border-radius: 10px;
+        background: var(--surface-2);
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+    }
+    .upload-zone:hover,
+    .upload-zone.is-drag {
+        border-color: var(--gold);
+        background: rgba(201, 168, 91, 0.06);
+    }
+    .upload-zone-inner {
+        padding: 22px 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--gold-2);
+    }
+    .upload-zone-text { display: flex; flex-direction: column; line-height: 1.4; }
+    .upload-zone-text strong { color: var(--text); font-size: 0.95rem; font-weight: 600; }
+    .upload-zone-text span { color: var(--muted); font-size: 0.78rem; margin-top: 2px; }
+    .upload-progress {
+        padding: 16px 18px;
+        color: var(--gold-2);
+        font-size: 0.88rem;
+        text-align: center;
+    }
+    .upload-progress-text::before {
+        content: '';
+        display: inline-block;
+        width: 14px; height: 14px;
+        margin-right: 8px;
+        border: 2px solid rgba(201, 168, 91, 0.3);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        vertical-align: -2px;
+        animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .url-fallback {
+        margin-top: 10px;
+        font-size: 0.82rem;
+    }
+    .url-fallback summary {
+        cursor: pointer;
+        color: var(--muted);
+        padding: 4px 0;
+        user-select: none;
+    }
+    .url-fallback summary:hover { color: var(--gold-2); }
+    .url-fallback input { margin-top: 8px; }
 
     .empty {
         text-align: center;
@@ -408,11 +463,31 @@
                 <input type="text" id="pTag" maxlength="60" placeholder="Örn: 14 Ayar, Pırlanta, Yatırım">
             </div>
             <div class="form-group">
-                <label for="pImage">Fotoğraf URL'si</label>
-                <input type="url" id="pImage" required placeholder="https://...">
+                <label>Fotoğraf</label>
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+                    <div class="upload-zone-inner" id="uploadZoneInner">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="36" height="36" aria-hidden="true">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                        <div class="upload-zone-text">
+                            <strong>Fotoğraf yükle</strong>
+                            <span>Tıkla ya da sürükle bırak (JPG, PNG, WEBP — en fazla 4 MB)</span>
+                        </div>
+                    </div>
+                    <div class="upload-progress" id="uploadProgress" hidden>
+                        <span class="upload-progress-text" id="uploadProgressText">Yükleniyor...</span>
+                    </div>
+                </div>
                 <div class="img-preview" id="imgPreview">
                     <img id="imgPreviewSrc" src="" alt="">
                 </div>
+                <details class="url-fallback">
+                    <summary>veya URL ile ekle</summary>
+                    <input type="url" id="pImage" placeholder="https://...">
+                </details>
             </div>
             <div class="modal-actions">
                 <button type="button" class="btn secondary" id="cancelBtn">İptal</button>
@@ -615,6 +690,7 @@
         $('productForm').reset();
         $('pId').value = '';
         $('imgPreview').classList.remove('show');
+        setUploadingState(false);
         hideAlert($('modalError'));
     }
     $('addBtn').addEventListener('click', () => {
@@ -659,6 +735,87 @@
         }
     });
 
+    // ─── FILE UPLOAD ───
+    const uploadZone = $('uploadZone');
+    const fileInput = $('fileInput');
+    const uploadInner = $('uploadZoneInner');
+    const uploadProgress = $('uploadProgress');
+    const uploadProgressText = $('uploadProgressText');
+
+    function setUploadingState(isUploading, msg) {
+        if (isUploading) {
+            uploadInner.hidden = true;
+            uploadProgress.hidden = false;
+            uploadProgressText.textContent = msg || 'Yükleniyor...';
+        } else {
+            uploadInner.hidden = false;
+            uploadProgress.hidden = true;
+        }
+    }
+
+    async function uploadFile(file) {
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            showAlert($('modalError'), 'Sadece resim dosyası yükleyebilirsin.');
+            return;
+        }
+        if (file.size > 4 * 1024 * 1024) {
+            showAlert($('modalError'), 'Dosya çok büyük (en fazla 4 MB). Daha küçük bir resim seç ya da WhatsApp\'tan boyutu küçülterek yolla.');
+            return;
+        }
+        hideAlert($('modalError'));
+        setUploadingState(true, `Yükleniyor: ${file.name}`);
+        try {
+            const token = getToken();
+            const r = await fetch('/api/admin/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': file.type,
+                    'x-filename': encodeURIComponent(file.name),
+                },
+                body: file,
+            });
+            const data = await r.json();
+            if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+            // Set the URL into the form, show preview
+            $('pImage').value = data.url;
+            $('imgPreviewSrc').src = data.url;
+            $('imgPreview').classList.add('show');
+            setUploadingState(false);
+        } catch (e) {
+            showAlert($('modalError'), 'Yükleme başarısız: ' + (e.message || ''));
+            setUploadingState(false);
+        }
+    }
+
+    uploadZone.addEventListener('click', (e) => {
+        // Don't trigger when clicking the URL fallback details
+        if (e.target.closest('.url-fallback')) return;
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files && fileInput.files[0]) {
+            uploadFile(fileInput.files[0]);
+            fileInput.value = ''; // allow re-selecting same file
+        }
+    });
+    ['dragenter', 'dragover'].forEach(ev =>
+        uploadZone.addEventListener(ev, (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('is-drag');
+        }));
+    ['dragleave', 'drop'].forEach(ev =>
+        uploadZone.addEventListener(ev, (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('is-drag');
+        }));
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+        if (file) uploadFile(file);
+    });
+
     $('productForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         hideAlert($('modalError'));
@@ -668,6 +825,10 @@
             tag: $('pTag').value.trim(),
             image: $('pImage').value.trim(),
         };
+        if (!payload.image) {
+            showAlert($('modalError'), 'Lütfen bir fotoğraf yükle veya URL gir.');
+            return;
+        }
         const btn = $('saveBtn');
         btn.disabled = true;
         const orig = btn.textContent;
