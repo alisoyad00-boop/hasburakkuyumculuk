@@ -101,7 +101,12 @@ function parsePrices(html) {
 // ────────────────────────────────────────────
 //   LOGIN + FETCH
 // ────────────────────────────────────────────
-async function fetchWithCookies(url, opts = {}) {
+// Manual redirect handling — we MUST capture Set-Cookie from intermediate
+// redirect responses (Joomla rotates session token + sets joomla_user_state
+// on the 303 after login). Node fetch's built-in redirect-follow does not
+// expose intermediate headers, so we follow redirects ourselves.
+async function fetchWithCookies(url, opts = {}, depth = 0) {
+    if (depth > 5) throw new Error('Too many redirects');
     const headers = {
         'User-Agent': UA,
         'Accept': 'text/html,application/xhtml+xml',
@@ -111,11 +116,24 @@ async function fetchWithCookies(url, opts = {}) {
     const res = await fetch(url, {
         ...opts,
         headers,
-        redirect: 'follow',
+        redirect: 'manual',
         signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
+    // Always merge cookies from this hop
     const fresh = parseSetCookies(res.headers);
     if (fresh.length) cachedCookies = mergeCookies(cachedCookies, fresh);
+    // Handle redirect manually so cookies from intermediate responses persist
+    if (res.status >= 300 && res.status < 400) {
+        const loc = res.headers.get('location');
+        if (loc) {
+            const nextUrl = new URL(loc, url).toString();
+            // 303 always becomes GET; 301/302/307/308 keep method (we use GET only after POST)
+            const nextOpts = (res.status === 303 || opts.method === 'POST')
+                ? { method: 'GET' }
+                : opts;
+            return fetchWithCookies(nextUrl, nextOpts, depth + 1);
+        }
+    }
     const html = await res.text();
     return { res, html };
 }
@@ -127,7 +145,7 @@ async function login(user, pass) {
     const csrf = extractCsrf(landing.html);
     if (!csrf) throw new Error('CSRF token not found on landing page');
 
-    // 2. POST login
+    // 2. POST login (will follow 303 redirect with cookie jar updated)
     const body = new URLSearchParams({
         username: user,
         password: pass,
