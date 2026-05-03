@@ -278,6 +278,111 @@
         }
         .skeleton .price-value { min-height: 1.95rem; }
         .skeleton .ziynet-prices .price-value { min-height: 1.25rem; }
+
+        /* ═══════════════════════════════════════════
+           FULLSCREEN TOGGLE — #8
+           Bilgisayar ekranını tam doldursun, mağaza tableti
+           gibi gözüksün diye büyüt-tam-ekran modu.
+           ═══════════════════════════════════════════ */
+        .fullscreen-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.32);
+            border-radius: 999px;
+            color: var(--gold-200);
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .fullscreen-toggle:hover {
+            background: rgba(212, 175, 55, 0.18);
+            border-color: var(--gold-400);
+            color: var(--gold-100);
+            transform: translateY(-1px);
+        }
+        .fullscreen-toggle svg { color: var(--gold-300); }
+
+        /* Body fullscreen-active class — fiyat tablosu ekranı kaplasın,
+           her şeyi gizle (nav, footer, page-header, info band).
+           Hero card'lar ve ziynet kartları büyütülmüş font ile görünür. */
+        body.prices-fullscreen .nav,
+        body.prices-fullscreen .footer,
+        body.prices-fullscreen .fab,
+        body.prices-fullscreen .page-header,
+        body.prices-fullscreen .price-info-band,
+        body.prices-fullscreen .section-head,
+        body.prices-fullscreen .scroll-progress,
+        body.prices-fullscreen .bg-pattern,
+        body.prices-fullscreen .bg-particles,
+        body.prices-fullscreen .bg-ornament {
+            display: none !important;
+        }
+        body.prices-fullscreen {
+            overflow: hidden;
+        }
+        body.prices-fullscreen #pricesSection {
+            position: fixed;
+            inset: 0;
+            background: var(--navy-950);
+            z-index: 9999;
+            padding: 24px !important;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        body.prices-fullscreen .prices-status {
+            margin-bottom: 16px;
+            max-width: none;
+        }
+        body.prices-fullscreen .hero-prices {
+            max-width: none;
+            margin-bottom: 18px;
+            gap: 14px;
+        }
+        body.prices-fullscreen .ziynet-grid {
+            max-width: none;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+        }
+        body.prices-fullscreen .hero-price-name {
+            font-size: 1.85rem;
+        }
+        body.prices-fullscreen .hero-prices .price-value {
+            font-size: 2.6rem;
+        }
+        body.prices-fullscreen .hero-price-card {
+            padding: 24px 22px 22px;
+        }
+        body.prices-fullscreen .ziynet-name {
+            font-size: 1.45rem;
+        }
+        body.prices-fullscreen .ziynet-prices .price-value {
+            font-size: 1.55rem;
+        }
+        body.prices-fullscreen .ziynet-card {
+            padding: 16px 18px;
+        }
+        body.prices-fullscreen .clock-time {
+            font-size: 1.2rem;
+        }
+        @media (min-width: 1400px) {
+            body.prices-fullscreen .hero-prices .price-value { font-size: 3.2rem; }
+            body.prices-fullscreen .ziynet-prices .price-value { font-size: 1.85rem; }
+            body.prices-fullscreen .hero-price-name { font-size: 2.1rem; }
+            body.prices-fullscreen .ziynet-name { font-size: 1.65rem; }
+        }
+        @media (max-width: 720px) {
+            .fullscreen-toggle .fs-label { display: none; }
+            .fullscreen-toggle { padding: 9px 11px; }
+        }
     </style>
 </head>
 <body>
@@ -300,6 +405,7 @@
                 <li><a href="urunler.html">Ürünlerimiz</a></li>
                 <li><a href="fiyatlar.html" class="active">Fiyatlar</a></li>
                 <li><a href="neden-biz.html">Neden Biz?</a></li>
+                <li><a href="sss.html">SSS</a></li>
                 <li><a href="iletisim.html">İletişim</a></li>
                 <li><a href="https://wa.me/905070600046?text=Merhaba%2C%20g%C3%BCncel%20alt%C4%B1n%20fiyatlar%C4%B1%20hakk%C4%B1nda%20bilgi%20almak%20istiyorum." target="_blank" rel="noopener" class="nav-cta">WhatsApp</a></li>
             </ul>
@@ -315,6 +421,7 @@
         <a href="urunler.html">Ürünlerimiz</a>
         <a href="fiyatlar.html">Fiyatlar</a>
         <a href="neden-biz.html">Neden Biz?</a>
+        <a href="sss.html">SSS</a>
         <a href="iletisim.html">İletişim</a>
     </div>
 
@@ -327,12 +434,21 @@
     </section>
 
     <!-- LIVE STATUS -->
-    <section class="section" style="padding-top: 0;">
+    <section class="section" id="pricesSection" style="padding-top: 0;">
         <div class="prices-status" id="pricesStatus">
             <div class="live-pill">
                 <span class="live-dot" id="liveDot"></span>
                 <span id="liveText">Bağlanıyor</span>
             </div>
+            <button type="button" id="fullscreenToggle" class="fullscreen-toggle" aria-label="Tam ekran" title="Tam ekran (F)">
+                <svg class="fs-icon-enter" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 8V3h5"/><path d="M21 8V3h-5"/><path d="M3 16v5h5"/><path d="M21 16v5h-5"/>
+                </svg>
+                <svg class="fs-icon-exit" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <path d="M8 3v5H3"/><path d="M16 3v5h5"/><path d="M8 21v-5H3"/><path d="M16 21v-5h5"/>
+                </svg>
+                <span class="fs-label">Tam Ekran</span>
+            </button>
             <div class="clock-display">
                 <span class="clock-label">Saat</span>
                 <span class="clock-time" id="clockTime">--:--:--</span>
@@ -423,6 +539,7 @@
                     <li><a href="urunler.html">Ürünlerimiz</a></li>
                     <li><a href="fiyatlar.html">Fiyatlar</a></li>
                     <li><a href="neden-biz.html">Neden Biz?</a></li>
+                    <li><a href="sss.html">Sıkça Sorulanlar</a></li>
                     <li><a href="iletisim.html">İletişim</a></li>
                 </ul>
             </div>
@@ -615,6 +732,67 @@
             const cards = document.querySelectorAll('.hero-price-card');
             // (last-update text driven by fetchPrices)
         }, 5000);
+
+        // ═══════════════════════════════════════════
+        //   FULLSCREEN TOGGLE — #8
+        // ═══════════════════════════════════════════
+        const fsBtn = document.getElementById('fullscreenToggle');
+        const iconEnter = fsBtn?.querySelector('.fs-icon-enter');
+        const iconExit = fsBtn?.querySelector('.fs-icon-exit');
+        const fsLabel = fsBtn?.querySelector('.fs-label');
+        const pricesSection = document.getElementById('pricesSection');
+
+        function setFsState(active) {
+            document.body.classList.toggle('prices-fullscreen', active);
+            if (iconEnter) iconEnter.style.display = active ? 'none' : 'inline';
+            if (iconExit) iconExit.style.display = active ? 'inline' : 'none';
+            if (fsLabel) fsLabel.textContent = active ? 'Çıkış (ESC)' : 'Tam Ekran';
+            fsBtn?.setAttribute('aria-label', active ? 'Tam ekrandan çık' : 'Tam ekran');
+        }
+
+        async function enterFullscreen() {
+            setFsState(true);
+            // Native browser fullscreen API ek olarak — adres çubuğu da gizlensin
+            try {
+                if (document.documentElement.requestFullscreen) {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (e) { /* sessizce devam */ }
+        }
+
+        async function exitFullscreen() {
+            setFsState(false);
+            try {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    await document.exitFullscreen();
+                }
+            } catch (e) { /* sessizce devam */ }
+        }
+
+        fsBtn?.addEventListener('click', () => {
+            if (document.body.classList.contains('prices-fullscreen')) {
+                exitFullscreen();
+            } else {
+                enterFullscreen();
+            }
+        });
+
+        // ESC veya F tuşu ile aç/kapa
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.body.classList.contains('prices-fullscreen')) {
+                exitFullscreen();
+            } else if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                if (document.body.classList.contains('prices-fullscreen')) exitFullscreen();
+                else enterFullscreen();
+            }
+        });
+
+        // Native fullscreen exit (browser kontrolüyle çıkıldığında)
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && document.body.classList.contains('prices-fullscreen')) {
+                setFsState(false);
+            }
+        });
     })();
     </script>
 
