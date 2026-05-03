@@ -325,7 +325,7 @@
                 <p>Yıllardır kapımızı çalan müşterilerimizin samimi geri bildirimleri.</p>
             </div>
 
-            <div class="reviews-grid">
+            <div class="reviews-grid" data-reviews-dynamic>
                 <article class="review-card reveal">
                     <div class="review-stars" aria-label="5 yıldız">
                         <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
@@ -437,6 +437,67 @@
                         </div>
                     </div>
                 </article>
+            </div>
+
+            <!-- YORUM YAZMA FORMU — #10 -->
+            <div class="review-form-wrap reveal">
+                <div class="review-form-head">
+                    <div class="divider"><span class="divider-icon">✦</span></div>
+                    <h3>Sen de <em>yorumunu</em> bırak</h3>
+                    <p>Mağazamızda yaşadığın deneyimi yaz. Onaylanır onaylanmaz burada yayınlanır.</p>
+                </div>
+                <form id="reviewForm" class="review-form" autocomplete="off">
+                    <div class="review-form-row">
+                        <div class="review-form-field">
+                            <label for="rfName">Adınız <span class="req">*</span></label>
+                            <input id="rfName" type="text" name="name" maxlength="60" required placeholder="Örn: Ayşe K.">
+                        </div>
+                        <div class="review-form-field">
+                            <label for="rfLocation">Şehir / Mahalle <span class="opt">(opsiyonel)</span></label>
+                            <input id="rfLocation" type="text" name="location" maxlength="80" placeholder="Örn: Elbistan">
+                        </div>
+                    </div>
+                    <div class="review-form-row">
+                        <div class="review-form-field">
+                            <label for="rfCategory">Hangi konuda?</label>
+                            <select id="rfCategory" name="productCategory">
+                                <option value="genel">Genel deneyim</option>
+                                <option value="yuzuk">Yüzük & Alyans</option>
+                                <option value="kolye">Kolye</option>
+                                <option value="kupe">Küpe</option>
+                                <option value="bilezik">Bilezik & Bileklik</option>
+                                <option value="yatirim">Yatırım Altını</option>
+                                <option value="ozel">Özel Koleksiyon</option>
+                            </select>
+                        </div>
+                        <div class="review-form-field">
+                            <label for="rfRating">Puanınız</label>
+                            <div class="rf-stars" id="rfStars" role="radiogroup" aria-label="Puanlama">
+                                <input type="radio" name="rating" value="5" id="rfS5" checked>
+                                <label for="rfS5" title="5 yıldız">★</label>
+                                <input type="radio" name="rating" value="4" id="rfS4">
+                                <label for="rfS4" title="4 yıldız">★</label>
+                                <input type="radio" name="rating" value="3" id="rfS3">
+                                <label for="rfS3" title="3 yıldız">★</label>
+                                <input type="radio" name="rating" value="2" id="rfS2">
+                                <label for="rfS2" title="2 yıldız">★</label>
+                                <input type="radio" name="rating" value="1" id="rfS1">
+                                <label for="rfS1" title="1 yıldız">★</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="review-form-field">
+                        <label for="rfText">Yorumunuz <span class="req">*</span></label>
+                        <textarea id="rfText" name="text" maxlength="800" minlength="10" required rows="4" placeholder="Mağazadaki deneyiminizi anlatın — ürün, hizmet, ekibin yaklaşımı..."></textarea>
+                    </div>
+                    <div class="review-form-actions">
+                        <button type="submit" class="btn btn-gold">Gönder</button>
+                        <p id="reviewFormStatus" class="review-form-status" role="status"></p>
+                    </div>
+                    <p class="review-form-disclaimer">
+                        Yorumunuz onaylandıktan sonra yayınlanır. Hakaret, reklam veya yanıltıcı içerikler yayınlanmaz.
+                    </p>
+                </form>
             </div>
         </div>
     </section>

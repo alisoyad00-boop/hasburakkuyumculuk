@@ -1025,3 +1025,260 @@ if (document.readyState === 'loading') {
 } else {
     initChatbot();
 }
+
+// ════════════════════════════════════════════
+//   SİTE CONFIG: Üst Duyuru Bandı (#18) + Karşılama Popup (#11)
+//   GET /api/site-config — admin'in açtığı banner ve popup'ı gösterir
+// ════════════════════════════════════════════
+async function initSiteConfig() {
+    let config;
+    try {
+        const r = await fetch('/api/site-config', { cache: 'default' });
+        if (!r.ok) return;
+        config = await r.json();
+    } catch (e) { return; }
+
+    if (config.banner?.enabled && config.banner.text) {
+        renderBanner(config.banner);
+    }
+    if (config.popup?.enabled && (config.popup.title || config.popup.message)) {
+        schedulePopup(config.popup);
+    }
+}
+
+function renderBanner(banner) {
+    if (document.getElementById('hbBanner')) return;
+    // Daha önce kapattıysa gösterme (config değiştiğinde tekrar göster)
+    const dismissKey = 'hb-banner-dismissed:' + (banner.text || '').slice(0, 40);
+    if (banner.dismissible && sessionStorage.getItem(dismissKey)) return;
+
+    const colors = {
+        gold:  { bg: 'linear-gradient(90deg, #b8941f, #d4af37, #b8941f)', fg: '#1a1208' },
+        red:   { bg: 'linear-gradient(90deg, #a83232, #d04545, #a83232)', fg: '#ffffff' },
+        green: { bg: 'linear-gradient(90deg, #1f7a4d, #2da367, #1f7a4d)', fg: '#ffffff' },
+        blue:  { bg: 'linear-gradient(90deg, #1c2b7a, #2a3d9c, #1c2b7a)', fg: '#ffffff' },
+    };
+    const col = colors[banner.color] || colors.gold;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'hbBanner';
+    wrap.className = 'hb-banner';
+    wrap.style.background = col.bg;
+    wrap.style.color = col.fg;
+    wrap.innerHTML = `
+        <div class="hb-banner-inner">
+            <span class="hb-banner-text">${escapeHTML(banner.text)}</span>
+            ${banner.ctaText && banner.ctaUrl
+                ? `<a class="hb-banner-cta" href="${escapeAttr(banner.ctaUrl)}" target="_blank" rel="noopener">${escapeHTML(banner.ctaText)} →</a>`
+                : ''}
+            ${banner.dismissible
+                ? `<button type="button" class="hb-banner-close" aria-label="Bandı kapat">×</button>`
+                : ''}
+        </div>
+    `;
+    document.body.insertBefore(wrap, document.body.firstChild);
+
+    // Nav'ı banner kadar aşağı it
+    document.documentElement.style.setProperty('--hb-banner-h', wrap.offsetHeight + 'px');
+    document.body.classList.add('has-hb-banner');
+
+    if (banner.dismissible) {
+        wrap.querySelector('.hb-banner-close')?.addEventListener('click', () => {
+            sessionStorage.setItem(dismissKey, '1');
+            wrap.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            wrap.style.opacity = '0';
+            wrap.style.transform = 'translateY(-100%)';
+            setTimeout(() => {
+                wrap.remove();
+                document.body.classList.remove('has-hb-banner');
+                document.documentElement.style.removeProperty('--hb-banner-h');
+            }, 300);
+        });
+    }
+}
+
+function schedulePopup(popup) {
+    const key = 'hb-popup-shown:' + (popup.title || '').slice(0, 40) + ':' + (popup.message || '').slice(0, 40);
+    if (popup.showOncePerSession && sessionStorage.getItem(key)) return;
+
+    const delay = (Number(popup.showAfterSeconds) || 3) * 1000;
+    setTimeout(() => {
+        if (sessionStorage.getItem(key)) return;
+        renderPopup(popup, key);
+    }, delay);
+}
+
+function renderPopup(popup, key) {
+    if (document.getElementById('hbPopup')) return;
+
+    const wrap = document.createElement('div');
+    wrap.id = 'hbPopup';
+    wrap.className = 'hb-popup-backdrop';
+    wrap.innerHTML = `
+        <div class="hb-popup" role="dialog" aria-labelledby="hbPopupTitle">
+            <button type="button" class="hb-popup-close" aria-label="Kapat">×</button>
+            <div class="hb-popup-decoration" aria-hidden="true">
+                <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="30" cy="30" r="20"/>
+                    <polygon points="30,12 35,28 50,30 35,32 30,48 25,32 10,30 25,28"/>
+                </svg>
+            </div>
+            ${popup.title ? `<h3 id="hbPopupTitle" class="hb-popup-title">${escapeHTML(popup.title)}</h3>` : ''}
+            ${popup.message ? `<p class="hb-popup-message">${escapeHTML(popup.message)}</p>` : ''}
+            ${popup.ctaText && popup.ctaUrl
+                ? `<a class="hb-popup-cta" href="${escapeAttr(popup.ctaUrl)}" target="_blank" rel="noopener">${escapeHTML(popup.ctaText)}</a>`
+                : ''}
+        </div>
+    `;
+    document.body.appendChild(wrap);
+    sessionStorage.setItem(key, '1');
+
+    // Animate in
+    requestAnimationFrame(() => wrap.classList.add('show'));
+
+    function close() {
+        wrap.classList.remove('show');
+        setTimeout(() => wrap.remove(), 300);
+    }
+    wrap.querySelector('.hb-popup-close')?.addEventListener('click', close);
+    wrap.addEventListener('click', (e) => { if (e.target === wrap) close(); });
+    document.addEventListener('keydown', function esc(e) {
+        if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+    });
+}
+
+function escapeHTML(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSiteConfig);
+} else {
+    initSiteConfig();
+}
+
+// ════════════════════════════════════════════
+//   DİNAMİK YORUMLAR (#10) — index.html ana sayfa için
+//   .reviews-grid içindeki statik kartları /api/reviews ile değiştirir
+//   + altına "Sen de yorum bırak" formu ekler
+// ════════════════════════════════════════════
+async function initDynamicReviews() {
+    const grid = document.querySelector('.reviews-grid[data-reviews-dynamic]');
+    if (!grid) return;
+
+    let reviews = [];
+    try {
+        const r = await fetch('/api/reviews', { cache: 'default' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        reviews = Array.isArray(data.reviews) ? data.reviews : [];
+    } catch (e) {
+        console.warn('reviews fetch failed:', e.message);
+        return; // Statik fallback HTML kalsın
+    }
+
+    if (reviews.length === 0) return; // Hiç onaylı yorum yoksa statik fallback'i bozma
+
+    // Render reviews
+    grid.innerHTML = reviews.slice(0, 12).map(r => {
+        const stars = '<span>★</span>'.repeat(r.rating) + '<span style="opacity:0.3;">★</span>'.repeat(5 - r.rating);
+        const initials = (r.name || '?')
+            .split(/\s+/).slice(0, 2)
+            .map(w => w[0]?.toLocaleUpperCase('tr-TR') || '')
+            .join('.') + '.';
+        const subtitle = r.location || categoryLabel(r.productCategory);
+        return `
+            <article class="review-card reveal${r.featured ? ' is-featured' : ''}">
+                ${r.featured ? '<div class="review-featured-badge">Öne Çıkan</div>' : ''}
+                <div class="review-stars" aria-label="${r.rating} yıldız">${stars}</div>
+                <p class="review-text">"${escapeHTML(r.text)}"</p>
+                <div class="review-author">
+                    <div class="review-avatar" aria-hidden="true">${escapeHTML(initials)}</div>
+                    <div class="review-meta">
+                        <strong>${escapeHTML(r.name)}</strong>
+                        <span>${escapeHTML(subtitle)}</span>
+                    </div>
+                </div>
+            </article>
+        `;
+    }).join('');
+
+    // Re-bind reveal observer for newly added cards
+    if (window.IntersectionObserver) {
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+            });
+        }, { threshold: 0.12 });
+        grid.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    }
+}
+
+function categoryLabel(cat) {
+    const map = {
+        yuzuk: 'Yüzük & Alyans',
+        kolye: 'Kolye',
+        kupe: 'Küpe',
+        bilezik: 'Bilezik & Bileklik',
+        yatirim: 'Yatırım Altını',
+        ozel: 'Özel Koleksiyon',
+        genel: 'Müşterimiz',
+    };
+    return map[cat] || 'Müşterimiz';
+}
+
+function initReviewForm() {
+    const form = document.getElementById('reviewForm');
+    if (!form) return;
+    const status = document.getElementById('reviewFormStatus');
+    const submit = form.querySelector('button[type="submit"]');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!status) return;
+        status.textContent = '';
+        status.className = 'review-form-status';
+        submit.disabled = true;
+        submit.textContent = 'Gönderiliyor...';
+
+        const fd = new FormData(form);
+        const payload = {
+            name: fd.get('name'),
+            location: fd.get('location'),
+            rating: Number(fd.get('rating') || 5),
+            text: fd.get('text'),
+            productCategory: fd.get('productCategory') || 'genel',
+        };
+
+        try {
+            const r = await fetch('/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await r.json();
+            if (!r.ok) throw new Error(data.error || 'Gönderme başarısız');
+            status.textContent = data.message || 'Yorumun alındı, onaylanınca yayınlanır. Teşekkürler!';
+            status.classList.add('success');
+            form.reset();
+        } catch (err) {
+            status.textContent = err.message;
+            status.classList.add('error');
+        } finally {
+            submit.disabled = false;
+            submit.textContent = 'Gönder';
+        }
+    });
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initDynamicReviews();
+        initReviewForm();
+    });
+} else {
+    initDynamicReviews();
+    initReviewForm();
+}

@@ -383,6 +383,206 @@
         .dash { padding: 20px 14px 60px; }
         .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
     }
+    /* ─── TAB NAVIGATION ─── */
+    .dash-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-bottom: 28px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0;
+    }
+    .dash-tab-btn {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        padding: 12px 18px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 2px solid transparent;
+        transition: color 0.2s, border-color 0.2s;
+        margin-bottom: -1px;
+    }
+    .dash-tab-btn:hover { color: var(--text); }
+    .dash-tab-btn.active {
+        color: var(--gold-2);
+        border-bottom-color: var(--gold);
+    }
+    .dash-tab-btn svg { opacity: 0.8; }
+    .dash-tab-btn.active svg { opacity: 1; }
+    .dash-tab-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--gold);
+        color: #1a1208;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 999px;
+        min-width: 20px;
+    }
+    .dash-tab-panel { animation: tabFade 0.3s ease; }
+    @keyframes tabFade {
+        from { opacity: 0; transform: translateY(4px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── CONFIG FORM ─── */
+    .cfg-block {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 22px 24px 18px;
+        margin-bottom: 20px;
+        background: var(--surface);
+    }
+    .cfg-block legend {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 12px;
+        font-weight: 600;
+    }
+    .cfg-block-title {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.3rem;
+        color: var(--gold-2);
+        font-weight: 600;
+    }
+    .cfg-block-hint {
+        color: var(--muted);
+        font-size: 0.85rem;
+        margin: -4px 0 18px;
+    }
+    .cfg-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        color: var(--muted);
+    }
+    .cfg-toggle input[type="checkbox"] {
+        appearance: none;
+        width: 36px;
+        height: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin: 0;
+    }
+    .cfg-toggle input[type="checkbox"]::before {
+        content: '';
+        position: absolute;
+        top: 2px; left: 2px;
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--text);
+        transition: transform 0.2s;
+    }
+    .cfg-toggle input[type="checkbox"]:checked {
+        background: var(--gold);
+    }
+    .cfg-toggle input[type="checkbox"]:checked::before {
+        transform: translateX(16px);
+        background: #1a1208;
+    }
+    .cfg-checkbox {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 11px 14px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+    .cfg-checkbox input[type="checkbox"] {
+        appearance: auto;
+        accent-color: var(--gold);
+        width: 16px;
+        height: 16px;
+    }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+    @media (max-width: 600px) {
+        .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ─── REVIEWS LIST ─── */
+    .review-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: border-color 0.2s;
+    }
+    .review-row.is-pending { border-left: 3px solid #fbbd45; }
+    .review-row.is-approved { border-left: 3px solid var(--success); }
+    .review-row.is-rejected { border-left: 3px solid var(--danger); opacity: 0.65; }
+    .review-row.is-featured {
+        background: linear-gradient(135deg, rgba(201, 168, 91, 0.12), var(--surface));
+        border-color: rgba(201, 168, 91, 0.4);
+    }
+    .review-row-head {
+        display: flex;
+        align-items: baseline;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+    .review-row-name {
+        font-weight: 600;
+        color: var(--text);
+        font-size: 0.95rem;
+    }
+    .review-row-stars {
+        color: #FFD700;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+    }
+    .review-row-meta {
+        color: var(--muted);
+        font-size: 0.78rem;
+    }
+    .review-row-status {
+        font-size: 0.7rem;
+        padding: 2px 9px;
+        border-radius: 999px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        font-weight: 600;
+    }
+    .review-row-status.pending { background: rgba(251, 189, 69, 0.2); color: #fbbd45; }
+    .review-row-status.approved { background: rgba(108, 199, 136, 0.2); color: var(--success); }
+    .review-row-status.rejected { background: rgba(229, 115, 115, 0.2); color: var(--danger); }
+    .review-row-status.featured { background: var(--gold); color: #1a1208; }
+    .review-row-text {
+        color: rgba(250, 246, 238, 0.9);
+        line-height: 1.55;
+        font-size: 0.92rem;
+    }
+    .review-row-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+    }
 </style>
 </head>
 <body>
@@ -420,27 +620,188 @@
 
 <!-- DASHBOARD VIEW -->
 <section class="dash hidden" id="dashView">
-    <div class="dash-header">
-        <div>
-            <h2>Ürün Yönetimi</h2>
-            <p class="stats" id="stats">Yükleniyor...</p>
-        </div>
-        <button class="btn" id="addBtn">+ Yeni Ürün Ekle</button>
-    </div>
 
-    <div class="dash-toolbar">
-        <input type="search" id="searchBox" placeholder="Ürün ara..." spellcheck="false" autocomplete="off">
-        <select id="filterCat">
-            <option value="">Tüm kategoriler</option>
-        </select>
+    <!-- TAB NAVIGATION -->
+    <div class="dash-tabs" role="tablist">
+        <button type="button" class="dash-tab-btn active" data-tab="products" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Ürünler
+        </button>
+        <button type="button" class="dash-tab-btn" data-tab="config" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Site Ayarları
+        </button>
+        <button type="button" class="dash-tab-btn" data-tab="reviews" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Yorumlar
+            <span class="dash-tab-badge" id="reviewsBadge" hidden>0</span>
+        </button>
     </div>
 
     <div class="alert success" id="dashSuccess"></div>
     <div class="alert error" id="dashError"></div>
 
-    <div id="gridArea">
-        <div class="loader">Ürünler yükleniyor...</div>
+    <!-- TAB: ÜRÜNLER -->
+    <div class="dash-tab-panel" data-tab-panel="products">
+        <div class="dash-header">
+            <div>
+                <h2>Ürün Yönetimi</h2>
+                <p class="stats" id="stats">Yükleniyor...</p>
+            </div>
+            <button class="btn" id="addBtn">+ Yeni Ürün Ekle</button>
+        </div>
+        <div class="dash-toolbar">
+            <input type="search" id="searchBox" placeholder="Ürün ara..." spellcheck="false" autocomplete="off">
+            <select id="filterCat">
+                <option value="">Tüm kategoriler</option>
+            </select>
+        </div>
+        <div id="gridArea">
+            <div class="loader">Ürünler yükleniyor...</div>
+        </div>
     </div>
+
+    <!-- TAB: SİTE AYARLARI (banner + popup + iletişim) -->
+    <div class="dash-tab-panel hidden" data-tab-panel="config">
+        <div class="dash-header">
+            <div>
+                <h2>Site Ayarları</h2>
+                <p class="stats">Üst duyuru bandı, karşılama popup ve iletişim bilgileri.</p>
+            </div>
+            <button type="button" class="btn" id="cfgSaveBtn">Tüm Ayarları Kaydet</button>
+        </div>
+
+        <form id="cfgForm" autocomplete="off">
+
+            <!-- ÜST BANNER -->
+            <fieldset class="cfg-block">
+                <legend>
+                    <span class="cfg-block-title">Üst Duyuru Bandı</span>
+                    <label class="cfg-toggle">
+                        <input type="checkbox" id="cfgBannerEnabled">
+                        <span>Aktif</span>
+                    </label>
+                </legend>
+                <p class="cfg-block-hint">Tüm sayfaların en üstünde gösterilen renkli bant. Kampanya, tatil saatleri, duyuru için kullan.</p>
+                <div class="form-group">
+                    <label for="cfgBannerText">Metin</label>
+                    <input type="text" id="cfgBannerText" maxlength="240" placeholder="Örn: Cuma günü mağazamız 13:00'a kadar açık">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cfgBannerCtaText">Buton Yazısı (opsiyonel)</label>
+                        <input type="text" id="cfgBannerCtaText" maxlength="60" placeholder="Detaylar">
+                    </div>
+                    <div class="form-group">
+                        <label for="cfgBannerCtaUrl">Buton Linki (opsiyonel)</label>
+                        <input type="url" id="cfgBannerCtaUrl" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cfgBannerColor">Renk</label>
+                        <select id="cfgBannerColor">
+                            <option value="gold">Altın</option>
+                            <option value="red">Kırmızı (uyarı)</option>
+                            <option value="green">Yeşil (başarı)</option>
+                            <option value="blue">Mavi (bilgi)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="cfg-checkbox">
+                            <input type="checkbox" id="cfgBannerDismissible" checked>
+                            <span>Ziyaretçi kapatabilsin</span>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- KARŞILAMA POPUP -->
+            <fieldset class="cfg-block">
+                <legend>
+                    <span class="cfg-block-title">Karşılama Popup</span>
+                    <label class="cfg-toggle">
+                        <input type="checkbox" id="cfgPopupEnabled">
+                        <span>Aktif</span>
+                    </label>
+                </legend>
+                <p class="cfg-block-hint">Sayfaya ilk girişte ekranın ortasında açılır. Özel gün karşılaması veya kampanya duyurusu için.</p>
+                <div class="form-group">
+                    <label for="cfgPopupTitle">Başlık</label>
+                    <input type="text" id="cfgPopupTitle" maxlength="100" placeholder="Örn: Sevgililer Günü Sürprizi">
+                </div>
+                <div class="form-group">
+                    <label for="cfgPopupMessage">Mesaj</label>
+                    <textarea id="cfgPopupMessage" maxlength="500" rows="3" placeholder="14 Şubat'ta mağazamıza uğrayan her çifte sonsuzluk gülü hediye!"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cfgPopupCtaText">Buton Yazısı (opsiyonel)</label>
+                        <input type="text" id="cfgPopupCtaText" maxlength="60" placeholder="Detaylar">
+                    </div>
+                    <div class="form-group">
+                        <label for="cfgPopupCtaUrl">Buton Linki (opsiyonel)</label>
+                        <input type="url" id="cfgPopupCtaUrl" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cfgPopupDelay">Gecikme (saniye)</label>
+                        <input type="number" id="cfgPopupDelay" min="0" max="60" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label class="cfg-checkbox">
+                            <input type="checkbox" id="cfgPopupOnce" checked>
+                            <span>Aynı oturumda bir kez göster</span>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- İLETİŞİM BİLGİLERİ -->
+            <fieldset class="cfg-block">
+                <legend><span class="cfg-block-title">İletişim Bilgileri</span></legend>
+                <p class="cfg-block-hint">Sitenin altyapısında kullanılan iletişim bilgileri. (Yorum sistemi ve bot için.) Frontend metinleri için ayrı kontrol gerekir.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cfgPhone">Telefon</label>
+                        <input type="text" id="cfgPhone" maxlength="30" placeholder="+90 507 06 00 46">
+                    </div>
+                    <div class="form-group">
+                        <label for="cfgWhatsapp">WhatsApp (sadece rakam)</label>
+                        <input type="text" id="cfgWhatsapp" maxlength="20" placeholder="905070600046">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="cfgInstagram">Instagram kullanıcı adı (@ olmadan)</label>
+                    <input type="text" id="cfgInstagram" maxlength="60" placeholder="hasburakkuyumculuk">
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- TAB: YORUMLAR -->
+    <div class="dash-tab-panel hidden" data-tab-panel="reviews">
+        <div class="dash-header">
+            <div>
+                <h2>Yorum Yönetimi</h2>
+                <p class="stats" id="reviewsStats">Yükleniyor...</p>
+            </div>
+        </div>
+        <div class="dash-toolbar">
+            <select id="reviewsFilter">
+                <option value="all">Tümü</option>
+                <option value="pending" selected>Bekleyen</option>
+                <option value="approved">Onaylı</option>
+                <option value="featured">Öne Çıkan</option>
+                <option value="rejected">Reddedilmiş</option>
+            </select>
+        </div>
+        <div id="reviewsArea">
+            <div class="loader">Yorumlar yükleniyor...</div>
+        </div>
+    </div>
+
 </section>
 
 <!-- ADD/EDIT MODAL -->
@@ -870,9 +1231,233 @@
         }
     }
 
+    // ════════════════════════════════════════════
+    //   TAB SWITCHING
+    // ════════════════════════════════════════════
+    const tabHandlers = {
+        products: () => {/* zaten yüklü */},
+        config: loadSiteConfig,
+        reviews: loadReviewsAdmin,
+    };
+    document.querySelectorAll('.dash-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.toggle('active', b === btn));
+            document.querySelectorAll('.dash-tab-panel').forEach(p =>
+                p.classList.toggle('hidden', p.dataset.tabPanel !== tab));
+            const handler = tabHandlers[tab];
+            if (handler) handler();
+        });
+    });
+
+    // ════════════════════════════════════════════
+    //   SİTE CONFIG TAB
+    // ════════════════════════════════════════════
+    const API_SITE_CONFIG = '/api/admin/site-config';
+    let configLoaded = false;
+
+    async function loadSiteConfig() {
+        if (configLoaded) return; // Bir kere yükle, manuel reload için sayfayı yenile
+        try {
+            const data = await api(API_SITE_CONFIG);
+            $('cfgBannerEnabled').checked = !!data.banner?.enabled;
+            $('cfgBannerText').value = data.banner?.text || '';
+            $('cfgBannerCtaText').value = data.banner?.ctaText || '';
+            $('cfgBannerCtaUrl').value = data.banner?.ctaUrl || '';
+            $('cfgBannerColor').value = data.banner?.color || 'gold';
+            $('cfgBannerDismissible').checked = data.banner?.dismissible !== false;
+
+            $('cfgPopupEnabled').checked = !!data.popup?.enabled;
+            $('cfgPopupTitle').value = data.popup?.title || '';
+            $('cfgPopupMessage').value = data.popup?.message || '';
+            $('cfgPopupCtaText').value = data.popup?.ctaText || '';
+            $('cfgPopupCtaUrl').value = data.popup?.ctaUrl || '';
+            $('cfgPopupDelay').value = data.popup?.showAfterSeconds || 3;
+            $('cfgPopupOnce').checked = data.popup?.showOncePerSession !== false;
+
+            $('cfgPhone').value = data.contact?.phone || '';
+            $('cfgWhatsapp').value = data.contact?.whatsapp || '';
+            $('cfgInstagram').value = data.contact?.instagram || '';
+            configLoaded = true;
+        } catch (e) {
+            flash(e.message || 'Site ayarları yüklenemedi.', 'error');
+        }
+    }
+
+    $('cfgSaveBtn').addEventListener('click', async () => {
+        const btn = $('cfgSaveBtn');
+        const orig = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Kaydediliyor...';
+        const payload = {
+            banner: {
+                enabled: $('cfgBannerEnabled').checked,
+                text: $('cfgBannerText').value,
+                ctaText: $('cfgBannerCtaText').value,
+                ctaUrl: $('cfgBannerCtaUrl').value,
+                color: $('cfgBannerColor').value,
+                dismissible: $('cfgBannerDismissible').checked,
+            },
+            popup: {
+                enabled: $('cfgPopupEnabled').checked,
+                title: $('cfgPopupTitle').value,
+                message: $('cfgPopupMessage').value,
+                ctaText: $('cfgPopupCtaText').value,
+                ctaUrl: $('cfgPopupCtaUrl').value,
+                showAfterSeconds: Number($('cfgPopupDelay').value || 3),
+                showOncePerSession: $('cfgPopupOnce').checked,
+            },
+            contact: {
+                phone: $('cfgPhone').value,
+                whatsapp: $('cfgWhatsapp').value,
+                instagram: $('cfgInstagram').value,
+            },
+        };
+        try {
+            await api(API_SITE_CONFIG, { method: 'POST', body: JSON.stringify(payload) });
+            flash('Site ayarları kaydedildi. Site önbelleği 30 saniye içinde yenilenir.');
+        } catch (e) {
+            flash(e.message || 'Kaydedilemedi.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = orig;
+        }
+    });
+
+    // ════════════════════════════════════════════
+    //   REVIEWS YÖNETİMİ TAB
+    // ════════════════════════════════════════════
+    const API_REVIEWS_ADMIN = '/api/admin/reviews';
+    let allReviews = [];
+
+    async function loadReviewsAdmin() {
+        $('reviewsArea').innerHTML = '<div class="loader">Yorumlar yükleniyor...</div>';
+        try {
+            const data = await api(API_REVIEWS_ADMIN);
+            allReviews = data.reviews || [];
+            const stats = data.stats || {};
+            $('reviewsStats').textContent =
+                `Toplam ${stats.total || 0} · Bekleyen ${stats.pending || 0} · ` +
+                `Onaylı ${stats.approved || 0} · Öne Çıkan ${stats.featured || 0}`;
+            // Tab badge
+            const badge = $('reviewsBadge');
+            if (stats.pending > 0) {
+                badge.textContent = stats.pending;
+                badge.hidden = false;
+            } else {
+                badge.hidden = true;
+            }
+            renderReviewsList();
+        } catch (e) {
+            $('reviewsArea').innerHTML =
+                `<div class="empty"><h3>Yüklenemedi</h3><p>${escapeHtml(e.message)}</p></div>`;
+        }
+    }
+
+    function renderReviewsList() {
+        const filter = $('reviewsFilter').value;
+        let list = allReviews;
+        if (filter === 'pending') list = list.filter(r => r.status === 'pending');
+        else if (filter === 'approved') list = list.filter(r => r.status === 'approved' && !r.featured);
+        else if (filter === 'featured') list = list.filter(r => r.featured);
+        else if (filter === 'rejected') list = list.filter(r => r.status === 'rejected');
+
+        if (list.length === 0) {
+            $('reviewsArea').innerHTML =
+                '<div class="empty"><h3>Bu kategoride yorum yok</h3><p>Filtreyi değiştirip tekrar dene.</p></div>';
+            return;
+        }
+
+        $('reviewsArea').innerHTML = list.map(r => {
+            const d = new Date(r.createdAt);
+            const dateStr = d.toLocaleDateString('tr-TR') + ' ' +
+                d.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            const stars = '★'.repeat(r.rating) +
+                '<span style="opacity:0.3;">' + '★'.repeat(5 - r.rating) + '</span>';
+            const statusBadge = r.featured
+                ? '<span class="review-row-status featured">Öne Çıkan</span>'
+                : `<span class="review-row-status ${r.status}">${
+                    r.status === 'pending' ? 'Bekliyor' :
+                    r.status === 'approved' ? 'Onaylı' :
+                    r.status === 'rejected' ? 'Reddedildi' : r.status
+                }</span>`;
+            const cls = r.featured ? 'is-featured' : `is-${r.status}`;
+
+            const actions = [];
+            if (r.status !== 'approved' || r.featured === false) {
+                if (r.status !== 'approved') actions.push(
+                    `<button class="btn small" data-action="approve" data-id="${r.id}">Onayla</button>`);
+                if (!r.featured) actions.push(
+                    `<button class="btn small" data-action="feature" data-id="${r.id}">Öne Çıkar</button>`);
+            }
+            if (r.featured) actions.push(
+                `<button class="btn secondary small" data-action="unfeature" data-id="${r.id}">Öne Çıkmadan Kaldır</button>`);
+            if (r.status !== 'rejected') actions.push(
+                `<button class="btn secondary small" data-action="reject" data-id="${r.id}">Reddet</button>`);
+            actions.push(
+                `<button class="btn danger small" data-action="delete" data-id="${r.id}">Sil</button>`);
+
+            return `
+                <div class="review-row ${cls}">
+                    <div class="review-row-head">
+                        <span class="review-row-name">${escapeHtml(r.name)}</span>
+                        <span class="review-row-stars">${stars}</span>
+                        ${statusBadge}
+                        <span class="review-row-meta">${escapeHtml(r.location || '')} · ${dateStr}</span>
+                    </div>
+                    <p class="review-row-text">${escapeHtml(r.text)}</p>
+                    <div class="review-row-actions">${actions.join('')}</div>
+                </div>
+            `;
+        }).join('');
+
+        // Bind action buttons
+        $('reviewsArea').querySelectorAll('button[data-action]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const action = btn.dataset.action;
+                const id = btn.dataset.id;
+                if (action === 'delete' && !confirm('Bu yorumu kalıcı olarak silmek istediğinden emin misin?')) return;
+                btn.disabled = true;
+                try {
+                    if (action === 'delete') {
+                        await api(API_REVIEWS_ADMIN + '?id=' + encodeURIComponent(id), { method: 'DELETE' });
+                        flash('Yorum silindi.');
+                    } else {
+                        await api(API_REVIEWS_ADMIN + '?id=' + encodeURIComponent(id), {
+                            method: 'PATCH',
+                            body: JSON.stringify({ action }),
+                        });
+                        flash('Yorum güncellendi.');
+                    }
+                    // Reload reviews
+                    configLoaded = false;
+                    await loadReviewsAdmin();
+                } catch (e) {
+                    flash(e.message || 'İşlem başarısız.', 'error');
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    $('reviewsFilter').addEventListener('change', renderReviewsList);
+
+    // İlk açılışta bekleyen yorum sayısını badge'e koymak için sessizce çek
+    async function pollReviewsBadge() {
+        try {
+            const data = await api(API_REVIEWS_ADMIN);
+            const pending = (data.stats && data.stats.pending) || 0;
+            const badge = $('reviewsBadge');
+            if (pending > 0) { badge.textContent = pending; badge.hidden = false; }
+            else { badge.hidden = true; }
+        } catch (e) { /* sessizce yut */ }
+    }
+
     // ─── BOOT ───
     if (getToken()) {
-        showDashboard().catch(() => {/* will fall back to login on 401 */});
+        showDashboard()
+            .then(pollReviewsBadge)
+            .catch(() => {/* will fall back to login on 401 */});
     }
 })();
 </script>
