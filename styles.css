@@ -53,7 +53,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     line-height: 1.6;
-    min-height: 100vh;
+    min-height: 100vh; min-height: 100svh;
     width: 100%;
     position: relative;
     overscroll-behavior-y: none;
@@ -233,6 +233,7 @@ img { max-width: 100%; display: block; }
 .nav.scrolled {
     padding: 10px 28px;
     background: rgba(6, 14, 44, 0.92);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
     backdrop-filter: blur(18px) saturate(140%);
     -webkit-backdrop-filter: blur(18px) saturate(140%);
     border-bottom: 1px solid var(--hairline);
@@ -463,6 +464,7 @@ img { max-width: 100%; display: block; }
     bottom: 0;
     width: 100vw;
     height: 100vh;
+    height: 100svh;
     height: -webkit-fill-available;
     background: rgba(3, 8, 31, 0.98);
     -webkit-backdrop-filter: blur(20px);
@@ -614,7 +616,7 @@ img { max-width: 100%; display: block; }
 
 /* ─── HERO ─── */
 .hero {
-    min-height: 100vh;
+    min-height: 100vh; min-height: 100svh;
     display: grid;
     place-items: center;
     padding: 140px 28px 180px;
@@ -766,6 +768,7 @@ img { max-width: 100%; display: block; }
     border-radius: 100px;
     margin-bottom: 32px;
     background: rgba(6, 14, 44, 0.5);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     animation: fade-up 1s 0.1s both;
 }
@@ -1004,6 +1007,7 @@ img { max-width: 100%; display: block; }
     transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     position: relative;
     overflow: hidden;
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     text-decoration: none;
     color: inherit;
@@ -1395,6 +1399,7 @@ img { max-width: 100%; display: block; }
     padding: 68px 40px;
     position: relative;
     overflow: hidden;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
 
@@ -1601,6 +1606,7 @@ img { max-width: 100%; display: block; }
     border: 1px solid var(--hairline);
     border-radius: var(--radius);
     padding: 36px;
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
 }
 
@@ -1714,6 +1720,7 @@ a.contact-item:hover {
     font-weight: 500;
     letter-spacing: 0.06em;
     text-decoration: none;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
@@ -2083,6 +2090,7 @@ a.contact-item:hover {
     height: 36px;
     border-radius: 50%;
     background: rgba(3, 8, 31, 0.6);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--hairline);
@@ -2250,6 +2258,7 @@ a.contact-item:hover {
     z-index: 4;
     padding: 4px 12px;
     background: rgba(3, 8, 31, 0.7);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     border: 1px solid var(--hairline);
     border-radius: 100px;
@@ -2301,6 +2310,7 @@ a.contact-item:hover {
     height: 36px;
     border-radius: 50%;
     background: rgba(3, 8, 31, 0.7);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     border: 1px solid var(--hairline);
     display: grid;
@@ -4017,6 +4027,7 @@ h2 em, h3 em {
     position: fixed;
     inset: 0;
     background: rgba(6, 14, 44, 0.75);
+    -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     display: flex;
@@ -4283,4 +4294,175 @@ h2 em, h3 em {
     padding: 4px 12px;
     border-radius: 999px;
     box-shadow: 0 6px 16px rgba(212, 175, 55, 0.3);
+}
+
+/* ═════════════════════════════════════════════
+   MOBILE FIXES — iOS safe-area + Android tap targets
+   ═════════════════════════════════════════════ */
+/* iPhone X+ home indicator çubuğunun altına FAB/chat taşmasın */
+@supports (padding: max(0px)) {
+    .fab {
+        bottom: max(28px, env(safe-area-inset-bottom, 0));
+        right: max(28px, env(safe-area-inset-right, 0));
+    }
+    .chat-toggle {
+        bottom: max(96px, calc(96px + env(safe-area-inset-bottom, 0)));
+        right: max(28px, env(safe-area-inset-right, 0));
+    }
+    .chat-panel {
+        padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+}
+
+/* iOS Safari'de form input'ları zoom yapmasın diye font-size minimum 16px */
+@media (max-width: 768px) {
+    .review-form input,
+    .review-form select,
+    .review-form textarea,
+    .product-search-input,
+    .chat-input,
+    input[type="text"],
+    input[type="search"],
+    input[type="url"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Popup mobil — küçük ekranlarda full-bleed ama kenar boşluklu */
+@media (max-width: 600px) {
+    .hb-popup-backdrop {
+        padding: 16px;
+    }
+    .hb-popup {
+        padding: 44px 24px 28px;
+        border-radius: 18px;
+    }
+    .hb-popup-title { font-size: 1.55rem; }
+    .hb-popup-message { font-size: 0.94rem; }
+    .hb-popup-decoration { width: 50px; height: 50px; top: -22px; padding: 10px; }
+}
+
+/* Banner mobil — daha kompakt + safe-area top */
+@media (max-width: 600px) {
+    .hb-banner-inner {
+        padding: 9px 16px;
+        gap: 10px;
+        font-size: 0.84rem;
+        text-align: center;
+    }
+    .hb-banner-cta { font-size: 0.84rem; }
+    .hb-banner-close { width: 24px; height: 24px; font-size: 1.15rem; }
+}
+
+/* Yorum form mobil — kompakt padding */
+@media (max-width: 600px) {
+    .review-form-wrap {
+        padding: 28px 20px;
+        margin-top: 56px;
+        border-radius: 16px;
+    }
+    .review-form-head h3 { font-size: 1.5rem; }
+    .review-form-actions { flex-direction: column-reverse; align-items: stretch; }
+    .review-form-actions .btn { width: 100%; text-align: center; }
+}
+
+/* Tab nav admin paneli mobil — yatay scroll yerine wrap */
+@media (max-width: 600px) {
+    .dash-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    .dash-tabs::-webkit-scrollbar { display: none; }
+    .dash-tab-btn {
+        flex-shrink: 0;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Touch target boyutu — Apple guideline 44px minimum */
+@media (max-width: 768px) {
+    .nav-cta,
+    .btn,
+    .filter-pill,
+    .cat-section-tag,
+    .live-pill,
+    .fullscreen-toggle {
+        min-height: 40px;
+    }
+    .product-search-clear {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Etkinlik kartları — single column under 600px */
+@media (max-width: 600px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+    .event-card { padding: 22px 20px 20px; }
+}
+
+/* Google reviews CTA — dikey stack */
+@media (max-width: 720px) {
+    .google-reviews-cta {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+    }
+    .google-reviews-content h3 { font-size: 1.45rem; }
+    .google-reviews-btn { width: 100%; justify-content: center; }
+}
+
+/* Fiyat sayfası fullscreen modu mobile — dikey scroll mevcut, font biraz küçült */
+@media (max-width: 480px) {
+    body.prices-fullscreen #pricesSection {
+        padding: 16px !important;
+    }
+    body.prices-fullscreen .hero-prices {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    body.prices-fullscreen .hero-prices .price-value { font-size: 1.85rem; }
+    body.prices-fullscreen .ziynet-prices .price-value { font-size: 1.2rem; }
+    body.prices-fullscreen .hero-price-name { font-size: 1.4rem; }
+    body.prices-fullscreen .ziynet-name { font-size: 1.15rem; }
+}
+
+/* iOS Safari address bar gizleme tetikleyicisi (fullscreen modu için) */
+body.prices-fullscreen {
+    /* Touch action manipulation: pinch-zoom dışındaki etkileri kapat */
+    touch-action: pan-y;
+}
+
+/* Popup içindeki büyük scroll alanı — iOS body scroll lock'una takılmasın */
+.hb-popup-backdrop {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+.hb-popup {
+    max-height: 90vh;
+    max-height: 90svh;
+    overflow-y: auto;
+}
+
+/* Banner aktifken nav padding hesabı (iOS Safari sticky nav fix) */
+body.has-hb-banner .nav {
+    position: sticky;
+}
+
+/* Hamburger açıkken arka plan scroll'u durdur — iOS için body class */
+body.menu-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
 }
