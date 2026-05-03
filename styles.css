@@ -4466,3 +4466,39 @@ body.menu-open {
     position: fixed;
     width: 100%;
 }
+
+/* ═════════════════════════════════════════════
+   MOBİL MENÜ KAPATMA BUTONU — iPhone için kritik
+   Hamburger menu açıldığında sağ üstte net X butonu
+   ═════════════════════════════════════════════ */
+.mobile-menu-close {
+    position: absolute;
+    top: max(20px, env(safe-area-inset-top, 0));
+    right: max(20px, env(safe-area-inset-right, 0));
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(212, 175, 55, 0.45);
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--gold-200);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    z-index: 10;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+.mobile-menu-close:hover,
+.mobile-menu-close:active {
+    background: var(--gold-400);
+    color: var(--navy-900);
+    border-color: var(--gold-400);
+    transform: rotate(90deg);
+}
+.mobile-menu-close svg {
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+}

@@ -17,6 +17,27 @@ const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (hamburger.dataset.bound === '1') return;
         hamburger.dataset.bound = '1';
 
+        // Sağ üste kapatma butonu enjekte et — iPhone'da hamburger
+        // bazen mobile-menu altında kalıp tıklanamıyordu. Net bir X olsun.
+        if (!mobileMenu.querySelector('.mobile-menu-close')) {
+            const closeBtn = document.createElement('button');
+            closeBtn.type = 'button';
+            closeBtn.className = 'mobile-menu-close';
+            closeBtn.setAttribute('aria-label', 'Menüyü kapat');
+            closeBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            `;
+            mobileMenu.insertBefore(closeBtn, mobileMenu.firstChild);
+        }
+
+        function close() {
+            mobileMenu.classList.remove('open');
+            hamburger.classList.remove('active');
+            document.body.style.overflow = '';
+        }
         function toggle(e) {
             if (e) e.preventDefault();
             const isOpen = mobileMenu.classList.toggle('open');
@@ -27,12 +48,20 @@ const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
         // Hamburger: click only (works on all touch devices for buttons)
         hamburger.addEventListener('click', toggle);
 
+        // X butonu kapatır
+        mobileMenu.querySelector('.mobile-menu-close')?.addEventListener('click', close);
+
         // Menu links: native navigation. Just reset body scroll on click —
         // page change will tear the menu down anyway. NEVER preventDefault.
         mobileMenu.querySelectorAll('a').forEach(a => {
             a.addEventListener('click', () => {
                 document.body.style.overflow = '';
             });
+        });
+
+        // ESC tuşu (klavyeli kullanıcılar için) ve menünün boş alanına tıklama
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('open')) close();
         });
     }
 
