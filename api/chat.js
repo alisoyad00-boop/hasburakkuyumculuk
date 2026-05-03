@@ -50,11 +50,9 @@ function buildPriceBlock(prices) {
         formatPrice(prices, 'yarim-altin', '- Yarım altın'),
         formatPrice(prices, 'tam-altin', '- Tam altın'),
         formatPrice(prices, '22-ayar-bilezik', '- 22 ayar bilezik (gram)'),
-        formatPrice(prices, '18-ayar-altin', '- 18 ayar altın (gram)'),
         formatPrice(prices, '14-ayar-altin', '- 14 ayar altın (gram)'),
         formatPrice(prices, 'cumhuriyet-altini', '- Cumhuriyet altını'),
         formatPrice(prices, 'ata-altin', '- Ata altın'),
-        formatPrice(prices, 'gumus', '- Gümüş (gram)'),
     ];
     return lines.join('\n');
 }
@@ -74,14 +72,14 @@ function buildSystemPrompt(prices) {
 ${buildPriceBlock(prices)}
 
 ════════ ÜRÜN KATEGORİLERİMİZ ════════
-1. YÜZÜK & ALYANS: Klasik Alyans, 14/18/22 Ayar Alyans, Gündelik Yüzük, Pırlanta Tek Taş, Akik & Doğal Taş Yüzük, Erkek Yüzük, Minila Eklem Yüzük, Şahmeran Yüzük
+1. YÜZÜK & ALYANS: Klasik Alyans, 14/22 Ayar Alyans, Gündelik Yüzük, Pırlanta Tek Taş, Akik & Doğal Taş Yüzük, Erkek Yüzük, Minila Eklem Yüzük, Şahmeran Yüzük
 2. KOLYE: Klasik Kolye, Set Kolye, Akıtma Kolye, Su Yolu Kolye, Singapur Zincir, Karzai Kolye, Kolye Uçları
 3. KÜPE: Halka Küpe, Yapıştırma Küpe, Sallama Küpe, Pırlanta Küpe, Çocuk Küpesi
 4. BİLEZİK & BİLEKLİK: Trabzon Hasırı Bilezik, Klasik Bilezik, Bileklik, Kelepçe Bileklik, Erkek Bileklik, Çocuk Bileziği
 5. YATIRIM ALTINI: Çeyrek, Yarım, Tam, Cumhuriyet, Ata, Reşat, Hamit altını ve Yatırımlık (22 ayar) Bilezik
 6. ÖZEL KOLEKSİYON: Çocuk Künye, Burun Hızması, Altın Kemer, Altın Ayakkabı, Taç, Bayan & Erkek Saat, Erkek Zincir, Yöresel Tasarımlar
 
-AYAR SEÇENEKLERİMİZ: 14, 18, 22 ayar ve yatırımlık 24 ayar (has altın) — çoğu üründe tüm ayarlar mevcut.
+AYAR SEÇENEKLERİMİZ: 14, 22 ayar ve yatırımlık 24 ayar (has altın). Mağazamızda 18 ayar ve gümüş ürün satışı yapılmamaktadır.
 
 NEDEN BİZİ TERCİH ETMELİSİNİZ:
 - Değişim Politikası: Her parça için ömür boyu değişim hakkı, fark sadece günlük altın kuruyla.

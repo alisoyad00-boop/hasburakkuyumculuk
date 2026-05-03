@@ -393,7 +393,7 @@ if (counters.length && !prefersReduced) {
                 const target = parseFloat(el.dataset.count);
                 const suffix = el.dataset.suffix || '';
                 const prefix = el.dataset.prefix || '';
-                const dur = 1600;
+                const dur = 2800;
                 const start = performance.now();
                 function tick(now) {
                     const t = Math.min(1, (now - start) / dur);
@@ -575,18 +575,43 @@ async function initDynamicProducts() {
         (byCat[p.category] = byCat[p.category] || []).push(p);
     });
 
-    // Fill grids
+    // Fill grids + section header'a alt-kategori chip'leri ekle
     const grids = root.querySelectorAll('[data-cat-grid]');
     grids.forEach(grid => {
         const cat = grid.getAttribute('data-cat-grid');
         const list = byCat[cat] || [];
+        const section = grid.closest('.cat-section');
         if (!list.length) {
-            // Hide this category section entirely
-            const section = grid.closest('.cat-section');
             if (section) section.style.display = 'none';
             return;
         }
         grid.innerHTML = list.map(renderProductCard).join('');
+
+        // Bu kategoride hangi alt-kategoriler var? Tag'leri topla.
+        // Kullanıcı "küpeye tıkladığımda halka/yapıştırma/sallama vibe alamıyorum"
+        // dedi — chip'lerle hangi alt türler olduğunu hemen görsün.
+        if (section) {
+            const head = section.querySelector('.cat-section-head');
+            if (head && !head.querySelector('.cat-section-tags')) {
+                const tagSet = new Set();
+                list.forEach(p => { if (p.tag) tagSet.add(p.tag); });
+                const uniqueTags = [...tagSet];
+                if (uniqueTags.length >= 2) {
+                    const tagsWrap = document.createElement('div');
+                    tagsWrap.className = 'cat-section-tags';
+                    // İlk 6 tag'i göster, fazlasını "+N" ile özetle
+                    const visible = uniqueTags.slice(0, 6);
+                    const more = uniqueTags.length - visible.length;
+                    tagsWrap.innerHTML = visible.map(t =>
+                        `<span class="cat-section-tag">${escapeAttr(t)}</span>`
+                    ).join('') + (more > 0 ? `<span class="cat-section-tag" style="opacity:0.6;">+${more}</span>` : '');
+                    // Line'ın hemen önüne ekle
+                    const line = head.querySelector('.cat-section-line');
+                    if (line) head.insertBefore(tagsWrap, line);
+                    else head.appendChild(tagsWrap);
+                }
+            }
+        }
     });
 
     if (loading) loading.remove();
@@ -682,20 +707,38 @@ function initProductSearch() {
 
         if (result) {
             if (matchCount === 0) {
+                const sectionCount = sectionMatches.size;
                 result.textContent = `"${rawQuery.trim()}" için sonuç bulunamadı. Aradığınızı bulamadıysanız bize ulaşın.`;
                 result.classList.add('is-empty');
             } else {
-                result.textContent = `${matchCount} ürün bulundu.`;
+                const sectionCount = sectionMatches.size;
+                result.textContent = sectionCount > 1
+                    ? `${matchCount} ürün · ${sectionCount} kategoride bulundu`
+                    : `${matchCount} ürün bulundu`;
                 result.classList.remove('is-empty');
             }
             result.hidden = false;
+        }
+
+        // Eşleşen ilk kategoriye scroll — kategori başlığı kullanıcının gözünden
+        // kayboluyor sorununun fix'i. Sadece input doluyken + ilk eşleşme
+        // viewport dışındaysa hareket et.
+        if (matchCount > 0 && q.length >= 2) {
+            const firstHit = sections.find(s => sectionMatches.get(s));
+            if (firstHit) {
+                const rect = firstHit.getBoundingClientRect();
+                const navOffset = 100;
+                if (rect.top < navOffset || rect.top > window.innerHeight * 0.6) {
+                    firstHit.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
         }
     }
 
     let debounceId;
     input.addEventListener('input', () => {
         clearTimeout(debounceId);
-        debounceId = setTimeout(() => applyFilter(input.value), 80);
+        debounceId = setTimeout(() => applyFilter(input.value), 120);
     });
 
     if (clearBtn) {

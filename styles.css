@@ -1088,6 +1088,9 @@ img { max-width: 100%; display: block; }
 /* Category section heading */
 .cat-section {
     margin-bottom: 80px;
+    /* Anchor link tıklanınca header (eyebrow + h3) viewport'ta görünsün diye
+       nav yüksekliği kadar offset bırakıyoruz. */
+    scroll-margin-top: 110px;
 }
 
 .cat-section-head {
@@ -1110,11 +1113,74 @@ img { max-width: 100%; display: block; }
     font-weight: 500;
 }
 
+/* Alt-kategori chip rozetleri (ürünler.html cat-section-head içinde) */
+.cat-section-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-left: 4px;
+    max-width: 50%;
+}
+.cat-section-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    color: var(--gold-200);
+    white-space: nowrap;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.cat-section-tag:hover {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: rgba(212, 175, 55, 0.5);
+}
+@media (max-width: 720px) {
+    .cat-section-tags { max-width: 100%; margin-top: 8px; }
+}
+
 .cat-section-line {
     flex: 1;
     height: 1px;
     background: linear-gradient(90deg, var(--gold-500), transparent);
     opacity: 0.5;
+}
+
+/* CTA bandı altındaki sosyal/iletişim chip satırı (anasayfa) */
+.cta-socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 18px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(212, 175, 55, 0.18);
+}
+.cta-social {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(212, 175, 55, 0.06);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    color: var(--gold-100);
+    font-size: 0.92rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+.cta-social svg {
+    width: 18px; height: 18px;
+    color: var(--gold-300);
+    flex-shrink: 0;
+}
+.cta-social:hover {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--gold-400);
+    color: var(--gold-200);
+    transform: translateY(-2px);
 }
 
 /* ─── ABOUT SPLIT (home & about) ─── */
