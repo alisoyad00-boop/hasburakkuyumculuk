@@ -864,7 +864,7 @@ function initChatbot() {
         </button>
     </form>
     <div class="chat-footer">
-        Yapay zekâ ile güçlendirilmiştir · Detaylı bilgi için <a href="tel:+905070600046">0507 06 00 46</a>
+        Yapay zekâ ile güçlendirilmiştir · Detaylı bilgi için <a href="tel:+905470060046">0547 006 00 46</a>
     </div>
 </aside>
 `;
@@ -895,10 +895,10 @@ function initChatbot() {
     // Make phone/whatsapp/urls clickable inside bot replies
     function linkify(text) {
         let html = escapeHTML(text);
-        // phone: 0507 06 00 46 or +90 344 415 27 65
+        // phone: 0547 006 00 46 or +90 344 415 27 65
         html = html.replace(
             /(\+?90\s?)?(?:0\s?)?532\s?679\s?12\s?01/g,
-            '<a href="tel:+905070600046">$&</a>'
+            '<a href="tel:+905470060046">$&</a>'
         );
         // wa.me links
         html = html.replace(
@@ -992,9 +992,9 @@ function initChatbot() {
                 body: JSON.stringify({ message: trimmed, history: history.slice(0, -1) }),
             });
             const data = await res.json().catch(() => ({}));
-            reply = (data && data.reply) || 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen birazdan tekrar deneyin veya bizi (0507) 06 00 46 numaradan arayın.';
+            reply = (data && data.reply) || 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen birazdan tekrar deneyin veya bizi (0547) 006 00 46 numaradan arayın.';
         } catch (e) {
-            reply = 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin veya (0507) 06 00 46 numaradan bize ulaşın.';
+            reply = 'Bağlantı hatası oluştu. Lütfen internet bağlantınızı kontrol edin veya (0547) 006 00 46 numaradan bize ulaşın.';
         }
 
         removeTyping();

@@ -70,8 +70,8 @@ function buildSystemPrompt(prices) {
 ════════ MAĞAZA BİLGİLERİ ════════
 • İsim: Hasburak Sarrafiye
 • Adres: Güneşli Mah., Cumhuriyet Cd., 46357 Elbistan / Kahramanmaraş
-• Telefon: +90 507 06 00 46  (0507 06 00 46)
-• WhatsApp: wa.me/905070600046
+• Telefon: +90 547 006 00 46  (0547 006 00 46)
+• WhatsApp: wa.me/905470060046
 • Çalışma saatleri: Pazartesi — Cumartesi · 09:00 — 20:00
 • Pazar: Kapalı
 
@@ -115,7 +115,7 @@ export default async function handler(req, res) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
         return res.status(500).json({
-            reply: 'Asistan şu anda kurulum aşamasında. Lütfen (0507) 06 00 46 numaradan bize ulaşın.',
+            reply: 'Asistan şu anda kurulum aşamasında. Lütfen (0547) 006 00 46 numaradan bize ulaşın.',
             error: 'GEMINI_API_KEY missing'
         });
     }
@@ -192,7 +192,7 @@ export default async function handler(req, res) {
         if (!geminiRes) {
             console.error('All Gemini models failed:', lastErr);
             return res.status(200).json({
-                reply: 'Asistan şu anda yoğunluk nedeniyle yanıt veremiyor. Lütfen birazdan tekrar deneyin veya bize WhatsApp (+90 507 06 00 46) üzerinden yazın.'
+                reply: 'Asistan şu anda yoğunluk nedeniyle yanıt veremiyor. Lütfen birazdan tekrar deneyin veya bize WhatsApp (+90 547 006 00 46) üzerinden yazın.'
             });
         }
 
@@ -204,7 +204,7 @@ export default async function handler(req, res) {
     } catch (e) {
         console.error('chat handler error:', e);
         return res.status(200).json({
-            reply: 'Teknik bir sorun oluştu. Bize (0507) 06 00 46 numaradan ulaşabilirsiniz.'
+            reply: 'Teknik bir sorun oluştu. Bize (0547) 006 00 46 numaradan ulaşabilirsiniz.'
         });
     }
 }

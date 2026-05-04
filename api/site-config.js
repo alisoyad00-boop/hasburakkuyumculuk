@@ -27,8 +27,8 @@ const DEFAULT_CONFIG = {
         showOncePerSession: true,
     },
     contact: {
-        phone: '+90 507 06 00 46',
-        whatsapp: '905070600046',
+        phone: '+90 547 006 00 46',
+        whatsapp: '905470060046',
         instagram: 'hasburakkuyumculuk',
     },
     updatedAt: null,
