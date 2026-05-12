@@ -179,6 +179,37 @@ async function fetchPriceHTML(user, pass) {
 }
 
 // ────────────────────────────────────────────
+//   PUBLIC HELPER (other endpoints'ın kullanması için)
+//   Cache'li veya fresh fiyatları döner. Hata olursa null.
+//   Aynı serverless instance içinde memory'den çekildiği için
+//   ek HTTP round-trip yok.
+// ────────────────────────────────────────────
+export async function getCurrentPrices() {
+    const now = Date.now();
+    if (cachedPrices && (now - cachedAt) < CACHE_TTL_MS) {
+        return cachedPrices;
+    }
+    const user = process.env.ELBISTAN_USER;
+    const pass = process.env.ELBISTAN_PASS;
+    if (!user || !pass) return cachedPrices || null;
+    try {
+        const html = await fetchPriceHTML(user, pass);
+        const prices = parsePrices(html);
+        if (!prices.length) return cachedPrices || null;
+        cachedPrices = {
+            updatedAt: new Date().toISOString(),
+            source: 'elbistanaltin.com',
+            prices,
+        };
+        cachedAt = now;
+        return cachedPrices;
+    } catch (e) {
+        console.warn('getCurrentPrices error:', e.message);
+        return cachedPrices || null;
+    }
+}
+
+// ────────────────────────────────────────────
 //   HANDLER
 // ────────────────────────────────────────────
 export default async function handler(req, res) {

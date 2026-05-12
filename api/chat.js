@@ -1,59 +1,52 @@
 // ════════════════════════════════════════════
 //   Hasburak Chatbot — Vercel serverless endpoint
 //   POST /api/chat  { message, history? }
-//   Uses Google Gemini 1.5 Flash (free tier) + truncgil gold prices.
-//   Requires env var: GEMINI_API_KEY
+//   Uses Google Gemini 2.5 Flash + Elbistan Kuyumcular Derneği fiyatları.
+//   Requires env var: GEMINI_API_KEY, ELBISTAN_USER, ELBISTAN_PASS
 // ════════════════════════════════════════════
 
-// Tiny in-memory price cache so each Gemini call doesn't refetch truncgil
-// (Vercel may reuse a warm instance for ~10-15 mins; cold starts re-fetch)
-let cachedPrices = null;
-let cachedAt = 0;
-const PRICE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+import { getCurrentPrices } from './altin-fiyatlari.js';
 
-async function getGoldPrices() {
-    const now = Date.now();
-    if (cachedPrices && (now - cachedAt) < PRICE_TTL_MS) {
-        return cachedPrices;
+// Format: "Güncel altın fiyatları (DD.MM.YYYY HH:mm itibarıyla, kaynak Elbistan Kuyumcular Derneği):"
+function buildPriceBlock(data) {
+    if (!data || !Array.isArray(data.prices) || !data.prices.length) {
+        return 'Güncel altın fiyatı şu anda alınamıyor — müşteriye mağazadan teyit almasını öner.';
     }
+    let updateTime = 'bugün';
     try {
-        const res = await fetch('https://finans.truncgil.com/today.json', {
-            headers: { 'User-Agent': 'Mozilla/5.0 Hasburak-Chatbot' },
-            // 4 second timeout to avoid serverless hang
-            signal: AbortSignal.timeout(4000),
-        });
-        if (!res.ok) throw new Error(`truncgil ${res.status}`);
-        const data = await res.json();
-        cachedPrices = data;
-        cachedAt = now;
-        return data;
-    } catch (e) {
-        console.warn('gold price fetch failed:', e.message);
-        return cachedPrices || null; // return stale if we have it
-    }
-}
+        const d = new Date(data.updatedAt);
+        if (!isNaN(d)) {
+            updateTime = d.toLocaleString('tr-TR', {
+                timeZone: 'Europe/Istanbul',
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit',
+            });
+        }
+    } catch (e) { /* ignore */ }
 
-function formatPrice(prices, key, label) {
-    const p = prices?.[key];
-    if (!p) return `${label}: mevcut değil`;
-    const alis = p['Alış'] || p.alis || p.Alis || '?';
-    const satis = p['Satış'] || p.satis || p.Satis || '?';
-    return `${label}: Alış ${alis} TL · Satış ${satis} TL`;
-}
+    // Elbistan prices array → name lookup
+    const map = {};
+    data.prices.forEach(p => { map[p.name] = p; });
 
-function buildPriceBlock(prices) {
-    if (!prices) return 'Güncel altın fiyatı şu anda alınamıyor.';
+    const row = (key, label) => {
+        const p = map[key];
+        if (!p) return null;
+        return `- ${label}: Alış ${p.alis} TL · Satış ${p.satis} TL`;
+    };
+
     const lines = [
-        `Güncel altın fiyatları (${prices.Update_Date || prices.update_date || 'bugün'}):`,
-        formatPrice(prices, 'gram-altin', '- Gram altın'),
-        formatPrice(prices, 'ceyrek-altin', '- Çeyrek altın'),
-        formatPrice(prices, 'yarim-altin', '- Yarım altın'),
-        formatPrice(prices, 'tam-altin', '- Tam altın'),
-        formatPrice(prices, '22-ayar-bilezik', '- 22 ayar bilezik (gram)'),
-        formatPrice(prices, '14-ayar-altin', '- 14 ayar altın (gram)'),
-        formatPrice(prices, 'cumhuriyet-altini', '- Cumhuriyet altını'),
-        formatPrice(prices, 'ata-altin', '- Ata altın'),
-    ];
+        `Güncel altın fiyatları (Elbistan Kuyumcular Derneği · ${updateTime} itibarıyla):`,
+        row('22 AYAR GRAM',    '22 ayar gram altın'),
+        row('22 AYAR BİLEZİK', '22 ayar bilezik (gram)'),
+        row('24 AYAR PAKETLİ', '24 ayar paketli (gram)'),
+        row('14 AYAR',         '14 ayar (gram)'),
+        row('ÇEYREK ALTIN',    'Çeyrek altın'),
+        row('YARIM ALTIN',     'Yarım altın'),
+        row('TEKLİK ALTIN',    'Tam altın (teklik)'),
+        row('2.5 ALTIN',       '2.5 altın'),
+        row('BEŞLİ ALTIN',     'Beşli altın'),
+        row('ATA LİRA',        'Ata lirası'),
+    ].filter(Boolean);
     return lines.join('\n');
 }
 
@@ -75,8 +68,9 @@ function buildSystemPrompt(prices) {
 • Çalışma saatleri: Pazartesi — Cumartesi · 09:00 — 20:00
 • Pazar: Kapalı
 
-════════ CANLI FİYATLAR ════════
+════════ CANLI FİYATLAR (ELBİSTAN KUYUMCULAR DERNEĞİ — Sitedeki fiyat sayfası ile birebir aynı) ════════
 ${buildPriceBlock(prices)}
+NOT: Bu fiyatlar Elbistan Kuyumcular Derneği'nin günlük tavsiye fiyatlarıdır ve yaklaşık 30 saniyede bir güncellenir. Müşteriye fiyat söylerken bu zaman damgasını söyleyebilir veya "şu an itibarıyla" diyebilirsin. Asla "dünkü fiyat" veya "tahmini fiyat" deme — yukarıdaki rakamlar canlıdır.
 
 ════════ ÜRÜN KATEGORİLERİMİZ ════════
 1. YÜZÜK & ALYANS: Klasik Alyans, 14/22 Ayar Alyans, Gündelik Yüzük, Pırlanta Tek Taş, Akik & Doğal Taş Yüzük, Erkek Yüzük, Minila Eklem Yüzük, Şahmeran Yüzük
@@ -156,8 +150,9 @@ export default async function handler(req, res) {
         if (!message) return res.status(400).json({ error: 'message required' });
         if (message.length > 2000) return res.status(400).json({ error: 'message too long' });
 
-        // Fetch gold prices (cached, non-blocking failure)
-        const prices = await getGoldPrices();
+        // Elbistan Kuyumcular Derneği fiyatları — fiyatlar sayfasıyla aynı kaynak.
+        // Hata olursa null döner, prompt "şu an alınamıyor" diye yönlendirir.
+        const prices = await getCurrentPrices();
         const systemPrompt = buildSystemPrompt(prices);
 
         // Gemini contents array (last 6 messages for context, trim if longer)
