@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="assets/hasburak-logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=prodwa">
+    <link rel="stylesheet" href="styles.css?v=tvfix">
     <style>
         /* ═══════════════════════════════════════════
            FİYATLAR sayfasına özel
@@ -309,9 +309,11 @@
         }
         .fullscreen-toggle svg { color: var(--gold-300); }
 
-        /* Body fullscreen-active class — fiyat tablosu ekranı kaplasın,
-           her şeyi gizle (nav, footer, page-header, info band).
-           Hero card'lar ve ziynet kartları büyütülmüş font ile görünür. */
+        /* ═══════════════════════════════════════════
+           FULLSCREEN — Mağaza TV ekranı modu
+           Elbistan Kuyumcular Derneği tarzı: siyah BG + altın sarı +
+           büyük sade tablo. Mağazada vitrindeki monitörde gözükür.
+           ═══════════════════════════════════════════ */
         body.prices-fullscreen .nav,
         body.prices-fullscreen .footer,
         body.prices-fullscreen .fab,
@@ -319,69 +321,183 @@
         body.prices-fullscreen .price-info-band,
         body.prices-fullscreen .section-head,
         body.prices-fullscreen .scroll-progress,
+        body.prices-fullscreen .bg-canvas,
         body.prices-fullscreen .bg-pattern,
         body.prices-fullscreen .bg-particles,
-        body.prices-fullscreen .bg-ornament {
+        body.prices-fullscreen .bg-ornament,
+        body.prices-fullscreen #hbChatToggle,
+        body.prices-fullscreen #hbChatPanel,
+        body.prices-fullscreen .last-update {
             display: none !important;
         }
         body.prices-fullscreen {
             overflow: hidden;
+            background: #000 !important;
         }
         body.prices-fullscreen #pricesSection {
             position: fixed;
             inset: 0;
-            background: var(--navy-950);
+            background: #000;
             z-index: 9999;
-            padding: 24px !important;
+            padding: 24px 32px !important;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-        }
-        body.prices-fullscreen .prices-status {
-            margin-bottom: 16px;
-            max-width: none;
-        }
-        body.prices-fullscreen .hero-prices {
-            max-width: none;
-            margin-bottom: 18px;
             gap: 14px;
         }
+
+        /* Üst başlık şeridi: SOL = canlı durum, ORTA = başlık, SAĞ = saat */
+        body.prices-fullscreen .prices-status {
+            background: #000 !important;
+            -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+            border: 2px solid #F5C400 !important;
+            border-radius: 0 !important;
+            max-width: none;
+            margin: 0;
+            padding: 14px 22px !important;
+            position: relative;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+        }
+        body.prices-fullscreen .prices-status::after {
+            content: 'HASBURAK SARRAFİYE · GÜNCEL ALTIN FİYATLARI';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: clamp(0.95rem, 1.6vw, 1.6rem);
+            color: #F5C400;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            pointer-events: none;
+            white-space: nowrap;
+            text-shadow: 0 0 16px rgba(245, 196, 0, 0.4);
+        }
+        body.prices-fullscreen .live-pill { color: #F5C400 !important; z-index: 2; }
+        body.prices-fullscreen .live-dot {
+            background: #22d39a !important;
+            box-shadow: 0 0 10px #22d39a !important;
+        }
+        body.prices-fullscreen .clock-display { z-index: 2; }
+        body.prices-fullscreen .clock-label {
+            color: rgba(245, 196, 0, 0.55) !important;
+        }
+        body.prices-fullscreen .clock-time {
+            color: #F5C400 !important;
+            font-size: 1.5rem !important;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(245, 196, 0, 0.35);
+        }
+
+        /* Hero ve ziynet kartları — sade, siyah + sarı kenarlık */
+        body.prices-fullscreen .hero-prices,
         body.prices-fullscreen .ziynet-grid {
             max-width: none;
+            margin: 0;
+        }
+        body.prices-fullscreen .hero-prices {
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        body.prices-fullscreen .ziynet-grid {
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 10px;
         }
+        body.prices-fullscreen .hero-price-card,
+        body.prices-fullscreen .ziynet-card {
+            background: #000 !important;
+            border: 1.5px solid #F5C400 !important;
+            border-radius: 0 !important;
+            padding: 18px 20px !important;
+            -webkit-backdrop-filter: none !important;
+            backdrop-filter: none !important;
+        }
+        body.prices-fullscreen .hero-price-card::before,
+        body.prices-fullscreen .hero-price-card::after { display: none !important; }
+        body.prices-fullscreen .hero-price-card:hover,
+        body.prices-fullscreen .ziynet-card:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        body.prices-fullscreen .hero-price-name,
+        body.prices-fullscreen .ziynet-name {
+            font-family: 'Inter', 'Arial Black', sans-serif !important;
+            color: #F5C400 !important;
+            font-weight: 800 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            text-shadow: 0 0 12px rgba(245, 196, 0, 0.3);
+        }
         body.prices-fullscreen .hero-price-name {
-            font-size: 1.85rem;
-        }
-        body.prices-fullscreen .hero-prices .price-value {
-            font-size: 2.6rem;
-        }
-        body.prices-fullscreen .hero-price-card {
-            padding: 24px 22px 22px;
+            font-size: clamp(1.1rem, 1.5vw, 1.5rem) !important;
+            margin-bottom: 14px;
         }
         body.prices-fullscreen .ziynet-name {
-            font-size: 1.45rem;
+            font-size: clamp(1rem, 1.25vw, 1.25rem) !important;
+            margin-bottom: 8px;
+        }
+        body.prices-fullscreen .hero-price-name::after {
+            background: linear-gradient(90deg, #F5C400, transparent) !important;
+            opacity: 0.7;
+        }
+
+        body.prices-fullscreen .price-label {
+            color: rgba(245, 196, 0, 0.55) !important;
+            font-size: 0.62rem !important;
+            margin-bottom: 4px;
+        }
+        body.prices-fullscreen .hero-prices .price-value {
+            font-size: clamp(1.6rem, 3vw, 3rem) !important;
         }
         body.prices-fullscreen .ziynet-prices .price-value {
-            font-size: 1.55rem;
+            font-size: clamp(1.15rem, 1.6vw, 1.7rem) !important;
         }
-        body.prices-fullscreen .ziynet-card {
-            padding: 16px 18px;
+        body.prices-fullscreen .price-value {
+            color: #F5C400 !important;
+            font-family: 'Inter', 'Arial Black', sans-serif !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.01em;
+            text-shadow: 0 0 16px rgba(245, 196, 0, 0.3);
         }
-        body.prices-fullscreen .clock-time {
-            font-size: 1.2rem;
+        body.prices-fullscreen .price-leg.satis .price-value {
+            color: #FFD700 !important;
         }
-        @media (min-width: 1400px) {
-            body.prices-fullscreen .hero-prices .price-value { font-size: 3.2rem; }
-            body.prices-fullscreen .ziynet-prices .price-value { font-size: 1.85rem; }
-            body.prices-fullscreen .hero-price-name { font-size: 2.1rem; }
-            body.prices-fullscreen .ziynet-name { font-size: 1.65rem; }
+        body.prices-fullscreen .price-currency {
+            color: rgba(245, 196, 0, 0.45) !important;
+            font-size: 0.65em !important;
         }
+        body.prices-fullscreen .price-value.flash {
+            animation: priceFlashTv 1.5s ease;
+        }
+        @keyframes priceFlashTv {
+            0% { color: #F5C400; text-shadow: 0 0 16px rgba(245, 196, 0, 0.3); }
+            30% { color: #FFFFFF; text-shadow: 0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.6); }
+            100% { color: #F5C400; text-shadow: 0 0 16px rgba(245, 196, 0, 0.3); }
+        }
+
+        /* Çıkış butonu sağ üstte sabit, görünür */
+        body.prices-fullscreen .fullscreen-toggle {
+            background: rgba(245, 196, 0, 0.1) !important;
+            border-color: #F5C400 !important;
+            color: #F5C400 !important;
+            z-index: 3;
+        }
+        body.prices-fullscreen .fullscreen-toggle svg { color: #F5C400 !important; }
+
         @media (max-width: 720px) {
             .fullscreen-toggle .fs-label { display: none; }
             .fullscreen-toggle { padding: 9px 11px; }
+            body.prices-fullscreen .prices-status::after {
+                font-size: 0.78rem;
+                letter-spacing: 0.06em;
+            }
+            body.prices-fullscreen .hero-prices {
+                grid-template-columns: 1fr;
+            }
+            body.prices-fullscreen #pricesSection { padding: 14px !important; }
         }
     </style>
 </head>
@@ -588,7 +704,7 @@
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
-    <script src="main.js?v=prodwa" defer></script>
+    <script src="main.js?v=tvfix" defer></script>
 
     <!-- ═══════════════════════════════════════════
          CANLI FİYAT SİNKRONİZASYONU

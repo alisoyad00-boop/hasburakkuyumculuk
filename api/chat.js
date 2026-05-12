@@ -101,7 +101,35 @@ NEDEN BİZİ TERCİH ETMELİSİNİZ:
 • Stok sorusu: Sitedeki spesifik modelin stoğunu bilmezsin — "Mağazadan veya WhatsApp'tan kontrol ettirelim" diye yönlendir.
 • Konu dışı sorular (siyaset, başka sektör): Önce kibarca konuyu altın/takı/sarrafiyeye çek. "Bu benim alanım değil ama altın yatırımı veya takı konusunda yardımcı olmaktan memnuniyet duyarım" tarzında. Direkt kapatma, alternatif sun.
 • Selamlama, teşekkür gibi kısa mesajlara da samimi ve sıcak yanıt ver: "Merhaba, hoş geldiniz, size nasıl yardımcı olabilirim?" gibi.
-• Fiyatları TL olarak söyle, rakamları okunabilir yaz (örn. "2.450,50 TL"). Binlik ayraç olarak nokta, ondalık olarak virgül kullan.`;
+• Fiyatları TL olarak söyle, rakamları okunabilir yaz (örn. "2.450,50 TL"). Binlik ayraç olarak nokta, ondalık olarak virgül kullan.
+
+════════ BİÇİM KURALI (ÇOK ÖNEMLİ) ════════
+• ASLA markdown sembollerini kullanma: yıldız (*), iki yıldız (**), alt çizgi (_), tire-liste (-), kare-liste (#), backtick (\`).
+• Vurgulamak istediğin yeri sadece düz Türkçe ile yaz, kalın/italik istemiyoruz.
+• Liste yazman gerekirse sadece numaralı (1. 2. 3.) yaz veya satır satır cümle olarak ver. Asla "- madde" formatında yazma.
+• Yanıtın tarayıcıda olduğu gibi gösterilecek — herhangi bir markdown render edilmiyor. Yıldız yazarsan kullanıcı yıldız görür.`;
+}
+
+// Bot cevabını markdown'dan temizle — Gemini bazen yine **bold** atıyor.
+// Frontend render etmediği için raw yıldız müşteriye gözüküyor.
+function stripMarkdown(text) {
+    if (!text) return text;
+    return text
+        // **bold** → bold
+        .replace(/\*\*([^*\n]+)\*\*/g, '$1')
+        // *italic* → italic (ama satır başı * listesi kalsın? hayır o da gitsin)
+        .replace(/(^|\s)\*([^*\n]+)\*(?=\s|$|[.,;:!?])/g, '$1$2')
+        // _italic_ → italic
+        .replace(/(^|\s)_([^_\n]+)_(?=\s|$|[.,;:!?])/g, '$1$2')
+        // satır başı "- " veya "* " bullet → "• "
+        .replace(/^[\s]*[-*][\s]+/gm, '• ')
+        // ## başlık → çıplak
+        .replace(/^#{1,6}\s+/gm, '')
+        // `code` → code
+        .replace(/`([^`\n]+)`/g, '$1')
+        // Birden fazla boş satırı tek boşluğa
+        .replace(/\n{3,}/g, '\n\n')
+        .trim();
 }
 
 export default async function handler(req, res) {
@@ -197,8 +225,11 @@ export default async function handler(req, res) {
         }
 
         const data = await geminiRes.json();
-        const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+        const rawReply = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
             || 'Üzgünüm, sorunuzu anlayamadım. Daha net bir şekilde tekrar sorabilir misiniz?';
+        // Gemini'nin attığı markdown bold/italic/list işaretlerini temizle —
+        // frontend plain text olarak render ediyor, yoksa müşteri ** karakteri görür.
+        const reply = stripMarkdown(rawReply);
 
         return res.status(200).json({ reply });
     } catch (e) {
