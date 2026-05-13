@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hasburak Kuyumculuk">
+    <defs>
+        <linearGradient id="hbGold" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#F8E9B6"/>
+            <stop offset="35%"  stop-color="#E5C674"/>
+            <stop offset="55%"  stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#9A7A14"/>
+        </linearGradient>
+        <linearGradient id="hbGoldH" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%"   stop-color="#9A7A14" stop-opacity="0"/>
+            <stop offset="20%"  stop-color="#D4AF37"/>
+            <stop offset="50%"  stop-color="#F5E1A4"/>
+            <stop offset="80%"  stop-color="#D4AF37"/>
+            <stop offset="100%" stop-color="#9A7A14" stop-opacity="0"/>
+        </linearGradient>
+        <filter id="hbGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="0.6" result="b"/>
+            <feMerge>
+                <feMergeNode in="b"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- ═════ ORNAMENT (üst süsleme) ═════ -->
+    <g transform="translate(360, 78)" fill="url(#hbGold)" filter="url(#hbGlow)">
+        <circle cx="0" cy="-50" r="3.6"/>
+        <path d="M0 -46 L4.5 -36 L0 -28 L-4.5 -36 Z"/>
+        <path d="M0 -28 C 4 -22, 6 -12, 6 0 C 4 6, 2 9, 0 11 C -2 9, -4 6, -6 0 C -6 -12, -4 -22, 0 -28 Z"/>
+        <path d="M-6 0 C -14 4, -22 4, -28 0 C -22 -3, -14 -3, -6 0 Z"/>
+        <path d="M6 0 C 14 4, 22 4, 28 0 C 22 -3, 14 -3, 6 0 Z"/>
+        <path d="M-28 0 C -42 -4, -54 -10, -64 -4 C -56 -10, -46 -10, -38 -6 C -32 -6, -28 -3, -28 0 Z"/>
+        <path d="M28 0 C 42 -4, 54 -10, 64 -4 C 56 -10, 46 -10, 38 -6 C 32 -6, 28 -3, 28 0 Z"/>
+        <path d="M-64 -4 C -76 -2, -82 -10, -82 -16 C -76 -10, -70 -8, -64 -4 Z"/>
+        <path d="M64 -4 C 76 -2, 82 -10, 82 -16 C 76 -10, 70 -8, 64 -4 Z"/>
+        <circle cx="-94" cy="-2" r="2.6"/>
+        <circle cx="94"  cy="-2" r="2.6"/>
+        <circle cx="-18" cy="-4" r="1.2"/>
+        <circle cx="18"  cy="-4" r="1.2"/>
+        <path d="M0 13 L3 19 L0 24 L-3 19 Z"/>
+    </g>
+
+    <!-- ═════ KÜÇÜK BİLEZİK (sağ üst aksesuar) ═════ -->
+    <g transform="translate(478, 60) rotate(-15)" fill="none" stroke="url(#hbGold)" stroke-width="2.2" filter="url(#hbGlow)">
+        <ellipse cx="0" cy="0" rx="32" ry="9"/>
+        <ellipse cx="0" cy="0" rx="32" ry="9" stroke-width="0.6" stroke-dasharray="3 2" opacity="0.7"/>
+        <circle cx="0" cy="-1" r="2.2" fill="url(#hbGold)"/>
+    </g>
+
+    <!-- ═════ HASBURAK (ana yazı) ═════ -->
+    <text x="360" y="222"
+          font-family="'Cormorant Garamond', 'Times New Roman', serif"
+          font-size="96"
+          font-weight="500"
+          fill="#FFFCF7"
+          text-anchor="middle"
+          letter-spacing="9">HASBURAK</text>
+
+    <!-- ═════ DIVIDER (altın çizgi) ═════ -->
+    <g transform="translate(360, 256)">
+        <line x1="-150" y1="0" x2="-14" y2="0" stroke="url(#hbGoldH)" stroke-width="1.2"/>
+        <line x1="14"   y1="0" x2="150" y2="0" stroke="url(#hbGoldH)" stroke-width="1.2"/>
+        <path d="M0 -5.5 L5.5 0 L0 5.5 L-5.5 0 Z" fill="url(#hbGold)"/>
+        <circle cx="-160" cy="0" r="2.4" fill="url(#hbGold)"/>
+        <circle cx="160"  cy="0" r="2.4" fill="url(#hbGold)"/>
+    </g>
+
+    <!-- ═════ KUYUMCULUK (alt yazı) ═════ -->
+    <text x="360" y="302"
+          font-family="'Inter', 'Helvetica Neue', sans-serif"
+          font-size="20"
+          font-weight="500"
+          fill="#FFFCF7"
+          text-anchor="middle"
+          letter-spacing="12">KUYUMCULUK</text>
+</svg>
