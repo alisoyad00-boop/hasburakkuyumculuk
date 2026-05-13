@@ -257,8 +257,13 @@ img { max-width: 100%; display: block; }
 
 .brand-logo {
     display: block;
-    height: 64px;
-    width: auto;
+    /* Yeni logo dikey (768x1024). Nav header için yatay-cropped görünüm:
+       sabit width ile dikeyliği sınırla, üst/alt boş alanı object-fit cover ile kırp */
+    width: 180px;
+    height: 60px;
+    object-fit: cover;
+    object-position: center 38%; /* "HASBURAK KUYUMCULUK" yazısı orta-üst, oraya odaklan */
+    border-radius: 6px;
     filter:
         drop-shadow(0 0 14px rgba(212, 175, 55, 0.35))
         drop-shadow(0 4px 14px rgba(0, 0, 0, 0.3));
@@ -266,7 +271,8 @@ img { max-width: 100%; display: block; }
 }
 
 .nav.scrolled .brand-logo {
-    height: 52px;
+    height: 48px;
+    width: 150px;
 }
 
 .brand:hover .brand-logo {
@@ -277,18 +283,23 @@ img { max-width: 100%; display: block; }
 }
 
 .footer-brand-block .brand-logo {
-    height: 88px;
+    /* Footer'da logo daha büyük + tüm görsel görünür (object-fit contain) */
+    height: 200px;
+    width: 150px;
+    object-fit: contain;
+    object-position: center center;
+    border-radius: 8px;
     margin-bottom: 4px;
 }
 
 @media (max-width: 768px) {
-    .brand-logo { height: 50px; }
-    .nav.scrolled .brand-logo { height: 42px; }
-    .footer-brand-block .brand-logo { height: 70px; }
+    .brand-logo { height: 48px; width: 144px; }
+    .nav.scrolled .brand-logo { height: 42px; width: 120px; }
+    .footer-brand-block .brand-logo { height: 160px; width: 120px; }
 }
 
 @media (max-width: 420px) {
-    .brand-logo { height: 42px; }
+    .brand-logo { height: 42px; width: 128px; }
 }
 
 .brand-mark {
