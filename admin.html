@@ -787,6 +787,7 @@
                 <h2>Yorum Yönetimi</h2>
                 <p class="stats" id="reviewsStats">Yükleniyor...</p>
             </div>
+            <button class="btn" id="addReviewBtn">+ Yorum Ekle</button>
         </div>
         <div class="dash-toolbar">
             <select id="reviewsFilter">
@@ -855,6 +856,65 @@
                 <button type="submit" class="btn" id="saveBtn">Kaydet</button>
             </div>
             <div class="alert error" id="modalError"></div>
+        </form>
+    </div>
+</div>
+
+<!-- YORUM EKLEME MODAL -->
+<div class="modal-backdrop" id="reviewModal">
+    <div class="modal">
+        <h3>Yeni Yorum Ekle</h3>
+        <p class="sub">Eklediğiniz yorum doğrudan onaylı olarak yayınlanır.</p>
+        <form id="reviewAddForm" autocomplete="off">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rvName">Müşteri Adı</label>
+                    <input type="text" id="rvName" required maxlength="60" placeholder="Örn: Ayşe K.">
+                </div>
+                <div class="form-group">
+                    <label for="rvLocation">Şehir / Konu (opsiyonel)</label>
+                    <input type="text" id="rvLocation" maxlength="80" placeholder="Örn: Elbistan veya Pırlanta Yüzük">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rvCategory">Kategori</label>
+                    <select id="rvCategory">
+                        <option value="genel">Genel deneyim</option>
+                        <option value="yuzuk">Yüzük & Alyans</option>
+                        <option value="kolye">Kolye</option>
+                        <option value="kupe">Küpe</option>
+                        <option value="bilezik">Bilezik & Bileklik</option>
+                        <option value="yatirim">Yatırım Altını</option>
+                        <option value="ozel">Özel Koleksiyon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rvRating">Puan</label>
+                    <select id="rvRating">
+                        <option value="5">★★★★★ (5)</option>
+                        <option value="4">★★★★ (4)</option>
+                        <option value="3">★★★ (3)</option>
+                        <option value="2">★★ (2)</option>
+                        <option value="1">★ (1)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rvText">Yorum Metni</label>
+                <textarea id="rvText" required maxlength="800" rows="4" placeholder="Müşterinin yorumunu buraya yazın..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="cfg-checkbox">
+                    <input type="checkbox" id="rvFeatured">
+                    <span>Öne çıkan yorum olarak ekle</span>
+                </label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="reviewCancelBtn">İptal</button>
+                <button type="submit" class="btn" id="reviewSaveBtn">Yorumu Ekle</button>
+            </div>
+            <div class="alert error" id="reviewModalError"></div>
         </form>
     </div>
 </div>
@@ -1441,6 +1501,47 @@
     }
 
     $('reviewsFilter').addEventListener('change', renderReviewsList);
+
+    // ─── YORUM EKLEME MODALI ───
+    const reviewModal = $('reviewModal');
+    function closeReviewModal() { reviewModal.classList.remove('show'); }
+    $('addReviewBtn').addEventListener('click', () => {
+        $('reviewAddForm').reset();
+        hideAlert($('reviewModalError'));
+        reviewModal.classList.add('show');
+        setTimeout(() => $('rvName').focus(), 100);
+    });
+    $('reviewCancelBtn').addEventListener('click', closeReviewModal);
+    reviewModal.addEventListener('click', (e) => { if (e.target === reviewModal) closeReviewModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && reviewModal.classList.contains('show')) closeReviewModal();
+    });
+    $('reviewAddForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            name: $('rvName').value.trim(),
+            location: $('rvLocation').value.trim(),
+            rating: Number($('rvRating').value),
+            text: $('rvText').value.trim(),
+            productCategory: $('rvCategory').value,
+            featured: $('rvFeatured').checked,
+        };
+        const btn = $('reviewSaveBtn');
+        btn.disabled = true;
+        const orig = btn.textContent;
+        btn.textContent = 'Ekleniyor...';
+        try {
+            await api(API_REVIEWS_ADMIN, { method: 'POST', body: JSON.stringify(payload) });
+            flash('Yorum eklendi ve yayınlandı.');
+            closeReviewModal();
+            await loadReviewsAdmin();
+        } catch (err) {
+            showAlert($('reviewModalError'), err.message || 'Yorum eklenemedi.');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = orig;
+        }
+    });
 
     // İlk açılışta bekleyen yorum sayısını badge'e koymak için sessizce çek
     async function pollReviewsBadge() {

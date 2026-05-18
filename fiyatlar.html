@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" as="image" href="assets/hasburak-logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=rev3">
+    <link rel="stylesheet" href="styles.css?v=board1">
     <style>
         /* ═══════════════════════════════════════════
            FİYATLAR sayfasına özel
@@ -85,68 +85,57 @@
             letter-spacing: 0.05em;
         }
 
-        /* ═══ HERO PRICES (öne çıkan 3 ürün) ═══ */
-        .hero-prices {
+        /* ═══ FİYAT TABLOSU — 3 sütun düzenli grid ═══ */
+        .prices-board {
             max-width: 1100px;
-            margin: 0 auto 40px;
+            margin: 0 auto;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
+            gap: 14px;
         }
-        @media (max-width: 720px) {
-            .hero-prices { grid-template-columns: 1fr; }
+        @media (max-width: 860px) {
+            .prices-board { grid-template-columns: repeat(2, 1fr); }
         }
-        .hero-price-card {
-            position: relative;
+        @media (max-width: 560px) {
+            .prices-board { grid-template-columns: 1fr; }
+        }
+        .price-cell {
             background:
-                radial-gradient(circle at 30% 0%, rgba(212, 175, 55, 0.15), transparent 60%),
+                radial-gradient(circle at 30% 0%, rgba(212, 175, 55, 0.1), transparent 60%),
                 linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 18px;
-            padding: 28px 24px 24px;
-            overflow: hidden;
-            transition: transform 0.3s ease, border-color 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+            border-radius: 14px;
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.25s ease, border-color 0.25s ease;
         }
-        .hero-price-card:hover {
-            transform: translateY(-4px);
+        .price-cell:hover {
+            transform: translateY(-3px);
             border-color: var(--gold-400);
         }
-        .hero-price-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, transparent 60%, rgba(212, 175, 55, 0.06));
-            pointer-events: none;
-        }
-        .hero-price-name {
+        .price-cell-name {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 1.55rem;
+            font-size: 1.32rem;
             color: var(--gold-200);
             font-weight: 600;
-            letter-spacing: 0.04em;
-            margin-bottom: 22px;
-            position: relative;
+            letter-spacing: 0.03em;
+            margin-bottom: 14px;
+            padding-bottom: 11px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.16);
         }
-        .hero-price-name::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 1px;
-            background: linear-gradient(90deg, var(--gold-400), transparent);
-            margin-top: 10px;
-        }
-        .hero-price-grid {
+        .price-cell-legs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
         .price-leg {
             position: relative;
         }
         .price-label {
-            font-size: 0.68rem;
+            font-size: 0.66rem;
             text-transform: uppercase;
-            letter-spacing: 0.22em;
+            letter-spacing: 0.2em;
             color: rgba(240, 223, 163, 0.55);
             font-weight: 600;
             margin-bottom: 6px;
@@ -155,7 +144,7 @@
         .price-value {
             font-family: 'Inter', sans-serif;
             font-variant-numeric: tabular-nums;
-            font-size: 1.95rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--gold-300);
             letter-spacing: -0.01em;
@@ -163,10 +152,10 @@
             transition: color 0.3s ease;
         }
         .price-currency {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: rgba(229, 198, 116, 0.55);
             font-weight: 500;
-            margin-left: 4px;
+            margin-left: 3px;
             letter-spacing: 0.04em;
         }
         .price-leg.satis .price-value { color: var(--gold-200); }
@@ -180,53 +169,6 @@
             30% { color: #FFD700; text-shadow: 0 0 22px rgba(255, 215, 0, 0.7), 0 0 44px rgba(255, 215, 0, 0.3); }
             100% { color: var(--gold-300); text-shadow: none; }
         }
-
-        /* ═══ DIGER ZIYNETLER GRID ═══ */
-        .ziynet-grid {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 14px;
-        }
-        .ziynet-card {
-            display: flex;
-            flex-direction: column;
-            background:
-                linear-gradient(135deg, rgba(19, 31, 92, 0.45), rgba(6, 14, 44, 0.55));
-            border: 1px solid rgba(212, 175, 55, 0.18);
-            border-radius: 14px;
-            padding: 20px;
-            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-        .ziynet-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(212, 175, 55, 0.45);
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
-        }
-        .ziynet-name {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            color: var(--gold-200);
-            font-weight: 600;
-            margin-bottom: 14px;
-            letter-spacing: 0.03em;
-        }
-        .ziynet-prices {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(212, 175, 55, 0.12);
-        }
-        .ziynet-prices .price-value {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--gold-200);
-        }
-        .ziynet-prices .price-leg.satis .price-value { color: var(--gold-300); }
 
         /* ═══ INFO BAND ═══ */
         .price-info-band {
@@ -264,8 +206,7 @@
 
         /* ═══ SKELETON ═══ */
         .skeleton .price-value,
-        .skeleton .ziynet-name,
-        .skeleton .hero-price-name {
+        .skeleton .price-cell-name {
             background: linear-gradient(90deg, rgba(212,175,55,0.06), rgba(212,175,55,0.18), rgba(212,175,55,0.06));
             background-size: 200% 100%;
             animation: skel 1.6s linear infinite;
@@ -276,8 +217,7 @@
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-        .skeleton .price-value { min-height: 1.95rem; }
-        .skeleton .ziynet-prices .price-value { min-height: 1.25rem; }
+        .skeleton .price-value { min-height: 1.5rem; }
 
         /* ═══════════════════════════════════════════
            FULLSCREEN TOGGLE — #8
@@ -407,74 +347,46 @@
             text-shadow: 0 0 8px rgba(245, 196, 0, 0.35);
         }
 
-        /* Hero ve ziynet kartları — sade, siyah + sarı kenarlık */
-        body.prices-fullscreen .hero-prices,
-        body.prices-fullscreen .ziynet-grid {
+        /* Fiyat tablosu — sade, siyah + sarı kenarlık, ekranı doldurur */
+        body.prices-fullscreen .prices-board {
             max-width: none;
             margin: 0;
-        }
-        body.prices-fullscreen .hero-prices {
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        body.prices-fullscreen .ziynet-grid {
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
+            flex: 1;
+            align-content: center;
         }
-        body.prices-fullscreen .hero-price-card,
-        body.prices-fullscreen .ziynet-card {
+        body.prices-fullscreen .price-cell {
             background: #000 !important;
             border: 1.5px solid #F5C400 !important;
             border-radius: 0 !important;
-            padding: 18px 20px !important;
-            -webkit-backdrop-filter: none !important;
-            backdrop-filter: none !important;
+            padding: 14px 18px !important;
         }
-        body.prices-fullscreen .hero-price-card::before,
-        body.prices-fullscreen .hero-price-card::after { display: none !important; }
-        body.prices-fullscreen .hero-price-card:hover,
-        body.prices-fullscreen .ziynet-card:hover {
+        body.prices-fullscreen .price-cell:hover {
             transform: none;
-            box-shadow: none;
         }
-
-        body.prices-fullscreen .hero-price-name,
-        body.prices-fullscreen .ziynet-name {
+        body.prices-fullscreen .price-cell-name {
             font-family: 'Inter', 'Arial Black', sans-serif !important;
             color: #F5C400 !important;
             font-weight: 800 !important;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
+            font-size: clamp(0.95rem, 1.3vw, 1.35rem) !important;
             text-shadow: 0 0 12px rgba(245, 196, 0, 0.3);
+            border-bottom-color: rgba(245, 196, 0, 0.3) !important;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
         }
-        body.prices-fullscreen .hero-price-name {
-            font-size: clamp(1.1rem, 1.5vw, 1.5rem) !important;
-            margin-bottom: 14px;
-        }
-        body.prices-fullscreen .ziynet-name {
-            font-size: clamp(1rem, 1.25vw, 1.25rem) !important;
-            margin-bottom: 8px;
-        }
-        body.prices-fullscreen .hero-price-name::after {
-            background: linear-gradient(90deg, #F5C400, transparent) !important;
-            opacity: 0.7;
-        }
-
         body.prices-fullscreen .price-label {
             color: rgba(245, 196, 0, 0.55) !important;
-            font-size: 0.62rem !important;
-            margin-bottom: 4px;
-        }
-        body.prices-fullscreen .hero-prices .price-value {
-            font-size: clamp(1.6rem, 3vw, 3rem) !important;
-        }
-        body.prices-fullscreen .ziynet-prices .price-value {
-            font-size: clamp(1.15rem, 1.6vw, 1.7rem) !important;
+            font-size: 0.6rem !important;
+            margin-bottom: 3px;
         }
         body.prices-fullscreen .price-value {
             color: #F5C400 !important;
             font-family: 'Inter', 'Arial Black', sans-serif !important;
             font-weight: 900 !important;
+            font-size: clamp(1.3rem, 2.4vw, 2.7rem) !important;
             letter-spacing: -0.01em;
             text-shadow: 0 0 16px rgba(245, 196, 0, 0.3);
         }
@@ -483,7 +395,7 @@
         }
         body.prices-fullscreen .price-currency {
             color: rgba(245, 196, 0, 0.45) !important;
-            font-size: 0.65em !important;
+            font-size: 0.55em !important;
         }
         body.prices-fullscreen .price-value.flash {
             animation: priceFlashTv 1.5s ease;
@@ -510,10 +422,15 @@
                 font-size: 0.78rem;
                 letter-spacing: 0.06em;
             }
-            body.prices-fullscreen .hero-prices {
-                grid-template-columns: 1fr;
+            body.prices-fullscreen .prices-board {
+                grid-template-columns: repeat(2, 1fr);
             }
             body.prices-fullscreen #pricesSection { padding: 14px !important; }
+        }
+        @media (max-width: 480px) {
+            body.prices-fullscreen .prices-board {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -588,57 +505,19 @@
             <div class="last-update" id="lastUpdate">Veri bekleniyor...</div>
         </div>
 
-        <!-- HERO 3 (22 ayar gram + 22 ayar bilezik + 24 ayar paketli) -->
-        <div class="hero-prices skeleton" id="heroPrices">
-            <article class="hero-price-card" data-key="22 AYAR GRAM">
-                <div class="hero-price-name">22 Ayar Gram</div>
-                <div class="hero-price-grid">
-                    <div class="price-leg alis">
-                        <span class="price-label">Alış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                    <div class="price-leg satis">
-                        <span class="price-label">Satış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                </div>
-            </article>
-            <article class="hero-price-card" data-key="22 AYAR BİLEZİK">
-                <div class="hero-price-name">22 Ayar Bilezik</div>
-                <div class="hero-price-grid">
-                    <div class="price-leg alis">
-                        <span class="price-label">Alış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                    <div class="price-leg satis">
-                        <span class="price-label">Satış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                </div>
-            </article>
-            <article class="hero-price-card" data-key="24 AYAR PAKETLİ">
-                <div class="hero-price-name">24 Ayar Paketli</div>
-                <div class="hero-price-grid">
-                    <div class="price-leg alis">
-                        <span class="price-label">Alış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                    <div class="price-leg satis">
-                        <span class="price-label">Satış</span>
-                        <span class="price-value">0</span><span class="price-currency">TL</span>
-                    </div>
-                </div>
-            </article>
-        </div>
-
-        <!-- ZIYNETLER GRID -->
-        <div class="section-head" style="margin-top: 56px;">
-            <span class="eyebrow">Ziynet Altınları</span>
-            <h2>Tarihten <em>günümüze</em></h2>
-        </div>
-
-        <div class="ziynet-grid skeleton" id="ziynetGrid">
-            <!-- Cards rendered by JS -->
+        <!-- FİYAT TABLOSU — 3 sütun düzenli grid, sabit sıra -->
+        <div class="prices-board skeleton" id="pricesBoard">
+            <!-- 10 hücre JS ile sabit sırada render edilir -->
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
         </div>
 
         <!-- INFO + CTA -->
@@ -720,19 +599,38 @@
         <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     </a>
 
-    <script src="main.js?v=rev3" defer></script>
+    <script src="main.js?v=board1" defer></script>
 
     <!-- ═══════════════════════════════════════════
          CANLI FİYAT SİNKRONİZASYONU
          ═══════════════════════════════════════════ -->
     <script>
     (function() {
-        const HERO_KEYS = ['22 AYAR GRAM', '22 AYAR BİLEZİK', '24 AYAR PAKETLİ'];
         const POLL_MS = 30000;
         const ENDPOINT = '/api/altin-fiyatlari';
 
-        const heroEl = document.getElementById('heroPrices');
-        const ziynetEl = document.getElementById('ziynetGrid');
+        // Sabit sıralama — mağaza ekranında her ürün hep aynı yerde,
+        // yoğunlukta tek bakışta bulunsun diye.
+        const PRICE_ORDER = [
+            '24 AYAR PAKETLİ', 'TEKLİK ALTIN', 'BEŞLİ ALTIN',
+            '22 AYAR GRAM',    'YARIM ALTIN',  '2.5 ALTIN',
+            '22 AYAR BİLEZİK', 'ÇEYREK ALTIN', 'ATA LİRA',
+            '14 AYAR',
+        ];
+        const DISPLAY_NAMES = {
+            '24 AYAR PAKETLİ': '24 Ayar Paketli',
+            'TEKLİK ALTIN':    'Teklik Altın',
+            'BEŞLİ ALTIN':     'Beşli Altın',
+            '22 AYAR GRAM':    '22 Ayar Gram',
+            'YARIM ALTIN':     'Yarım Altın',
+            '2.5 ALTIN':       '2.5 Altın',
+            '22 AYAR BİLEZİK': '22 Ayar Bilezik',
+            'ÇEYREK ALTIN':    'Çeyrek Altın',
+            'ATA LİRA':        'Ata Lirası',
+            '14 AYAR':         '14 Ayar',
+        };
+
+        const boardEl = document.getElementById('pricesBoard');
         const liveDot = document.getElementById('liveDot');
         const liveText = document.getElementById('liveText');
         const clockTime = document.getElementById('clockTime');
@@ -766,63 +664,42 @@
             return min + ' dakika önce güncellendi';
         }
 
-        function titleCase(s) {
-            return s.toLowerCase().split(' ').map(w => {
-                if (!w) return w;
-                return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1);
-            }).join(' ');
+        function escapeHtml(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        function setHeroValue(card, leg, value) {
-            const valEl = card.querySelector('.price-leg.' + leg + ' .price-value');
-            if (!valEl) return;
-            const key = card.dataset.key + ':' + leg;
-            if (previousValues[key] && previousValues[key] !== value) {
-                valEl.classList.remove('flash');
-                void valEl.offsetWidth; // restart animation
-                valEl.classList.add('flash');
-            }
-            valEl.textContent = value;
-            previousValues[key] = value;
-        }
+        // Tüm fiyatları sabit PRICE_ORDER sırasıyla tek tabloda render et
+        function renderBoard(prices) {
+            const byName = {};
+            prices.forEach(p => byName[p.name] = p);
 
-        function renderHero(byName) {
-            const heroCards = heroEl.querySelectorAll('.hero-price-card');
-            heroCards.forEach(card => {
-                const data = byName[card.dataset.key];
-                if (!data) return;
-                setHeroValue(card, 'alis', data.alis);
-                setHeroValue(card, 'satis', data.satis);
-            });
-            heroEl.classList.remove('skeleton');
-        }
-
-        function renderZiynet(prices) {
-            const ziynet = prices.filter(p => !HERO_KEYS.includes(p.name));
-            ziynetEl.innerHTML = ziynet.map(p => {
-                const keyA = p.name + ':alis';
-                const keyS = p.name + ':satis';
+            boardEl.innerHTML = PRICE_ORDER.map(key => {
+                const p = byName[key];
+                if (!p) return '';
+                const display = DISPLAY_NAMES[key] || key;
+                const keyA = key + ':alis', keyS = key + ':satis';
                 const flashA = (previousValues[keyA] && previousValues[keyA] !== p.alis) ? ' flash' : '';
                 const flashS = (previousValues[keyS] && previousValues[keyS] !== p.satis) ? ' flash' : '';
                 previousValues[keyA] = p.alis;
                 previousValues[keyS] = p.satis;
                 return `
-                    <article class="ziynet-card">
-                        <div class="ziynet-name">${titleCase(p.name)}</div>
-                        <div class="ziynet-prices">
+                    <article class="price-cell">
+                        <div class="price-cell-name">${escapeHtml(display)}</div>
+                        <div class="price-cell-legs">
                             <div class="price-leg alis">
                                 <span class="price-label">Alış</span>
-                                <span class="price-value${flashA}">${p.alis}<span class="price-currency"> TL</span></span>
+                                <span class="price-value${flashA}">${escapeHtml(p.alis)}<span class="price-currency"> TL</span></span>
                             </div>
                             <div class="price-leg satis">
                                 <span class="price-label">Satış</span>
-                                <span class="price-value${flashS}">${p.satis}<span class="price-currency"> TL</span></span>
+                                <span class="price-value${flashS}">${escapeHtml(p.satis)}<span class="price-currency"> TL</span></span>
                             </div>
                         </div>
                     </article>
                 `;
             }).join('');
-            ziynetEl.classList.remove('skeleton');
+            boardEl.classList.remove('skeleton');
         }
 
         async function fetchPrices() {
@@ -832,10 +709,7 @@
                 const data = await r.json();
                 if (!data.prices || !data.prices.length) throw new Error('Empty response');
 
-                const byName = {};
-                data.prices.forEach(p => byName[p.name] = p);
-                renderHero(byName);
-                renderZiynet(data.prices);
+                renderBoard(data.prices);
 
                 lastSuccess = Date.now();
                 if (data.stale) {
