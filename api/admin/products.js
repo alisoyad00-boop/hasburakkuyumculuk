@@ -8,16 +8,16 @@
 
 import { authedFromHeader } from '../../lib/auth.js';
 import { kvGetJSON, kvSetJSON, kvAvailable } from '../../lib/kv.js';
-import { SEED_PRODUCTS, CATEGORIES } from '../../lib/seed.js';
+import { SEED_PRODUCTS } from '../../lib/seed.js';
+import { loadCategories } from '../categories.js';
 
 const KEY = 'hasburak:products:v1';
-const VALID_CATEGORIES = new Set(CATEGORIES.map(c => c.key));
 
-function sanitizeProduct(input, existing = {}) {
+function sanitizeProduct(input, existing = {}, validCats) {
     const out = { ...existing };
     if (typeof input.name === 'string') out.name = input.name.trim().slice(0, 120);
     if (typeof input.tag === 'string') out.tag = input.tag.trim().slice(0, 60);
-    if (typeof input.category === 'string' && VALID_CATEGORIES.has(input.category)) {
+    if (typeof input.category === 'string' && validCats.has(input.category)) {
         out.category = input.category;
     }
     if (typeof input.image === 'string') out.image = input.image.trim().slice(0, 800);
@@ -58,9 +58,13 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Geçerli kategoriler her istekte dinamik yüklenir (admin kategori ekleyebilir)
+        const categories = await loadCategories();
+        const validCats = new Set(categories.map(c => c.key));
+
         if (req.method === 'GET') {
             const list = await loadAll();
-            return res.status(200).json({ products: list, categories: CATEGORIES });
+            return res.status(200).json({ products: list, categories });
         }
 
         if (req.method === 'POST') {
@@ -68,14 +72,14 @@ export default async function handler(req, res) {
             if (!body.name || !body.category || !body.image) {
                 return res.status(400).json({ error: 'name, category ve image zorunlu.' });
             }
-            if (!VALID_CATEGORIES.has(body.category)) {
+            if (!validCats.has(body.category)) {
                 return res.status(400).json({ error: 'Geçersiz kategori.' });
             }
             const list = await loadAll();
             const product = sanitizeProduct(body, {
                 id: newId(),
                 createdAt: Date.now(),
-            });
+            }, validCats);
             // Default alt to name if not provided
             if (!product.alt) product.alt = product.name;
             list.unshift(product); // newest first
@@ -90,7 +94,7 @@ export default async function handler(req, res) {
             const list = await loadAll();
             const idx = list.findIndex(p => p.id === id);
             if (idx === -1) return res.status(404).json({ error: 'Ürün bulunamadı.' });
-            list[idx] = sanitizeProduct(body, list[idx]);
+            list[idx] = sanitizeProduct(body, list[idx], validCats);
             list[idx].updatedAt = Date.now();
             await kvSetJSON(KEY, list);
             return res.status(200).json({ product: list[idx] });

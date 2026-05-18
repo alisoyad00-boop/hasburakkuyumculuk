@@ -583,6 +583,75 @@
         gap: 8px;
         margin-top: 4px;
     }
+
+    /* ─── GALERİ ─── */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+    }
+    .gallery-item {
+        position: relative;
+        aspect-ratio: 1;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: var(--surface-2);
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+    .gallery-item-del {
+        position: absolute;
+        top: 6px; right: 6px;
+        width: 30px; height: 30px;
+        border-radius: 50%;
+        background: rgba(229, 115, 115, 0.92);
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        font-size: 1.1rem;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s, transform 0.15s;
+    }
+    .gallery-item-del:hover { background: var(--danger); transform: scale(1.1); }
+    .gallery-item-badge {
+        position: absolute;
+        bottom: 6px; left: 6px;
+        background: var(--gold);
+        color: #1a1208;
+        font-size: 0.64rem;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ─── KATEGORİ LİSTESİ ─── */
+    .cat-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        margin-bottom: 8px;
+    }
+    .cat-row strong { font-size: 0.95rem; }
+    .cat-row-count {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-left: 10px;
+    }
 </style>
 </head>
 <body>
@@ -636,6 +705,10 @@
             Yorumlar
             <span class="dash-tab-badge" id="reviewsBadge" hidden>0</span>
         </button>
+        <button type="button" class="dash-tab-btn" data-tab="gallery" role="tab">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            Galeri
+        </button>
     </div>
 
     <div class="alert success" id="dashSuccess"></div>
@@ -648,7 +721,10 @@
                 <h2>Ürün Yönetimi</h2>
                 <p class="stats" id="stats">Yükleniyor...</p>
             </div>
-            <button class="btn" id="addBtn">+ Yeni Ürün Ekle</button>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn secondary" id="manageCategoriesBtn">Kategoriler</button>
+                <button class="btn" id="addBtn">+ Yeni Ürün Ekle</button>
+            </div>
         </div>
         <div class="dash-toolbar">
             <input type="search" id="searchBox" placeholder="Ürün ara..." spellcheck="false" autocomplete="off">
@@ -803,6 +879,22 @@
         </div>
     </div>
 
+    <!-- TAB: GALERİ (biz-kimiz mağaza fotoğrafları) -->
+    <div class="dash-tab-panel hidden" data-tab-panel="gallery">
+        <div class="dash-header">
+            <div>
+                <h2>Mağaza Galerisi</h2>
+                <p class="stats" id="galleryStats">Yükleniyor...</p>
+            </div>
+            <button class="btn" id="galleryAddBtn">+ Fotoğraf Ekle</button>
+            <input type="file" id="galleryFileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" hidden>
+        </div>
+        <p class="stats" style="margin-bottom:16px;">Bu fotoğraflar "Biz Kimiz" sayfasındaki mağaza galerisinde gösterilir. İlk fotoğraf büyük gösterilir.</p>
+        <div id="galleryArea">
+            <div class="loader">Galeri yükleniyor...</div>
+        </div>
+    </div>
+
 </section>
 
 <!-- ADD/EDIT MODAL -->
@@ -857,6 +949,25 @@
             </div>
             <div class="alert error" id="modalError"></div>
         </form>
+    </div>
+</div>
+
+<!-- KATEGORİ YÖNETİMİ MODAL -->
+<div class="modal-backdrop" id="categoryModal">
+    <div class="modal">
+        <h3>Kategori Yönetimi</h3>
+        <p class="sub">Ürün kategorilerini ekleyin veya kaldırın. İçinde ürün olan kategori silinemez.</p>
+        <form id="categoryAddForm" autocomplete="off" style="display:flex;gap:8px;margin-bottom:20px;">
+            <input type="text" id="catNewLabel" maxlength="60" placeholder="Yeni kategori adı (örn: Saat & Aksesuar)" style="flex:1;" required>
+            <button type="submit" class="btn" id="catAddBtn">Ekle</button>
+        </form>
+        <div id="categoryList">
+            <div class="loader">Yükleniyor...</div>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn secondary" id="categoryCloseBtn">Kapat</button>
+        </div>
+        <div class="alert error" id="categoryModalError"></div>
     </div>
 </div>
 
@@ -1298,6 +1409,7 @@
         products: () => {/* zaten yüklü */},
         config: loadSiteConfig,
         reviews: loadReviewsAdmin,
+        gallery: loadGalleryAdmin,
     };
     document.querySelectorAll('.dash-tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1540,6 +1652,177 @@
         } finally {
             btn.disabled = false;
             btn.textContent = orig;
+        }
+    });
+
+    // ════════════════════════════════════════════
+    //   GALERİ YÖNETİMİ TAB
+    // ════════════════════════════════════════════
+    const API_GALLERY_ADMIN = '/api/admin/store-gallery';
+    let galleryItems = [];
+
+    async function loadGalleryAdmin() {
+        $('galleryArea').innerHTML = '<div class="loader">Galeri yükleniyor...</div>';
+        try {
+            const data = await api(API_GALLERY_ADMIN);
+            galleryItems = data.gallery || [];
+            $('galleryStats').textContent = galleryItems.length + ' fotoğraf';
+            renderGallery();
+        } catch (e) {
+            $('galleryArea').innerHTML =
+                `<div class="empty"><h3>Yüklenemedi</h3><p>${escapeHtml(e.message)}</p></div>`;
+        }
+    }
+
+    function renderGallery() {
+        if (!galleryItems.length) {
+            $('galleryArea').innerHTML =
+                '<div class="empty"><h3>Henüz fotoğraf yok</h3><p>"+ Fotoğraf Ekle" ile mağaza fotoğrafı yükleyin.</p></div>';
+            return;
+        }
+        $('galleryArea').innerHTML = '<div class="gallery-grid">' + galleryItems.map((it, i) => `
+            <div class="gallery-item">
+                <img src="${escapeHtml(it.url)}" alt="${escapeHtml(it.alt || '')}">
+                ${i === 0 ? '<span class="gallery-item-badge">Büyük</span>' : ''}
+                <button class="gallery-item-del" data-id="${escapeHtml(it.id)}" title="Sil" type="button">&times;</button>
+            </div>
+        `).join('') + '</div>';
+        $('galleryArea').querySelectorAll('.gallery-item-del').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                if (!confirm('Bu fotoğrafı galeriden kaldırmak istediğinden emin misin?')) return;
+                btn.disabled = true;
+                try {
+                    await api(API_GALLERY_ADMIN + '?id=' + encodeURIComponent(btn.dataset.id), { method: 'DELETE' });
+                    flash('Fotoğraf kaldırıldı.');
+                    await loadGalleryAdmin();
+                } catch (e) {
+                    flash(e.message || 'Silinemedi.', 'error');
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    // Fotoğraf ekle: dosya seç → /api/admin/upload → galeriye POST
+    $('galleryAddBtn').addEventListener('click', () => $('galleryFileInput').click());
+    $('galleryFileInput').addEventListener('change', async () => {
+        const file = $('galleryFileInput').files && $('galleryFileInput').files[0];
+        $('galleryFileInput').value = '';
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { flash('Sadece resim dosyası yükleyebilirsin.', 'error'); return; }
+        if (file.size > 4 * 1024 * 1024) { flash('Dosya çok büyük (en fazla 4 MB).', 'error'); return; }
+        const btn = $('galleryAddBtn');
+        btn.disabled = true;
+        const orig = btn.textContent;
+        btn.textContent = 'Yükleniyor...';
+        try {
+            const token = getToken();
+            const up = await fetch('/api/admin/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': file.type,
+                    'x-filename': encodeURIComponent(file.name),
+                },
+                body: file,
+            });
+            const upData = await up.json();
+            if (!up.ok) throw new Error(upData.error || ('HTTP ' + up.status));
+            await api(API_GALLERY_ADMIN, {
+                method: 'POST',
+                body: JSON.stringify({ url: upData.url, alt: 'Hasburak Sarrafiye mağaza fotoğrafı' }),
+            });
+            flash('Fotoğraf galeriye eklendi.');
+            await loadGalleryAdmin();
+        } catch (e) {
+            flash(e.message || 'Fotoğraf eklenemedi.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.textContent = orig;
+        }
+    });
+
+    // ════════════════════════════════════════════
+    //   KATEGORİ YÖNETİMİ MODALI
+    // ════════════════════════════════════════════
+    const API_CATEGORIES_ADMIN = '/api/admin/categories';
+    const categoryModal = $('categoryModal');
+    let adminCategories = [];
+
+    function closeCategoryModal() { categoryModal.classList.remove('show'); }
+
+    async function loadCategoriesAdmin() {
+        $('categoryList').innerHTML = '<div class="loader">Yükleniyor...</div>';
+        try {
+            const data = await api(API_CATEGORIES_ADMIN);
+            adminCategories = data.categories || [];
+            renderCategoryList(data.counts || {});
+        } catch (e) {
+            $('categoryList').innerHTML =
+                `<p style="color:var(--danger);font-size:0.88rem;">${escapeHtml(e.message)}</p>`;
+        }
+    }
+
+    function renderCategoryList(counts) {
+        if (!adminCategories.length) {
+            $('categoryList').innerHTML = '<p style="color:var(--muted);">Henüz kategori yok.</p>';
+            return;
+        }
+        $('categoryList').innerHTML = adminCategories.map(c => {
+            const n = counts[c.key] || 0;
+            return `
+                <div class="cat-row">
+                    <div><strong>${escapeHtml(c.label)}</strong><span class="cat-row-count">${n} ürün</span></div>
+                    <button class="btn danger small" type="button" data-cat-del="${escapeHtml(c.key)}" ${n > 0 ? 'disabled title="İçinde ürün var, silinemez"' : ''}>Sil</button>
+                </div>
+            `;
+        }).join('');
+        $('categoryList').querySelectorAll('button[data-cat-del]').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const key = btn.dataset.catDel;
+                if (!confirm('Bu kategoriyi silmek istediğinden emin misin?')) return;
+                btn.disabled = true;
+                try {
+                    await api(API_CATEGORIES_ADMIN + '?key=' + encodeURIComponent(key), { method: 'DELETE' });
+                    flash('Kategori silindi.');
+                    await loadCategoriesAdmin();
+                    await loadProducts(); // ürün formundaki kategori dropdown'u tazelensin
+                } catch (e) {
+                    showAlert($('categoryModalError'), e.message || 'Silinemedi.');
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    $('manageCategoriesBtn').addEventListener('click', () => {
+        hideAlert($('categoryModalError'));
+        $('categoryAddForm').reset();
+        categoryModal.classList.add('show');
+        loadCategoriesAdmin();
+    });
+    $('categoryCloseBtn').addEventListener('click', closeCategoryModal);
+    categoryModal.addEventListener('click', (e) => { if (e.target === categoryModal) closeCategoryModal(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && categoryModal.classList.contains('show')) closeCategoryModal();
+    });
+    $('categoryAddForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const label = $('catNewLabel').value.trim();
+        if (!label) return;
+        const btn = $('catAddBtn');
+        btn.disabled = true;
+        hideAlert($('categoryModalError'));
+        try {
+            await api(API_CATEGORIES_ADMIN, { method: 'POST', body: JSON.stringify({ label }) });
+            $('catNewLabel').value = '';
+            flash('Kategori eklendi.');
+            await loadCategoriesAdmin();
+            await loadProducts();
+        } catch (err) {
+            showAlert($('categoryModalError'), err.message || 'Kategori eklenemedi.');
+        } finally {
+            btn.disabled = false;
         }
     });
 

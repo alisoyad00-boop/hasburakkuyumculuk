@@ -616,14 +616,22 @@ async function initDynamicProducts() {
     if (!root) return false; // not on urunler.html
 
     const loading = document.getElementById('productsLoading');
-    let products = [];
+    let products = [], categories = [];
     try {
-        const r = await fetch('/api/products', { headers: { 'Cache-Control': 'no-cache' } });
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        const data = await r.json();
-        products = Array.isArray(data.products) ? data.products : [];
+        // Ürünler + kategoriler birlikte çekilir
+        const [pr, cr] = await Promise.all([
+            fetch('/api/products', { headers: { 'Cache-Control': 'no-cache' } }),
+            fetch('/api/categories', { headers: { 'Cache-Control': 'no-cache' } }),
+        ]);
+        if (!pr.ok) throw new Error('products HTTP ' + pr.status);
+        const pdata = await pr.json();
+        products = Array.isArray(pdata.products) ? pdata.products : [];
+        if (cr.ok) {
+            const cdata = await cr.json();
+            categories = Array.isArray(cdata.categories) ? cdata.categories : [];
+        }
     } catch (e) {
-        console.warn('product fetch failed:', e.message);
+        console.warn('product/category fetch failed:', e.message);
         if (loading) loading.textContent = 'Ürünler şu anda yüklenemiyor. Lütfen sayfayı yenileyin.';
         return false;
     }
@@ -635,44 +643,62 @@ async function initDynamicProducts() {
         (byCat[p.category] = byCat[p.category] || []).push(p);
     });
 
-    // Fill grids + section header'a alt-kategori chip'leri ekle
-    const grids = root.querySelectorAll('[data-cat-grid]');
-    grids.forEach(grid => {
-        const cat = grid.getAttribute('data-cat-grid');
-        const list = byCat[cat] || [];
-        const section = grid.closest('.cat-section');
-        if (!list.length) {
-            if (section) section.style.display = 'none';
-            return;
-        }
-        grid.innerHTML = list.map(renderProductCard).join('');
-
-        // Bu kategoride hangi alt-kategoriler var? Tag'leri topla.
-        // Kullanıcı "küpeye tıkladığımda halka/yapıştırma/sallama vibe alamıyorum"
-        // dedi — chip'lerle hangi alt türler olduğunu hemen görsün.
-        if (section) {
-            const head = section.querySelector('.cat-section-head');
-            if (head && !head.querySelector('.cat-section-tags')) {
-                const tagSet = new Set();
-                list.forEach(p => { if (p.tag) tagSet.add(p.tag); });
-                const uniqueTags = [...tagSet];
-                if (uniqueTags.length >= 2) {
-                    const tagsWrap = document.createElement('div');
-                    tagsWrap.className = 'cat-section-tags';
-                    // İlk 6 tag'i göster, fazlasını "+N" ile özetle
-                    const visible = uniqueTags.slice(0, 6);
-                    const more = uniqueTags.length - visible.length;
-                    tagsWrap.innerHTML = visible.map(t =>
-                        `<span class="cat-section-tag">${escapeAttr(t)}</span>`
-                    ).join('') + (more > 0 ? `<span class="cat-section-tag" style="opacity:0.6;">+${more}</span>` : '');
-                    // Line'ın hemen önüne ekle
-                    const line = head.querySelector('.cat-section-line');
-                    if (line) head.insertBefore(tagsWrap, line);
-                    else head.appendChild(tagsWrap);
-                }
+    // Kategori API başarısızsa, ürünlerden kategori listesi türet (fallback)
+    if (!categories.length) {
+        const seen = new Set();
+        products.forEach(p => {
+            if (p.category && !seen.has(p.category)) {
+                seen.add(p.category);
+                categories.push({ key: p.category, label: p.category });
             }
+        });
+    }
+
+    // Filtre çubuğu — sadece ürünü olan kategoriler
+    const filterBar = document.querySelector('.filter-bar');
+    if (filterBar) {
+        filterBar.innerHTML = categories
+            .filter(c => (byCat[c.key] || []).length > 0)
+            .map(c => `<a href="#${escapeAttr(c.key)}" class="filter-pill">${escapeAttr(c.label)}</a>`)
+            .join('');
+    }
+
+    // Kategori bölümlerini sırayla dinamik oluştur
+    let sectionIdx = 0;
+    root.innerHTML = categories.map(c => {
+        const list = byCat[c.key] || [];
+        if (!list.length) return ''; // boş kategori gösterilmez
+        sectionIdx++;
+        const num = String(sectionIdx).padStart(2, '0');
+
+        // Alt-kategori chip'leri (ürün tag'lerinden)
+        const tagSet = new Set();
+        list.forEach(p => { if (p.tag) tagSet.add(p.tag); });
+        const uniqueTags = [...tagSet];
+        let chipsHtml = '';
+        if (uniqueTags.length >= 2) {
+            const visible = uniqueTags.slice(0, 6);
+            const more = uniqueTags.length - visible.length;
+            chipsHtml = '<div class="cat-section-tags">' +
+                visible.map(t => `<span class="cat-section-tag">${escapeAttr(t)}</span>`).join('') +
+                (more > 0 ? `<span class="cat-section-tag" style="opacity:0.6;">+${more}</span>` : '') +
+                '</div>';
         }
-    });
+
+        return `
+            <div class="cat-section" id="${escapeAttr(c.key)}" data-cat="${escapeAttr(c.key)}">
+                <div class="cat-section-head reveal">
+                    <div>
+                        <span class="eyebrow">${num} — Koleksiyon</span>
+                        <h3>${escapeAttr(c.label)}</h3>
+                    </div>
+                    ${chipsHtml}
+                    <div class="cat-section-line"></div>
+                </div>
+                <div class="product-grid">${list.map(renderProductCard).join('')}</div>
+            </div>
+        `;
+    }).join('');
 
     if (loading) loading.remove();
 
@@ -1333,12 +1359,45 @@ function initReviewForm() {
     });
 }
 
+// ════════════════════════════════════════════
+//   DİNAMİK MAĞAZA GALERİSİ (biz-kimiz.html)
+//   /api/store-gallery'den foto listesini çekip render eder.
+//   Hata olursa statik HTML fallback olarak kalır.
+// ════════════════════════════════════════════
+async function initStoreGallery() {
+    const gallery = document.getElementById('storeGallery');
+    if (!gallery) return;
+
+    let items = [];
+    try {
+        const r = await fetch('/api/store-gallery', { cache: 'default' });
+        if (!r.ok) return; // statik fallback kalsın
+        const data = await r.json();
+        items = Array.isArray(data.gallery) ? data.gallery : [];
+    } catch (e) {
+        console.warn('store gallery fetch failed:', e.message);
+        return; // statik fallback kalsın
+    }
+    if (!items.length) return; // hiç foto yoksa statik kalsın
+
+    gallery.innerHTML = items.map((it, i) => {
+        // İlk fotoğraf büyük (mozaik), kalanlar normal kare
+        const cls = i === 0
+            ? 'store-gallery-item store-gallery-item--big'
+            : 'store-gallery-item';
+        const alt = it.alt || 'Hasburak Sarrafiye mağaza fotoğrafı';
+        return `<figure class="${cls}"><img src="${escapeAttr(it.url)}" alt="${escapeAttr(alt)}" loading="lazy" decoding="async"></figure>`;
+    }).join('');
+}
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initDynamicReviews();
         initReviewForm();
+        initStoreGallery();
     });
 } else {
     initDynamicReviews();
     initReviewForm();
+    initStoreGallery();
 }
