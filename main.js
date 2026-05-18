@@ -621,7 +621,7 @@ async function initDynamicProducts() {
         // Ürünler + kategoriler birlikte çekilir
         const [pr, cr] = await Promise.all([
             fetch('/api/products', { headers: { 'Cache-Control': 'no-cache' } }),
-            fetch('/api/categories', { headers: { 'Cache-Control': 'no-cache' } }),
+            fetch('/api/sitedata?type=categories', { headers: { 'Cache-Control': 'no-cache' } }),
         ]);
         if (!pr.ok) throw new Error('products HTTP ' + pr.status);
         const pdata = await pr.json();
@@ -1114,12 +1114,12 @@ if (document.readyState === 'loading') {
 
 // ════════════════════════════════════════════
 //   SİTE CONFIG: Üst Duyuru Bandı (#18) + Karşılama Popup (#11)
-//   GET /api/site-config — admin'in açtığı banner ve popup'ı gösterir
+//   GET /api/sitedata?type=config — admin'in açtığı banner ve popup'ı gösterir
 // ════════════════════════════════════════════
 async function initSiteConfig() {
     let config;
     try {
-        const r = await fetch('/api/site-config', { cache: 'default' });
+        const r = await fetch('/api/sitedata?type=config', { cache: 'default' });
         if (!r.ok) return;
         config = await r.json();
     } catch (e) { return; }
@@ -1361,7 +1361,7 @@ function initReviewForm() {
 
 // ════════════════════════════════════════════
 //   DİNAMİK MAĞAZA GALERİSİ (biz-kimiz.html)
-//   /api/store-gallery'den foto listesini çekip render eder.
+//   /api/sitedata?type=gallery'den foto listesini çekip render eder.
 //   Hata olursa statik HTML fallback olarak kalır.
 // ════════════════════════════════════════════
 async function initStoreGallery() {
@@ -1370,7 +1370,7 @@ async function initStoreGallery() {
 
     let items = [];
     try {
-        const r = await fetch('/api/store-gallery', { cache: 'default' });
+        const r = await fetch('/api/sitedata?type=gallery', { cache: 'default' });
         if (!r.ok) return; // statik fallback kalsın
         const data = await r.json();
         items = Array.isArray(data.gallery) ? data.gallery : [];

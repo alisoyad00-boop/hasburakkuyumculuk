@@ -1425,7 +1425,7 @@
     // ════════════════════════════════════════════
     //   SİTE CONFIG TAB
     // ════════════════════════════════════════════
-    const API_SITE_CONFIG = '/api/admin/site-config';
+    const API_SITE_CONFIG = '/api/admin/sitedata?type=config';
     let configLoaded = false;
 
     async function loadSiteConfig() {
@@ -1658,7 +1658,7 @@
     // ════════════════════════════════════════════
     //   GALERİ YÖNETİMİ TAB
     // ════════════════════════════════════════════
-    const API_GALLERY_ADMIN = '/api/admin/store-gallery';
+    const API_GALLERY_ADMIN = '/api/admin/sitedata?type=gallery';
     let galleryItems = [];
 
     async function loadGalleryAdmin() {
@@ -1692,7 +1692,7 @@
                 if (!confirm('Bu fotoğrafı galeriden kaldırmak istediğinden emin misin?')) return;
                 btn.disabled = true;
                 try {
-                    await api(API_GALLERY_ADMIN + '?id=' + encodeURIComponent(btn.dataset.id), { method: 'DELETE' });
+                    await api(API_GALLERY_ADMIN + '&id=' + encodeURIComponent(btn.dataset.id), { method: 'DELETE' });
                     flash('Fotoğraf kaldırıldı.');
                     await loadGalleryAdmin();
                 } catch (e) {
@@ -1745,7 +1745,7 @@
     // ════════════════════════════════════════════
     //   KATEGORİ YÖNETİMİ MODALI
     // ════════════════════════════════════════════
-    const API_CATEGORIES_ADMIN = '/api/admin/categories';
+    const API_CATEGORIES_ADMIN = '/api/admin/sitedata?type=categories';
     const categoryModal = $('categoryModal');
     let adminCategories = [];
 
@@ -1783,7 +1783,7 @@
                 if (!confirm('Bu kategoriyi silmek istediğinden emin misin?')) return;
                 btn.disabled = true;
                 try {
-                    await api(API_CATEGORIES_ADMIN + '?key=' + encodeURIComponent(key), { method: 'DELETE' });
+                    await api(API_CATEGORIES_ADMIN + '&key=' + encodeURIComponent(key), { method: 'DELETE' });
                     flash('Kategori silindi.');
                     await loadCategoriesAdmin();
                     await loadProducts(); // ürün formundaki kategori dropdown'u tazelensin

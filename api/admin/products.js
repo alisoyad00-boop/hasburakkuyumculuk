@@ -9,7 +9,7 @@
 import { authedFromHeader } from '../../lib/auth.js';
 import { kvGetJSON, kvSetJSON, kvAvailable } from '../../lib/kv.js';
 import { SEED_PRODUCTS } from '../../lib/seed.js';
-import { loadCategories } from '../categories.js';
+import { loadCategories } from '../../lib/site-store.js';
 
 const KEY = 'hasburak:products:v1';
 
