@@ -412,6 +412,24 @@ if (reveals.length && !prefersReduced) {
     reveals.forEach(el => el.classList.add('visible'));
 }
 
+// ─── YILLIK DENEYİM HESABI ───
+// 1 Ekim 2025 itibarıyla 30 yıl. Her 1 Ekim'de otomatik +1.
+function calcExperienceYears() {
+    const ANCHOR_YEAR = 2025, ANCHOR_VALUE = 30;
+    const now = new Date();
+    let value = ANCHOR_VALUE + (now.getFullYear() - ANCHOR_YEAR);
+    // Bu yılın 1 Ekim'i henüz gelmediyse bir eksik (ay 9 = Ekim)
+    if (now < new Date(now.getFullYear(), 9, 1)) value--;
+    return value;
+}
+// data-experience taşıyan stat'ların hedef değerini güncelle
+document.querySelectorAll('[data-experience]').forEach(el => {
+    const years = calcExperienceYears();
+    el.dataset.count = String(years);
+    el.dataset.suffix = '+';
+    el.textContent = years + '+';
+});
+
 // ─── COUNTER ANIMATION ───
 const counters = document.querySelectorAll('[data-count]');
 if (counters.length && !prefersReduced) {
@@ -422,12 +440,16 @@ if (counters.length && !prefersReduced) {
                 const target = parseFloat(el.dataset.count);
                 const suffix = el.dataset.suffix || '';
                 const prefix = el.dataset.prefix || '';
+                const useThousands = el.hasAttribute('data-thousands');
                 const dur = 2800;
                 const start = performance.now();
+                function fmt(n) {
+                    return useThousands ? n.toLocaleString('tr-TR') : String(n);
+                }
                 function tick(now) {
                     const t = Math.min(1, (now - start) / dur);
                     const eased = 1 - Math.pow(1 - t, 3);
-                    el.textContent = prefix + Math.floor(target * eased) + suffix;
+                    el.textContent = prefix + fmt(Math.floor(target * eased)) + suffix;
                     if (t < 1) requestAnimationFrame(tick);
                 }
                 requestAnimationFrame(tick);
@@ -1010,7 +1032,7 @@ function initChatbot() {
         addMessage('bot', reply);
         history.push({ role: 'assistant', content: reply });
 
-        // Keep only last 12 turns in memory (server trims to 6 anyway)
+        // Keep only last 12 turns in memory (server uses last 16 messages)
         if (history.length > 24) history.splice(0, history.length - 24);
 
         isSending = false;
