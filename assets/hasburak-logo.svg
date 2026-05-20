@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hasburak Sarrafiye">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Hasburak Kuyumculuk">
     <defs>
         <linearGradient id="hbGold" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%"   stop-color="#F8E9B6"/>
@@ -65,12 +65,12 @@
         <circle cx="160"  cy="0" r="2.4" fill="url(#hbGold)"/>
     </g>
 
-    <!-- ═════ SARRAFİYE (alt yazı) ═════ -->
+    <!-- ═════ KUYUMCULUK (alt yazı) ═════ -->
     <text x="360" y="302"
           font-family="'Inter', 'Helvetica Neue', sans-serif"
           font-size="20"
           font-weight="500"
           fill="#FFFCF7"
           text-anchor="middle"
-          letter-spacing="14">SARRAFİYE</text>
+          letter-spacing="12">KUYUMCULUK</text>
 </svg>
