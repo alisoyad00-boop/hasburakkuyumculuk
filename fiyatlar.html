@@ -85,19 +85,30 @@
             letter-spacing: 0.05em;
         }
 
-        /* ═══ FİYAT TABLOSU — 3 sütun düzenli grid ═══ */
+        /* ═══ FİYAT TABLOSU — mantıksal gruplar: ayarlar / tekliler / çoklular ═══ */
         .prices-board {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            display: flex;
+            flex-direction: column;
             gap: 14px;
         }
-        @media (max-width: 860px) {
-            .prices-board { grid-template-columns: repeat(2, 1fr); }
+        .price-row {
+            display: grid;
+            gap: 14px;
         }
-        @media (max-width: 560px) {
-            .prices-board { grid-template-columns: 1fr; }
+        .price-row-ayar  { grid-template-columns: repeat(4, 1fr); }
+        .price-row-tekli { grid-template-columns: repeat(3, 1fr); }
+        .price-row-coklu { grid-template-columns: repeat(3, 1fr); }
+        @media (max-width: 860px) {
+            .price-row-ayar,
+            .price-row-tekli,
+            .price-row-coklu { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 480px) {
+            .price-row-ayar,
+            .price-row-tekli,
+            .price-row-coklu { grid-template-columns: 1fr; }
         }
         .price-cell {
             background:
@@ -351,11 +362,14 @@
         body.prices-fullscreen .prices-board {
             max-width: none;
             margin: 0;
-            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             flex: 1;
-            align-content: center;
+            justify-content: center;
         }
+        body.prices-fullscreen .price-row { gap: 10px; }
+        body.prices-fullscreen .price-row-ayar  { grid-template-columns: repeat(4, 1fr); }
+        body.prices-fullscreen .price-row-tekli { grid-template-columns: repeat(3, 1fr); }
+        body.prices-fullscreen .price-row-coklu { grid-template-columns: repeat(3, 1fr); }
         body.prices-fullscreen .price-cell {
             background: #000 !important;
             border: 1.5px solid #F5C400 !important;
@@ -422,13 +436,17 @@
                 font-size: 0.78rem;
                 letter-spacing: 0.06em;
             }
-            body.prices-fullscreen .prices-board {
+            body.prices-fullscreen .price-row-ayar,
+            body.prices-fullscreen .price-row-tekli,
+            body.prices-fullscreen .price-row-coklu {
                 grid-template-columns: repeat(2, 1fr);
             }
             body.prices-fullscreen #pricesSection { padding: 14px !important; }
         }
         @media (max-width: 480px) {
-            body.prices-fullscreen .prices-board {
+            body.prices-fullscreen .price-row-ayar,
+            body.prices-fullscreen .price-row-tekli,
+            body.prices-fullscreen .price-row-coklu {
                 grid-template-columns: 1fr;
             }
         }
@@ -505,19 +523,24 @@
             <div class="last-update" id="lastUpdate">Veri bekleniyor...</div>
         </div>
 
-        <!-- FİYAT TABLOSU — 3 sütun düzenli grid, sabit sıra -->
+        <!-- FİYAT TABLOSU — 3 mantıksal satır: ayarlar (4) / tekliler (3) / çoklular (3) -->
         <div class="prices-board skeleton" id="pricesBoard">
-            <!-- 10 hücre JS ile sabit sırada render edilir -->
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
-            <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            <div class="price-row price-row-ayar">
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            </div>
+            <div class="price-row price-row-tekli">
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            </div>
+            <div class="price-row price-row-coklu">
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+                <div class="price-cell"><div class="price-cell-name">&nbsp;</div><div class="price-cell-legs"><div class="price-leg alis"><span class="price-label">Alış</span><span class="price-value">0</span></div><div class="price-leg satis"><span class="price-label">Satış</span><span class="price-value">0</span></div></div></div>
+            </div>
         </div>
 
         <!-- INFO + CTA -->
@@ -609,25 +632,26 @@
         const POLL_MS = 30000;
         const ENDPOINT = '/api/altin-fiyatlari';
 
-        // Sabit sıralama — mağaza ekranında her ürün hep aynı yerde,
-        // yoğunlukta tek bakışta bulunsun diye.
-        const PRICE_ORDER = [
-            '24 AYAR PAKETLİ', 'TEKLİK ALTIN', 'BEŞLİ ALTIN',
-            '22 AYAR GRAM',    'YARIM ALTIN',  '2.5 ALTIN',
-            '22 AYAR BİLEZİK', 'ÇEYREK ALTIN', 'ATA LİRA',
-            '14 AYAR',
+        // Mantıksal gruplar — müşteri tek bakışta bulsun:
+        //   Sıra 1 (Ayarlar):  24 / 22 gram / 22 bilezik / 14
+        //   Sıra 2 (Tekliler): Teklik / Yarım / Çeyrek
+        //   Sıra 3 (Çoklular): Beşli / 2.5 / Ata
+        const PRICE_GROUPS = [
+            { cls: 'price-row-ayar',  items: ['24 AYAR PAKETLİ', '22 AYAR GRAM', '22 AYAR BİLEZİK', '14 AYAR'] },
+            { cls: 'price-row-tekli', items: ['TEKLİK ALTIN',    'YARIM ALTIN',  'ÇEYREK ALTIN'] },
+            { cls: 'price-row-coklu', items: ['BEŞLİ ALTIN',     '2.5 ALTIN',    'ATA LİRA'] },
         ];
         const DISPLAY_NAMES = {
             '24 AYAR PAKETLİ': '24 Ayar Paketli',
-            'TEKLİK ALTIN':    'Teklik Altın',
-            'BEŞLİ ALTIN':     'Beşli Altın',
             '22 AYAR GRAM':    '22 Ayar Gram',
-            'YARIM ALTIN':     'Yarım Altın',
-            '2.5 ALTIN':       '2.5 Altın',
             '22 AYAR BİLEZİK': '22 Ayar Bilezik',
-            'ÇEYREK ALTIN':    'Çeyrek Altın',
-            'ATA LİRA':        'Ata Lirası',
             '14 AYAR':         '14 Ayar',
+            'TEKLİK ALTIN':    'Teklik Altın',
+            'YARIM ALTIN':     'Yarım Altın',
+            'ÇEYREK ALTIN':    'Çeyrek Altın',
+            'BEŞLİ ALTIN':     'Beşli Altın',
+            '2.5 ALTIN':       '2.5 Altın',
+            'ATA LİRA':        'Ata Lirası',
         };
 
         const boardEl = document.getElementById('pricesBoard');
@@ -669,35 +693,41 @@
                 .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         }
 
-        // Tüm fiyatları sabit PRICE_ORDER sırasıyla tek tabloda render et
+        // Tüm fiyatları 3 mantıksal satırda render et (ayar / tekli / çoklu)
+        function renderCell(key, p) {
+            const display = DISPLAY_NAMES[key] || key;
+            const keyA = key + ':alis', keyS = key + ':satis';
+            const flashA = (previousValues[keyA] && previousValues[keyA] !== p.alis) ? ' flash' : '';
+            const flashS = (previousValues[keyS] && previousValues[keyS] !== p.satis) ? ' flash' : '';
+            previousValues[keyA] = p.alis;
+            previousValues[keyS] = p.satis;
+            return `
+                <article class="price-cell">
+                    <div class="price-cell-name">${escapeHtml(display)}</div>
+                    <div class="price-cell-legs">
+                        <div class="price-leg alis">
+                            <span class="price-label">Alış</span>
+                            <span class="price-value${flashA}">${escapeHtml(p.alis)}<span class="price-currency"> TL</span></span>
+                        </div>
+                        <div class="price-leg satis">
+                            <span class="price-label">Satış</span>
+                            <span class="price-value${flashS}">${escapeHtml(p.satis)}<span class="price-currency"> TL</span></span>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
+
         function renderBoard(prices) {
             const byName = {};
             prices.forEach(p => byName[p.name] = p);
 
-            boardEl.innerHTML = PRICE_ORDER.map(key => {
-                const p = byName[key];
-                if (!p) return '';
-                const display = DISPLAY_NAMES[key] || key;
-                const keyA = key + ':alis', keyS = key + ':satis';
-                const flashA = (previousValues[keyA] && previousValues[keyA] !== p.alis) ? ' flash' : '';
-                const flashS = (previousValues[keyS] && previousValues[keyS] !== p.satis) ? ' flash' : '';
-                previousValues[keyA] = p.alis;
-                previousValues[keyS] = p.satis;
-                return `
-                    <article class="price-cell">
-                        <div class="price-cell-name">${escapeHtml(display)}</div>
-                        <div class="price-cell-legs">
-                            <div class="price-leg alis">
-                                <span class="price-label">Alış</span>
-                                <span class="price-value${flashA}">${escapeHtml(p.alis)}<span class="price-currency"> TL</span></span>
-                            </div>
-                            <div class="price-leg satis">
-                                <span class="price-label">Satış</span>
-                                <span class="price-value${flashS}">${escapeHtml(p.satis)}<span class="price-currency"> TL</span></span>
-                            </div>
-                        </div>
-                    </article>
-                `;
+            boardEl.innerHTML = PRICE_GROUPS.map(group => {
+                const cells = group.items.map(key => {
+                    const p = byName[key];
+                    return p ? renderCell(key, p) : '';
+                }).join('');
+                return `<div class="price-row ${group.cls}">${cells}</div>`;
             }).join('');
             boardEl.classList.remove('skeleton');
         }
