@@ -13,7 +13,7 @@
     <title>Güncel Altın Fiyatları | Hasburak Sarrafiye</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="image" href="assets/hasburak-logo.svg?v=kuyumculuk">
+    <link rel="preload" as="image" href="assets/hasburak-logo.jpg?v=halil-real">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css?v=halil">
     <style>
@@ -262,8 +262,8 @@
 
         /* ═══════════════════════════════════════════
            FULLSCREEN — Mağaza TV ekranı modu
-           Elbistan Kuyumcular Derneği tarzı: siyah BG + altın sarı +
-           büyük sade tablo. Mağazada vitrindeki monitörde gözükür.
+           Hasburak marka renkleri: LACİVERT BG + ALTIN sarı +
+           büyük sade tablo. Mağaza vitrin monitöründe gözükür.
            ═══════════════════════════════════════════ */
         body.prices-fullscreen .nav,
         body.prices-fullscreen .footer,
@@ -283,12 +283,14 @@
         }
         body.prices-fullscreen {
             overflow: hidden;
-            background: #000 !important;
+            background: #060E2C !important;
         }
         body.prices-fullscreen #pricesSection {
             position: fixed;
             inset: 0;
-            background: #000;
+            background:
+                radial-gradient(ellipse at top, rgba(212, 175, 55, 0.06), transparent 60%),
+                linear-gradient(180deg, #060E2C 0%, #03081F 100%);
             z-index: 9999;
             padding: 24px 32px !important;
             overflow-y: auto;
@@ -297,37 +299,37 @@
             gap: 14px;
         }
 
-        /* Üst başlık şeridi: ÜST SATIR = başlık, ALT SATIR = canlı pill + saat + çıkış */
+        /* Üst başlık şeridi */
         body.prices-fullscreen .prices-status {
-            background: #000 !important;
+            background: linear-gradient(135deg, #0A1442, #060E2C) !important;
             -webkit-backdrop-filter: none !important;
             backdrop-filter: none !important;
-            border: 2px solid #F5C400 !important;
-            border-radius: 0 !important;
+            border: 1.5px solid #D4AF37 !important;
+            border-radius: 8px !important;
             max-width: none;
             margin: 0;
             padding: 14px 22px 12px !important;
             position: relative;
             justify-content: space-between;
             flex-wrap: nowrap;
-            /* Başlık için üstte yer aç */
+            box-shadow: 0 0 32px rgba(212, 175, 55, 0.12), inset 0 1px 0 rgba(212, 175, 55, 0.15);
             padding-top: 56px !important;
         }
         body.prices-fullscreen .prices-status::after {
-            content: 'HASBURAK SARRAFİYE · GÜNCEL ALTIN FİYATLARI';
+            content: 'HASBURAK KUYUMCULUK · GÜNCEL ALTIN FİYATLARI';
             position: absolute;
             top: 10px;
             left: 0; right: 0;
             text-align: center;
-            font-family: 'Inter', sans-serif;
-            font-weight: 800;
-            font-size: clamp(0.85rem, 1.6vw, 1.55rem);
-            color: #F5C400;
-            letter-spacing: 0.14em;
+            font-family: 'Cormorant Garamond', 'Inter', serif;
+            font-weight: 700;
+            font-size: clamp(0.95rem, 1.7vw, 1.7rem);
+            color: #F0DFA3;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             pointer-events: none;
             white-space: nowrap;
-            text-shadow: 0 0 16px rgba(245, 196, 0, 0.4);
+            text-shadow: 0 0 16px rgba(212, 175, 55, 0.45);
             padding: 0 24px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -338,27 +340,27 @@
             }
             body.prices-fullscreen .prices-status::after {
                 top: 8px;
-                font-size: 0.72rem;
-                letter-spacing: 0.06em;
+                font-size: 0.78rem;
+                letter-spacing: 0.08em;
             }
         }
-        body.prices-fullscreen .live-pill { color: #F5C400 !important; z-index: 2; }
+        body.prices-fullscreen .live-pill { color: #F0DFA3 !important; z-index: 2; }
         body.prices-fullscreen .live-dot {
             background: #22d39a !important;
             box-shadow: 0 0 10px #22d39a !important;
         }
         body.prices-fullscreen .clock-display { z-index: 2; }
         body.prices-fullscreen .clock-label {
-            color: rgba(245, 196, 0, 0.55) !important;
+            color: rgba(240, 223, 163, 0.6) !important;
         }
         body.prices-fullscreen .clock-time {
-            color: #F5C400 !important;
+            color: #E5C674 !important;
             font-size: 1.5rem !important;
             font-weight: 700;
-            text-shadow: 0 0 8px rgba(245, 196, 0, 0.35);
+            text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
         }
 
-        /* Fiyat tablosu — sade, siyah + sarı kenarlık, ekranı doldurur */
+        /* Fiyat tablosu — LACİVERT BG + ALTIN kenarlık (marka renkleri) */
         body.prices-fullscreen .prices-board {
             max-width: none;
             margin: 0;
@@ -371,63 +373,70 @@
         body.prices-fullscreen .price-row-tekli { grid-template-columns: repeat(3, 1fr); }
         body.prices-fullscreen .price-row-coklu { grid-template-columns: repeat(3, 1fr); }
         body.prices-fullscreen .price-cell {
-            background: #000 !important;
-            border: 1.5px solid #F5C400 !important;
-            border-radius: 0 !important;
+            background:
+                radial-gradient(circle at 30% 0%, rgba(212, 175, 55, 0.08), transparent 60%),
+                linear-gradient(135deg, #131F5C 0%, #060E2C 100%) !important;
+            border: 1.5px solid #D4AF37 !important;
+            border-radius: 8px !important;
             padding: 14px 18px !important;
+            box-shadow: 0 0 18px rgba(212, 175, 55, 0.06), inset 0 1px 0 rgba(212, 175, 55, 0.12);
         }
         body.prices-fullscreen .price-cell:hover {
             transform: none;
         }
         body.prices-fullscreen .price-cell-name {
-            font-family: 'Inter', 'Arial Black', sans-serif !important;
-            color: #F5C400 !important;
-            font-weight: 800 !important;
+            font-family: 'Cormorant Garamond', 'Inter', serif !important;
+            color: #F0DFA3 !important;
+            font-weight: 700 !important;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            font-size: clamp(0.95rem, 1.3vw, 1.35rem) !important;
-            text-shadow: 0 0 12px rgba(245, 196, 0, 0.3);
-            border-bottom-color: rgba(245, 196, 0, 0.3) !important;
+            font-size: clamp(1rem, 1.4vw, 1.45rem) !important;
+            text-shadow: 0 0 14px rgba(212, 175, 55, 0.35);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.32) !important;
             margin-bottom: 10px;
             padding-bottom: 8px;
         }
         body.prices-fullscreen .price-label {
-            color: rgba(245, 196, 0, 0.55) !important;
-            font-size: 0.6rem !important;
+            color: rgba(240, 223, 163, 0.55) !important;
+            font-size: 0.62rem !important;
             margin-bottom: 3px;
+            letter-spacing: 0.22em;
         }
         body.prices-fullscreen .price-value {
-            color: #F5C400 !important;
-            font-family: 'Inter', 'Arial Black', sans-serif !important;
-            font-weight: 900 !important;
+            color: #E5C674 !important;
+            font-family: 'Inter', 'Helvetica Neue', sans-serif !important;
+            font-weight: 800 !important;
             font-size: clamp(1.3rem, 2.4vw, 2.7rem) !important;
             letter-spacing: -0.01em;
-            text-shadow: 0 0 16px rgba(245, 196, 0, 0.3);
+            text-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
         }
         body.prices-fullscreen .price-leg.satis .price-value {
-            color: #FFD700 !important;
+            color: #F8E9B6 !important;
+            text-shadow: 0 0 20px rgba(248, 233, 182, 0.45);
         }
         body.prices-fullscreen .price-currency {
-            color: rgba(245, 196, 0, 0.45) !important;
+            color: rgba(229, 198, 116, 0.55) !important;
+        }
+        body.prices-fullscreen .price-currency {
             font-size: 0.55em !important;
         }
         body.prices-fullscreen .price-value.flash {
             animation: priceFlashTv 1.5s ease;
         }
         @keyframes priceFlashTv {
-            0% { color: #F5C400; text-shadow: 0 0 16px rgba(245, 196, 0, 0.3); }
-            30% { color: #FFFFFF; text-shadow: 0 0 30px #FFD700, 0 0 60px rgba(255, 215, 0, 0.6); }
-            100% { color: #F5C400; text-shadow: 0 0 16px rgba(245, 196, 0, 0.3); }
+            0%   { color: #E5C674; text-shadow: 0 0 16px rgba(212, 175, 55, 0.35); }
+            30%  { color: #FFFCF7; text-shadow: 0 0 32px #F8E9B6, 0 0 60px rgba(248, 233, 182, 0.6); }
+            100% { color: #E5C674; text-shadow: 0 0 16px rgba(212, 175, 55, 0.35); }
         }
 
         /* Çıkış butonu sağ üstte sabit, görünür */
         body.prices-fullscreen .fullscreen-toggle {
-            background: rgba(245, 196, 0, 0.1) !important;
-            border-color: #F5C400 !important;
-            color: #F5C400 !important;
+            background: rgba(212, 175, 55, 0.14) !important;
+            border-color: #D4AF37 !important;
+            color: #F0DFA3 !important;
             z-index: 3;
         }
-        body.prices-fullscreen .fullscreen-toggle svg { color: #F5C400 !important; }
+        body.prices-fullscreen .fullscreen-toggle svg { color: #F0DFA3 !important; }
 
         @media (max-width: 720px) {
             .fullscreen-toggle .fs-label { display: none; }
@@ -464,7 +473,7 @@
     <nav class="nav" id="nav">
         <div class="nav-inner">
             <a href="index.html" class="brand" aria-label="Hasburak Sarrafiye">
-                <img src="assets/hasburak-logo.svg?v=kuyumculuk" alt="Hasburak Sarrafiye" class="brand-logo" width="720" height="360" decoding="async">
+                <img src="assets/hasburak-logo.jpg?v=halil-real" alt="Hasburak Sarrafiye" class="brand-logo" width="720" height="360" decoding="async">
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Ana Sayfa</a></li>
@@ -560,7 +569,7 @@
         <div class="footer-grid">
             <div class="footer-col footer-brand-block">
                 <a href="index.html" class="brand" aria-label="Hasburak Sarrafiye">
-                    <img src="assets/hasburak-logo.svg?v=kuyumculuk" alt="Hasburak Sarrafiye" class="brand-logo" width="720" height="360" decoding="async">
+                    <img src="assets/hasburak-logo.jpg?v=halil-real" alt="Hasburak Sarrafiye" class="brand-logo" width="720" height="360" decoding="async">
                 </a>
                 <p>Premium altın ve pırlanta takı koleksiyonlarıyla zarafetin adresi. Her parçada ustalık, her parçada güven.</p>
                 <p style="font-size:0.78rem;color:rgba(250,246,238,0.4);"><a href="https://hasburaksarrafiye.com">hasburaksarrafiye.com</a></p>

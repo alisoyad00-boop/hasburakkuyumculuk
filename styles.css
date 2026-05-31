@@ -43,6 +43,10 @@ html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    /* Sayfa geçişlerinde scrollbar açılıp kapanırken içeriğin sağa-sola kaymasını engelle */
+    scrollbar-gutter: stable;
+    /* Eski tarayıcılar için fallback */
+    overflow-y: scroll;
 }
 
 body {
