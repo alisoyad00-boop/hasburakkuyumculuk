@@ -1806,6 +1806,33 @@
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && categoryModal.classList.contains('show')) closeCategoryModal();
     });
+    function frontendCategorySlug(s) {
+        return String(s || '')
+            .toLocaleLowerCase('tr')
+            .replace(/ı/g, 'i').replace(/ş/g, 's').replace(/ğ/g, 'g')
+            .replace(/ü/g, 'u').replace(/ö/g, 'o').replace(/ç/g, 'c')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .slice(0, 40);
+    }
+
+    function openProductModalForCategory(catKey, catLabel) {
+        editingId = null;
+        $('modalTitle').textContent = 'Yeni Ürün · ' + (catLabel || '');
+        $('saveBtn').textContent = 'Kaydet';
+        $('productForm').reset();
+        $('pId').value = '';
+        $('imgPreview').classList.remove('show');
+        // Yeni kategoriyi seç
+        if (catKey) {
+            const sel = $('pCategory');
+            // option zaten loadProducts ile eklendi; sadece seç
+            sel.value = catKey;
+        }
+        openModal();
+        setTimeout(() => $('pName').focus(), 100);
+    }
+
     $('categoryAddForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const label = $('catNewLabel').value.trim();
@@ -1815,10 +1842,16 @@
         hideAlert($('categoryModalError'));
         try {
             await api(API_CATEGORIES_ADMIN, { method: 'POST', body: JSON.stringify({ label }) });
+            const newKey = frontendCategorySlug(label);
             $('catNewLabel').value = '';
-            flash('Kategori eklendi.');
+            // Önce kategorileri ve ürün formundaki dropdown'u tazele
             await loadCategoriesAdmin();
             await loadProducts();
+            // Sonra otomatik olarak ürün ekleme modalını aç (yeni kategori seçili)
+            flash(label + ' eklendi. Şimdi bu kategoriye ürün ekleyebilirsiniz.');
+            closeCategoryModal();
+            // Kısa gecikme — kategori modalının kapanma animasyonu bitsin
+            setTimeout(() => openProductModalForCategory(newKey, label), 200);
         } catch (err) {
             showAlert($('categoryModalError'), err.message || 'Kategori eklenemedi.');
         } finally {
