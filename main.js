@@ -6,6 +6,28 @@ const isCoarsePointer = matchMedia('(pointer: coarse)').matches;
 const prefersReduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ════════════════════════════════════════════
+//   GÜVENLİ SCROLL DURUMU RESETI
+//   Banner/popup/menu kapanırken takılmış stil/class temizliği —
+//   bfcache veya hatalı kapanış sonrası scroll kilidi yaşanmasın.
+//   Her sayfa görünür olduğunda (yeni yükleme + back/forward) çalışır.
+// ════════════════════════════════════════════
+function resetScrollLockState() {
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
+    document.body.style.top = '';
+    document.body.classList.remove('menu-open', 'prices-fullscreen');
+    document.documentElement.style.overflow = '';
+    // Kalıntı popup/modal varsa kaldır (hata yüzünden DOM'da kalmış olabilir)
+    document.querySelectorAll('.hb-popup-backdrop, .modal-backdrop.show').forEach(el => {
+        // Sadece görünmez/inaktif olanları temizle (aktif modal'ı bozma)
+        if (!el.classList.contains('show')) el.remove();
+    });
+}
+window.addEventListener('pageshow', resetScrollLockState);
+document.addEventListener('DOMContentLoaded', resetScrollLockState);
+
+// ════════════════════════════════════════════
 //   CRITICAL: Mobile menu init FIRST
 //   (must work even if any other script later throws on iOS Safari)
 // ════════════════════════════════════════════
