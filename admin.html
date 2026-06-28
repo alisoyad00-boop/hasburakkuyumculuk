@@ -1855,13 +1855,28 @@
         }
         $('categoryList').innerHTML = adminCategories.map(c => {
             const n = counts[c.key] || 0;
+            const canDelete = n === 0;
             return `
-                <div class="cat-row">
-                    <div><strong>${escapeHtml(c.label)}</strong><span class="cat-row-count">${n} ürün</span></div>
-                    <button class="btn danger small" type="button" data-cat-del="${escapeHtml(c.key)}" ${n > 0 ? 'disabled title="İçinde ürün var, silinemez"' : ''}>Sil</button>
+                <div class="cat-row" style="flex-wrap:wrap;gap:8px;">
+                    <div style="flex:1;min-width:160px;">
+                        <strong>${escapeHtml(c.label)}</strong>
+                        <span class="cat-row-count">${n} ürün</span>
+                        ${!canDelete ? `<div style="font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:4px;">Silmek için önce içindeki ${n} ürünü taşı veya sil.</div>` : ''}
+                    </div>
+                    <button class="btn small" type="button" data-cat-add="${escapeHtml(c.key)}" data-cat-label="${escapeHtml(c.label)}" style="background:rgba(212,175,55,0.18);border:1px solid rgba(212,175,55,0.45);color:var(--gold-2);">+ Ürün Ekle</button>
+                    <button class="btn danger small" type="button" data-cat-del="${escapeHtml(c.key)}" ${!canDelete ? 'disabled style="opacity:0.45;cursor:not-allowed;"' : ''}>Sil</button>
                 </div>
             `;
         }).join('');
+        // Her kategori için doğrudan ürün ekleme butonu
+        $('categoryList').querySelectorAll('button[data-cat-add]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const key = btn.dataset.catAdd;
+                const label = btn.dataset.catLabel;
+                closeCategoryModal();
+                setTimeout(() => openProductModalForCategory(key, label), 200);
+            });
+        });
         $('categoryList').querySelectorAll('button[data-cat-del]').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const key = btn.dataset.catDel;
@@ -1936,16 +1951,12 @@
         hideAlert($('categoryModalError'));
         try {
             await api(API_CATEGORIES_ADMIN, { method: 'POST', body: JSON.stringify({ label }) });
-            const newKey = frontendCategorySlug(label);
             $('catNewLabel').value = '';
-            // Önce kategorileri ve ürün formundaki dropdown'u tazele
+            flash(label + ' eklendi. Yandaki "+ Ürün Ekle" tuşuyla içine ürün ekle.');
+            // Listeyi tazele — yeni kategori en altta "+ Ürün Ekle" + "Sil" butonlarıyla gözüksün
             await loadCategoriesAdmin();
             await loadProducts();
-            // Sonra otomatik olarak ürün ekleme modalını aç (yeni kategori seçili)
-            flash(label + ' eklendi. Şimdi bu kategoriye ürün ekleyebilirsiniz.');
-            closeCategoryModal();
-            // Kısa gecikme — kategori modalının kapanma animasyonu bitsin
-            setTimeout(() => openProductModalForCategory(newKey, label), 200);
+            // Modal AÇIK kalır — Halil abi yeni kategoriyi listede görsün, kafa karışmasın
         } catch (err) {
             showAlert($('categoryModalError'), err.message || 'Kategori eklenemedi.');
         } finally {
