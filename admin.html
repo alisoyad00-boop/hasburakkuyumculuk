@@ -125,23 +125,41 @@
     input[type="text"],
     input[type="password"],
     input[type="url"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="search"],
     select,
     textarea {
         width: 100%;
-        background: var(--surface-2);
-        color: var(--text);
-        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.12);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 8px;
-        padding: 11px 14px;
-        font-size: 0.92rem;
+        padding: 12px 14px;
+        font-size: 0.98rem;
+        font-weight: 500;
         font-family: inherit;
-        transition: border-color 0.15s;
+        transition: border-color 0.15s, background 0.15s;
+        /* Tarayıcı dropdown menülerinin de koyu tema kullanmasını sağlar */
+        color-scheme: dark;
+    }
+    input::placeholder,
+    textarea::placeholder {
+        color: rgba(255, 255, 255, 0.38);
+        font-weight: 400;
     }
     input:focus,
     select:focus,
     textarea:focus {
         outline: none;
         border-color: var(--gold);
+        background: rgba(255, 255, 255, 0.16);
+    }
+    /* Select option'ları (browser-rendered) için koyu tema */
+    select option {
+        background: #1a1f2e;
+        color: #ffffff;
     }
     select {
         appearance: none;
@@ -1232,6 +1250,8 @@
         $('productForm').reset();
         $('pId').value = '';
         $('imgPreview').classList.remove('show');
+        setUploadingState(false);
+        hideAlert($('modalError'));
         openModal();
         setTimeout(() => $('pName').focus(), 100);
     });
@@ -1285,17 +1305,82 @@
         }
     }
 
+    // Telefondan gelen büyük fotoğrafları (5-10 MB) tarayıcıda küçült —
+    // Vercel Hobby 4.5 MB request limiti var, bu olmazsa upload patlıyor.
+    async function compressImage(file, maxBytes = 3.4 * 1024 * 1024, maxDim = 2000) {
+        if (file.size <= maxBytes) return file;
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = () => reject(new Error('Dosya okunamadı'));
+            reader.readAsDataURL(file);
+        });
+        const img = await new Promise((resolve, reject) => {
+            const i = new Image();
+            i.onload = () => resolve(i);
+            i.onerror = () => reject(new Error('Resim açılamadı'));
+            i.src = dataUrl;
+        });
+        let w = img.width, h = img.height;
+        if (Math.max(w, h) > maxDim) {
+            const scale = maxDim / Math.max(w, h);
+            w = Math.round(w * scale);
+            h = Math.round(h * scale);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        // Kademeli kalite düşürerek hedef boyuta in
+        for (const q of [0.85, 0.75, 0.65, 0.55, 0.45, 0.35]) {
+            const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', q));
+            if (blob && blob.size <= maxBytes) {
+                return new File(
+                    [blob],
+                    file.name.replace(/\.[^.]+$/, '') + '.jpg',
+                    { type: 'image/jpeg' }
+                );
+            }
+        }
+        // En agresif sıkıştırmayla bile büyükse, son haliyle dön
+        const last = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.3));
+        return new File(
+            [last],
+            file.name.replace(/\.[^.]+$/, '') + '.jpg',
+            { type: 'image/jpeg' }
+        );
+    }
+
     async function uploadFile(file) {
         if (!file) return;
         if (!file.type.startsWith('image/')) {
             showAlert($('modalError'), 'Sadece resim dosyası yükleyebilirsin.');
             return;
         }
+        hideAlert($('modalError'));
+
+        // Büyük telefon fotoğrafları için otomatik küçültme
+        if (file.size > 3.4 * 1024 * 1024) {
+            const origSize = (file.size / 1024 / 1024).toFixed(1);
+            setUploadingState(true, `Fotoğraf büyük (${origSize} MB), otomatik küçültülüyor...`);
+            try {
+                file = await compressImage(file);
+            } catch (err) {
+                showAlert($('modalError'), 'Fotoğraf işlenemedi: ' + (err.message || 'bilinmeyen hata'));
+                setUploadingState(false);
+                return;
+            }
+        }
+
+        // Son güvenlik kontrolü — Vercel Hobby 4.5 MB hard limit
         if (file.size > 4 * 1024 * 1024) {
-            showAlert($('modalError'), 'Dosya çok büyük (en fazla 4 MB). Daha küçük bir resim seç ya da WhatsApp\'tan boyutu küçülterek yolla.');
+            showAlert($('modalError'), 'Dosya hâlâ çok büyük (' + (file.size/1024/1024).toFixed(1) + ' MB). Daha küçük bir fotoğraf seç.');
+            setUploadingState(false);
             return;
         }
-        hideAlert($('modalError'));
+
         setUploadingState(true, `Yükleniyor: ${file.name}`);
         try {
             const token = getToken();
@@ -1823,10 +1908,19 @@
         $('productForm').reset();
         $('pId').value = '';
         $('imgPreview').classList.remove('show');
-        // Yeni kategoriyi seç
+        setUploadingState(false);
+        hideAlert($('modalError'));
+        // Yeni kategoriyi seç — option dropdown'da yoksa loadProducts ile yenile
         if (catKey) {
             const sel = $('pCategory');
-            // option zaten loadProducts ile eklendi; sadece seç
+            const has = Array.from(sel.options).some(o => o.value === catKey);
+            if (!has) {
+                // Option henüz dropdown'da değil — manuel ekle ki sel.value tutsun
+                const opt = document.createElement('option');
+                opt.value = catKey;
+                opt.textContent = catLabel || catKey;
+                sel.appendChild(opt);
+            }
             sel.value = catKey;
         }
         openModal();
