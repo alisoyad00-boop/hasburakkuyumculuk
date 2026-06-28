@@ -1207,16 +1207,21 @@ function renderBanner(banner) {
 
 function schedulePopup(popup) {
     const key = 'hb-popup-shown:' + (popup.title || '').slice(0, 40) + ':' + (popup.message || '').slice(0, 40);
+    const dismissKey = 'hb-popup-dismissed:' + (popup.title || '').slice(0, 40);
+    // Kullanıcı X'e bastıysa o oturum boyunca bir daha gösterme
+    // (showOncePerSession ayarı false bile olsa — müşteriyi rahatsız etmeyelim)
+    if (sessionStorage.getItem(dismissKey)) return;
     if (popup.showOncePerSession && sessionStorage.getItem(key)) return;
 
     const delay = (Number(popup.showAfterSeconds) || 3) * 1000;
     setTimeout(() => {
-        if (sessionStorage.getItem(key)) return;
-        renderPopup(popup, key);
+        if (sessionStorage.getItem(dismissKey)) return;
+        if (popup.showOncePerSession && sessionStorage.getItem(key)) return;
+        renderPopup(popup, key, dismissKey);
     }, delay);
 }
 
-function renderPopup(popup, key) {
+function renderPopup(popup, key, dismissKey) {
     if (document.getElementById('hbPopup')) return;
 
     const wrap = document.createElement('div');
@@ -1246,9 +1251,12 @@ function renderPopup(popup, key) {
 
     function close() {
         wrap.classList.remove('show');
+        // Müşteri kapattıysa o oturum boyunca bir daha gösterme
+        if (dismissKey) sessionStorage.setItem(dismissKey, '1');
         setTimeout(() => wrap.remove(), 300);
     }
     wrap.querySelector('.hb-popup-close')?.addEventListener('click', close);
+    wrap.querySelector('.hb-popup-cta')?.addEventListener('click', close);
     wrap.addEventListener('click', (e) => { if (e.target === wrap) close(); });
     document.addEventListener('keydown', function esc(e) {
         if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
