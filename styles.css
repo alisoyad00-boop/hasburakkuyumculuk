@@ -4027,13 +4027,15 @@ h2 em, h3 em {
 /* ═════════════════════════════════════════════
    KARŞILAMA POPUP (#11) — admin'den açılır
    ═════════════════════════════════════════════ */
+/* Popup non-blocking: backdrop ASLA pointer-events almaz —
+   sayfa scroll'u her zaman çalışır, sadece popup'ın kendisi tıklanır.
+   Müşteri X'e basıp kapatana kadar görünür durur ama sayfayı kullanabilir. */
 .hb-popup-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(6, 14, 44, 0.75);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(6, 14, 44, 0.55);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -4045,6 +4047,9 @@ h2 em, h3 em {
 }
 .hb-popup-backdrop.show {
     opacity: 1;
+    /* HALA pointer-events: none — sadece içindeki .hb-popup'a auto verilecek */
+}
+.hb-popup-backdrop .hb-popup {
     pointer-events: auto;
 }
 .hb-popup {
@@ -4082,15 +4087,15 @@ h2 em, h3 em {
 }
 .hb-popup-close {
     position: absolute;
-    top: 14px;
-    right: 14px;
-    background: rgba(212, 175, 55, 0.1);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    color: var(--gold-200);
-    font-size: 1.6rem;
+    top: 10px;
+    right: 10px;
+    background: rgba(212, 175, 55, 0.18);
+    border: 1.5px solid rgba(212, 175, 55, 0.55);
+    color: var(--gold-100);
+    font-size: 1.85rem;
     line-height: 1;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     cursor: pointer;
     padding: 0;
